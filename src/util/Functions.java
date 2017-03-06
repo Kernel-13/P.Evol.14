@@ -71,4 +71,15 @@ public class Functions {
 		return sum;
 	}
 	
+        public static int long_cromosoma(double min, double max, double tol){
+            double aux = ((max - min)/tol)+1;
+            double longitud = Math.log(aux)/Math.log(2);   
+            return Math.round((float)longitud);
+        }
+        
+        public static double fenotipoBin(double max, double min, double b2d, int lcrom){
+                double fenotipo = min + b2d*((max-min)/(Math.pow(2,lcrom)-1));
+                return fenotipo;
+        }
+        
 }

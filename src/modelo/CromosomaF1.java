@@ -3,13 +3,18 @@ package modelo;
 import java.util.Random;
 import util.Functions;
 
-public abstract class CromosomaF1 extends Cromosoma {
+public class CromosomaF1 extends Cromosoma {
 	private boolean[] genes;
 	private double fenotipo;
 	private double aptitud;
 	private double puntuacion;
-	
+        private double max = 250;
+        private double min = -250;
         
+    public CromosomaF1(boolean[] gen) {
+        super(gen);
+    }
+	   
         public void inicializa(){
             Random r = new Random(); 
             for(int i = 0; i < genes.length;i++){
@@ -26,7 +31,8 @@ public abstract class CromosomaF1 extends Cromosoma {
 		return aptitud;
 	}
 	
-	public double getFenotipo() {
+	public double fenotipo() {
+                fenotipo = Functions.fenotipoBin(max, min, this.bin2dec(), genes.length); 
 		return fenotipo;
 	}
         
