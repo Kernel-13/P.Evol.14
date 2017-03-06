@@ -6,7 +6,7 @@
 package pevpr1;
 
 import controlador.Controlador;
-import modelo.Cromosoma;
+import modelo.CromosomaF1;
 import vista.Interfaz;
 
 /**
