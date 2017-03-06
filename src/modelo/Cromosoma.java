@@ -1,4 +1,4 @@
-package cromosomas;
+package modelo;
 
 public class Cromosoma {
 	private boolean[] genes;
