@@ -11,9 +11,7 @@ public class CromosomaF1 extends Cromosoma {
         private double max = 250;
         private double min = -250;
         
-    public CromosomaF1(boolean[] gen) {
-        super(gen);
-    }
+    public CromosomaF1() {}
 	   
         public void inicializa(){
             Random r = new Random(); 
