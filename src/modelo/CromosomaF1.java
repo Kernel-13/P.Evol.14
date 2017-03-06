@@ -11,24 +11,19 @@ public class CromosomaF1 extends Cromosoma {
         private double max = 250;
         private double min = -250;
         
-    public CromosomaF1() {}
-	   
+        public CromosomaF1() {}
+	public CromosomaF1(boolean[] genes) {
+            this.genes = genes;
+        }
         public void inicializa(){
             Random r = new Random(); 
             for(int i = 0; i < genes.length;i++){
                 genes[i] =  r.nextBoolean();
             }
+            fenotipo();
+            aptitud = Functions.f1(fenotipo);
         }
-
-	public double evalua(double max){
-                double result = (max*0.5) - Functions.f1(fenotipo);
-                if(result < 0)
-                    aptitud = Functions.f1(fenotipo);
-                else
-                    aptitud = 0;
-		return aptitud;
-	}
-	
+        
 	public double fenotipo() {
                 fenotipo = Functions.fenotipoBin(max, min, this.bin2dec(), genes.length); 
 		return fenotipo;
