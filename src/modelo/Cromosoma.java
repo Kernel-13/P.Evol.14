@@ -1,8 +1,10 @@
 package modelo;
 
 public abstract class Cromosoma {
-	abstract double fenotipo();
+	public abstract void inicializa();
+        abstract double fenotipo();
 	abstract double getAptitud();
 	abstract double getPuntuacion();
 	abstract void setPuntuacion(double puntuacion);
+        abstract int getTamaño();
 }

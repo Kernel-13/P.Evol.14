@@ -14,8 +14,14 @@ import java.util.Random;
  */
 public class ProblemaFuncion1 extends Problema
 {
+    private double best;
+    
+    public ProblemaFuncion1(){
+        best = 0;
+    }
+    
     @Override
-    ArrayList<Double> evaluacion(Cromosoma[] pob, double best) {
+    public ArrayList<Double> evaluacion(Cromosoma[] pob) {
         double maxApt = 0;  // Se debe calcular fuera, y entrar como parametro de la funcion
         ArrayList<Double> aptitudes = new ArrayList<>();
         double sum = 0;
@@ -32,15 +38,15 @@ public class ProblemaFuncion1 extends Problema
     }
 
     @Override
-    double aptitudReal(Cromosoma individuo, double maxApt) {
+    public double aptitudReal(Cromosoma individuo, double maxApt) {
         return maxApt - individuo.getAptitud();
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    Cromosoma[] reproduccion(Cromosoma[] pob, double probCruce) {
+    public Cromosoma[] reproduccion(Cromosoma[] pob, double probCruce) {
         Random r = new Random();
-	ArrayList<Integer> elegidos = new ArrayList<>();
+	ArrayList<Integer> elegidos = new ArrayList<>(); 
         for (int i = 0; i < pob.length; i++){
             if (r.nextDouble() < probCruce){
                 elegidos.add(i);
@@ -51,11 +57,8 @@ public class ProblemaFuncion1 extends Problema
             elegidos.remove(elegidos.size() - 1);
         }
         
-         for (int i = 0; i < pob.length; i++){
-             CromosomaF1 new1 = new CromosomaF1();
-             CromosomaF1 new2 = new CromosomaF1();
-             cruce(pob, elegidos.get(i), elegidos.get(i+1), new1, new2);
-            i++;
+         for (int i = 0; i < elegidos.size(); i+=2){ 
+             cruce(pob, pob[elegidos.get(i)], pob[elegidos.get(i+1)]);
         }
         
         /*
@@ -64,14 +67,13 @@ public class ProblemaFuncion1 extends Problema
          --> pob.set(elegidos.get(i), new1);
          --> pob.set(elegidos.get(i+1), new2);
          */
-         
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return pob;
     }
 
     @Override
-    void cruce(Cromosoma[] pob, int pos1, int pos2, Cromosoma new1, Cromosoma new2) {  
-        ArrayList<Boolean> parent1 = new ArrayList<>(); // = pob[pos1].getGenes();
-        ArrayList<Boolean> parent2 = new ArrayList<>(); // = pob[pos2].getGenes();
+    void cruce(Cromosoma[] pob, Cromosoma new1, Cromosoma new2) {  
+        ArrayList<Boolean> parent1 = ((CromosomaF1)new1).getGenes(); // = pob[pos1].getGenes();
+        ArrayList<Boolean> parent2 = ((CromosomaF1)new2).getGenes();  // = pob[pos2].getGenes();
         ArrayList<Boolean> son1 = new ArrayList<>(); 
         ArrayList<Boolean> son2 = new ArrayList<>();
         Random r = new Random();
@@ -90,21 +92,23 @@ public class ProblemaFuncion1 extends Problema
         
         new1 = new CromosomaF1(son1);
         new2 = new CromosomaF1(son2);
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    void mutacion(Cromosoma[] pob, double probMutacion) {
+    public void mutacion(Cromosoma[] pob, double probMutacion) {
         Random r = new Random();
-        for (Cromosoma individuo : pob) {
+        CromosomaF1[] pobAux = ((CromosomaF1[])pob);
+        CromosomaF1 individuo;
+        for (int j=0; j < pobAux.length;j++) {
+            individuo = pobAux[j];
             boolean cambio = false;
-            // ArrayList<Boolean> original = individuo.getGenes();
-            //ArrayList<Boolean> mutado = new ArrayList<Boolean>();
-            /*
-            original = individuo.genes
-            for (int i = 0; i < original.length; i++){
-                if ((r.nextDouble()+1) < probMutacion){
-                    mutado.add(!original.get(i));
+            ArrayList<Boolean> original = individuo.getGenes();
+            ArrayList<Boolean> mutado = new ArrayList<Boolean>();
+           
+            original = individuo.getGenes();
+            for (int i = 0; i < original.size(); i++){
+                if (r.nextDouble() < probMutacion){
+                    mutado.add(!original.get(i));  
                     cambio = true;
                 } else {
                     mutado.add(original.get(i));
@@ -112,13 +116,16 @@ public class ProblemaFuncion1 extends Problema
             }
             
             if(cambio){
-                Cromosoma nuevo = new Cromosoma(mutado);
-                individuo = nuevo;
+                CromosomaF1 nuevo = new CromosomaF1(mutado);
+                nuevo = individuo;
+                pob[j] = nuevo;
             }
-            
-            */
         }
        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public double getBest(){
+        return best;
     }
     
 }
