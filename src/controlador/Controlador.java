@@ -5,31 +5,52 @@
  */
 package controlador;
 
+import util.TipoSeleccion;
+import util.TipoFuncion;
+
 /**
  *
  * @author josemanuel
  */
 public class Controlador {
-    private int funcion;
+    private TipoFuncion funcion;
     private int poblacion;
     private int iteraciones;
-    private int porcCruces;
-    private int porcMutacion;
+    private int probCruces;
+    private int probMutacion;
     private double precision;
     private TipoSeleccion seleccion;
     
     public Controlador(){
-        funcion = 1;
+        funcion = TipoFuncion.F1;
         poblacion = 100;
         iteraciones = 200;
-        porcCruces = 20;
-        porcMutacion = 10;
+        probCruces = 20;
+        probMutacion = 10;
         precision = 0.001;
         seleccion = TipoSeleccion.RULETA;
     }
     
     public void cambiarFuncion (int f){
-        funcion = f;
+        switch(f){
+            case 0:
+                funcion = TipoFuncion.F1;
+                break;
+            case 1:
+                funcion = TipoFuncion.F2;
+                break;
+            case 2:
+                funcion = TipoFuncion.F3;
+                break;
+            case 3:
+                funcion = TipoFuncion.F4;
+                break;
+            case 4:
+                funcion = TipoFuncion.F5;
+                break;
+            default:
+                funcion = TipoFuncion.F3;
+        }
     }
     
     public void cambiarPoblacion(String pob){
@@ -62,7 +83,7 @@ public class Controlador {
             e.printStackTrace();
         }
         if(pc >= 0 && pc <= 100)
-           porcCruces = pc;
+           probCruces = pc;
     }
     
     public void cambiarPorcMutacion(String probm){
@@ -73,7 +94,7 @@ public class Controlador {
             e.printStackTrace();
         } 
         if(pm >= 0 && pm <= 100)
-            porcMutacion = pm;
+            probMutacion = pm;
     }
     
     public void cambiarPrecision(String pre){
@@ -93,11 +114,16 @@ public class Controlador {
                 seleccion = TipoSeleccion.RULETA;
                 break;
             case 1:
-                seleccion = TipoSeleccion.TORNEO;
+                seleccion = TipoSeleccion.TORNEODET;
                 break;
             case 2:
                 seleccion = TipoSeleccion.ESTOCASTICO;
                 break;
+            case 3:
+                seleccion = TipoSeleccion.TORNEOPROB;
+                break;
+            default:
+                seleccion = TipoSeleccion.RULETA;
         }
     }
     

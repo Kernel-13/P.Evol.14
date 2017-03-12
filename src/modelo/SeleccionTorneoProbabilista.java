@@ -5,6 +5,7 @@
  */
 package modelo;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -16,7 +17,7 @@ public class SeleccionTorneoProbabilista extends Seleccion {
     public static double P = 0.5;
     
     @Override
-    Cromosoma[] selecciona(Cromosoma[] pob, double[] puntAcomulada) {
+    Cromosoma[] selecciona(Cromosoma[] pob) {
        Cromosoma[] ret = new Cromosoma[pob.length];
        Random r = new Random();
        int[] aleatorios = new int[TAMALEATORIOS];
@@ -24,23 +25,23 @@ public class SeleccionTorneoProbabilista extends Seleccion {
        for(int i=0; i < pob.length;i++){
             for(int j=0; j < TAMALEATORIOS;j++)
                 aleatorios[j] = (int)(r.nextDouble()*pob.length);
-            escogido = mejorPeor(puntAcomulada,aleatorios,r);
+            escogido = mejorPeor(pob,aleatorios,r);
             ret[i] = pob[escogido];
        }
        return ret;
     }
     
     
-    private int mejorPeor(double[] punt , int[] ale , Random r){
+    private int mejorPeor(Cromosoma[] pob , int[] ale , Random r){
         int mejor = ale[0], peor = ale[0];
-        double mejorPuntuacion=punt[ale[0]], peorPuntuacion=punt[ale[0]]; 
+        double mejorPuntuacion=pob[ale[0]].getPuntuacion(), peorPuntuacion=pob[ale[0]].getPuntuacion(); 
         for(int i=1; i < TAMALEATORIOS;i++){
-            if(punt[ale[i]] > mejorPuntuacion){
-                mejorPuntuacion = punt[ale[i]];
+            if(pob[ale[i]].getPuntuacion() > mejorPuntuacion){
+                mejorPuntuacion = pob[ale[i]].getPuntuacion();
                 mejor = ale[i];
             }
-            if(punt[ale[i]] < peorPuntuacion){
-                peorPuntuacion = punt[ale[i]];
+            if(pob[ale[i]].getPuntuacion() < peorPuntuacion){
+                peorPuntuacion = pob[ale[i]].getPuntuacion();
                 peor = ale[i];
             }
         }

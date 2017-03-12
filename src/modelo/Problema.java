@@ -6,6 +6,7 @@
 package modelo;
 
 import java.util.ArrayList;
+import util.Functions;
 
 /**
  *
@@ -13,7 +14,7 @@ import java.util.ArrayList;
  */
 public abstract class Problema {
      
-    public abstract ArrayList<Double> evaluacion(Cromosoma[] pob);	// Debe devolver la mejor aptitud, y una array de las aptitudes
+    public abstract Cromosoma evaluacion(Cromosoma[] pob);	// Debe devolver la mejor aptitud, y una array de las aptitudes
 	
     abstract double aptitudReal(Cromosoma individuo, double maxApt);	// Debe devolver la aptitud tras aplicar desplazamiento
     // El parametro maxApt debera ser calculado con anterioridad, y quiza tenerlo como un atributo de AG
@@ -28,5 +29,9 @@ public abstract class Problema {
 
     public abstract void mutacion(Cromosoma[] pob, double probMutacion);	// Recorre la pob. y cada individuo, y segun la probabilidad cambia un gen o no
     // 
-    public abstract double getBest();
+    public abstract Cromosoma getBest();
+    
+    public abstract int longCromosoma(double p);
+    
+    
 }

@@ -8,18 +8,19 @@ public class CromosomaF1 extends Cromosoma {
 	private ArrayList<Boolean> genes;
 	private double fenotipo;
 	private double aptitud;
+        private double aptitudReal;
 	private double puntuacion;
-        private double max = 250;
-        private double min = -250;
+        private double puntAcomulada;
+        public static double max = 250;
+        public static double min = -250;
         private int tam;
         
-            
         public CromosomaF1() {
             genes = new ArrayList<Boolean>();
         }
         
-        public CromosomaF1(int tamaño) {
-            tam = tamaño;
+        public CromosomaF1(int tamanio) {
+            tam = tamanio;
             genes = new ArrayList<Boolean>();
         }
         
@@ -74,9 +75,27 @@ public class CromosomaF1 extends Cromosoma {
             return genes.toString() + " " + this.fenotipo + " " + this.aptitud;
         }
 
-    @Override
-    int getTamaño() {
-        return tam;
-    }
-	
+        int getTamanio() {
+            return tam;
+        }
+
+        @Override
+        double getPuntAcomulada() {
+           return puntAcomulada;
+        }
+
+        @Override
+        void setPuntAcomulada(double puntuacion) {
+            puntAcomulada = puntuacion;
+        }
+
+        @Override
+        void setAptitudReal(double aptR) {
+            this.aptitudReal = aptR;
+        }
+
+        @Override
+        double getAptitudReal() {
+            return this.aptitudReal;
+        }
 }

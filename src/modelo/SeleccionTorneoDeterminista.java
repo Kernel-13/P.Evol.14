@@ -5,6 +5,7 @@
  */
 package modelo;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Random;
 public class SeleccionTorneoDeterminista extends Seleccion {
     public static int TAMALEATORIOS = 2;
     @Override
-    Cromosoma[] selecciona(Cromosoma[] pob, double[] puntAcomulada) {
+    Cromosoma[] selecciona(Cromosoma[] pob) {
        Cromosoma[] ret = new Cromosoma[pob.length];
        Random r = new Random();
        int[] aleatorios = new int[TAMALEATORIOS];
@@ -22,19 +23,19 @@ public class SeleccionTorneoDeterminista extends Seleccion {
        for(int i=0; i < pob.length;i++){
             for(int j=0; j < TAMALEATORIOS;j++)
                 aleatorios[j] = (int)(r.nextDouble()*pob.length);
-            escogido = mejor(puntAcomulada,aleatorios);
+            escogido = mejor(pob,aleatorios);
             ret[i] = pob[escogido];
        }
        return ret;
     }
     
     
-    private int mejor(double[] punt , int[] ale){
+    private int mejor(Cromosoma[] pob,int[] ale){
         int mejor = ale[0];
-        double mejorPuntuacion=punt[ale[0]]; 
+        double mejorPuntuacion=pob[ale[0]].getPuntuacion(); 
         for(int i=1; i < TAMALEATORIOS;i++){
-            if(punt[ale[i]] > mejorPuntuacion){
-                mejorPuntuacion = punt[ale[i]];
+            if(pob[ale[i]].getPuntuacion() > mejorPuntuacion){
+                mejorPuntuacion = pob[ale[i]].getPuntuacion();
                 mejor = ale[i];
             }
         }

@@ -4,6 +4,9 @@
  * and open the template in the editor.
  */
 package modelo;
+
+import java.util.ArrayList;
+
 /**
  *
  * @author Jose Manuel Perez , Ederson Funes
@@ -12,7 +15,7 @@ public class SeleccionEstocastica extends Seleccion {
     public SeleccionEstocastica(){}
     
     @Override
-    Cromosoma[] selecciona(Cromosoma[] pob, double[] puntAc) {
+    Cromosoma[] selecciona(Cromosoma[] pob) {
        int j;
        boolean salir;
        Cromosoma[] ret = new Cromosoma[pob.length];
@@ -20,8 +23,8 @@ public class SeleccionEstocastica extends Seleccion {
            double valorAle = 1/pob.length;
            j = 0;
            salir = false;
-           while(!salir && j < puntAc.length){
-               if(puntAc[j] > valorAle){
+           while(!salir && j < pob.length){
+               if(pob[j].getPuntAcomulada() > valorAle){
                    salir = true;
                }
                valorAle += valorAle;

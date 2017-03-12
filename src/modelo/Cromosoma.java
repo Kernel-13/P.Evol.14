@@ -5,6 +5,10 @@ public abstract class Cromosoma {
         abstract double fenotipo();
 	abstract double getAptitud();
 	abstract double getPuntuacion();
-	abstract void setPuntuacion(double puntuacion);
-        abstract int getTamaño();
+	abstract void setPuntuacion(double suma);
+        abstract double getPuntAcomulada();
+	abstract void setPuntAcomulada(double puntuacion);
+        abstract void setAptitudReal(double aptR);
+        abstract double getAptitudReal();
+        abstract int getTamanio();
 }

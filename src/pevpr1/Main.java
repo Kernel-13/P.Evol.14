@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import modelo.Cromosoma;
 import modelo.CromosomaF1;
 import modelo.Problema;
-import modelo.ProblemaFuncion1;
+import modelo.ProblemaF1;
 import vista.Interfaz;
 
 /**
@@ -31,20 +31,18 @@ public class Main {
         CromosomaF1[] pob = new CromosomaF1[tamP];
         CromosomaF1[] newPob;
         ArrayList<Double> aptitudes;
-        Problema p = new ProblemaFuncion1(); 
+        Problema p = new ProblemaF1(); 
         
         for(int i=0; i < tamP;i++){
             pob[i] = new CromosomaF1(tamC);
             pob[i].inicializa();
         }
-        
-        aptitudes = p.evaluacion(pob);
-        
+       
         for(int i=0; i < pob.length;i++){
             System.out.println(pob[i].getGenes().toString());
         }
         
-        p.mutacion(pob, 1);
+        p.mutacion(pob, 0.5);
         
         System.out.println("-------------------------------");
         

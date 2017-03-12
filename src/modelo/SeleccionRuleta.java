@@ -17,7 +17,7 @@ public class SeleccionRuleta extends Seleccion {
     }
 
     @Override
-    Cromosoma[] selecciona(Cromosoma[] pob, double[] puntAc) {
+    Cromosoma[] selecciona(Cromosoma[] pob) {
        Random r = new Random();
        int j;
        boolean salir;
@@ -26,8 +26,8 @@ public class SeleccionRuleta extends Seleccion {
            double valorAle = r.nextDouble();
            j = 0;
            salir = false;
-           while(!salir && j < puntAc.length){
-               if(puntAc[j] > valorAle){
+           while(!salir && j < pob.length){
+               if(pob[j].getPuntAcomulada() > valorAle){
                    salir = true;
                }
                j++;

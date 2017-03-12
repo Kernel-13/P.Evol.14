@@ -7,34 +7,49 @@ package modelo;
 
 import java.util.ArrayList;
 import java.util.Random;
+import util.Functions;
 
 /**
  *
  * @author Ederson
  */
-public class ProblemaFuncion1 extends Problema
+public class ProblemaF1 extends Problema
 {
-    private double best;
+    private Cromosoma best;
     
-    public ProblemaFuncion1(){
-        best = 0;
+    public ProblemaF1(){
+        
     }
     
     @Override
-    public ArrayList<Double> evaluacion(Cromosoma[] pob) {
-        double maxApt = 0;  // Se debe calcular fuera, y entrar como parametro de la funcion
-        ArrayList<Double> aptitudes = new ArrayList<>();
+    public Cromosoma evaluacion(Cromosoma[] pob) {
+        Cromosoma bestPobActual;
+        double maxApt = 0, puntAcomulada = 0;  // Se debe calcular fuera, y entrar como parametro de la funcion
         double sum = 0;
+        maxApt = pob[0].getAptitud(); 
+        for(int j = 1; j < pob.length;j++){
+            if(pob[j].getAptitud() > maxApt)
+                maxApt = pob[j].getAptitud();
+        }
+        bestPobActual = pob[0];
         for(int i = 0; i < pob.length; i++){
-            double apt = aptitudReal(pob[i], maxApt);
-            aptitudes.add(apt);
-            sum += apt;
-            if(apt > best){
-                best = apt;
+            pob[i].setAptitudReal(aptitudReal(pob[i], maxApt)); 
+            sum += pob[i].getAptitud();
+            if(pob[i].getAptitudReal() > bestPobActual.getAptitudReal()){
+                bestPobActual = pob[i];
             }
         }
-        return aptitudes;
+        
+        for(int k=0; k < pob.length;k++){
+            pob[k].setPuntuacion(sum);
+            pob[k].setPuntAcomulada(pob[k].getPuntuacion()+puntAcomulada);
+            puntAcomulada += pob[k].getPuntuacion();
+        }
+        
+        if(bestPobActual.getAptitudReal()>best.getAptitudReal())
+            best = bestPobActual;
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return bestPobActual;
     }
 
     @Override
@@ -77,7 +92,7 @@ public class ProblemaFuncion1 extends Problema
         ArrayList<Boolean> son1 = new ArrayList<>(); 
         ArrayList<Boolean> son2 = new ArrayList<>();
         Random r = new Random();
-        int lcrom = 17;        // int lcrom = pob[0].getGenes().length;
+        int lcrom = ((CromosomaF1)pob[0]).getGenes().size();
         int corte = r.nextInt(lcrom-1)+1;
         
         for (int i = 0; i < lcrom; i++){
@@ -123,8 +138,15 @@ public class ProblemaFuncion1 extends Problema
        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    public double getBest(){
+    
+    public int longCromosoma(double p) {
+        return Functions.long_cromosoma(CromosomaF1.min, CromosomaF1.max, p);
+    }
+
+    @Override
+    public Cromosoma getBest() {
         return best;
     }
+
     
 }
