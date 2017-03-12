@@ -117,7 +117,6 @@ public class ProblemaFuncion1 extends Problema
             
             if(cambio){
                 CromosomaF1 nuevo = new CromosomaF1(mutado);
-                nuevo = individuo;
                 pob[j] = nuevo;
             }
         }
