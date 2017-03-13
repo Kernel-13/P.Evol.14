@@ -39,8 +39,7 @@ public class AlgoritmoGenetico {
         problema = f.factoriaProblema();
     }
     
-    public DatosGrafica ejecuta(){
-        int semilla = 2;
+    public DatosGrafica ejecuta(int semilla){
         ArrayList<Double> best = new ArrayList<>();
         ArrayList<Double> bestPob = new ArrayList<>();
         ArrayList<Double> media = new ArrayList<>();

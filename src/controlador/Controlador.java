@@ -144,7 +144,7 @@ public class Controlador {
     public DatosGrafica ejecuta(){
         AlgoritmoGenetico algo = new AlgoritmoGenetico(funcion, poblacion, iteraciones,
                 probCruces, probMutacion,precision,seleccion);
-        return algo.ejecuta();
+        return algo.ejecuta(semilla);
     }
     
     
