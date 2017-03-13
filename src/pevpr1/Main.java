@@ -31,7 +31,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        TipoFuncion funcion = TipoFuncion.F1;
+        /*TipoFuncion funcion = TipoFuncion.F1;
         int tampob = 10, iteraciones = 10;
         double probCruces = 0.7, probMutacion = 0.1, precision = 0.01;
         TipoSeleccion tSeleccion = TipoSeleccion.RULETA;
@@ -39,10 +39,10 @@ public class Main {
                 probCruces, probMutacion,precision,tSeleccion);
         DatosGrafica g = algo.ejecuta();
         System.out.println(g.toString());
-        /*
+        */
         Controlador c = new Controlador();
         Interfaz i = new Interfaz(c);
-        i.setVisible(true);*/
+        i.setVisible(true);
     }
     
 }

@@ -6,6 +6,12 @@
 package vista;
 
 import controlador.Controlador;
+import util.DatosGrafica;
+import java.awt.Color;
+import java.util.Random;
+
+import javax.swing.*;
+import org.math.plot.*;
 
 /**
  *
@@ -32,7 +38,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<String>();
+        jComboBox1 = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
@@ -45,8 +51,8 @@ public class Interfaz extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<String>();
-        jComboBox3 = new javax.swing.JComboBox<String>();
+        jComboBox2 = new javax.swing.JComboBox<>();
+        jComboBox3 = new javax.swing.JComboBox<>();
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel9 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
@@ -56,7 +62,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         jLabel1.setText("Funcion");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Funcion 1", "Funcion 2", "Funcion 3", "Funcion 4", "Funcion 5" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Funcion 1", "Funcion 2", "Funcion 3", "Funcion 4", "Funcion 5" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -65,9 +71,9 @@ public class Interfaz extends javax.swing.JFrame {
 
         jLabel2.setText("Poblacion");
 
-        jTextField1.setText("jTextField1");
+        jTextField1.setText("100");
 
-        jTextField2.setText("jTextField1");
+        jTextField2.setText("100");
         jTextField2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField2ActionPerformed(evt);
@@ -76,7 +82,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         jLabel3.setText("Iteraciones");
 
-        jTextField3.setText("jTextField1");
+        jTextField3.setText("70");
         jTextField3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField3ActionPerformed(evt);
@@ -85,7 +91,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         jLabel4.setText("% cruces");
 
-        jTextField4.setText("jTextField1");
+        jTextField4.setText("10");
         jTextField4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField4ActionPerformed(evt);
@@ -94,7 +100,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         jLabel5.setText("% mutación");
 
-        jTextField5.setText("jTextField1");
+        jTextField5.setText("0.01");
         jTextField5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField5ActionPerformed(evt);
@@ -105,9 +111,9 @@ public class Interfaz extends javax.swing.JFrame {
 
         jLabel8.setText("Seleccion");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ruleta", "Torneo determinista", "Estocastico", "Torneo probabilista" }));
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ruleta", "Torneo determinista", "Estocastico", "Torneo probabilista" }));
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jCheckBox1.setText("Elitismo");
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -273,8 +279,40 @@ public class Interfaz extends javax.swing.JFrame {
         c.cambiarPorcMutacion(this.jTextField4.getText());
         c.cambiarPrecision(this.jTextField5.getText());
         c.cambiarSeleccion(this.jComboBox2.getSelectedIndex());
+        actualizaGrafica(c.ejecuta());
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void actualizaGrafica(DatosGrafica g){
+		double[] x = new double[g.tam];
+		double[] y = new double[g.tam] ;
+		double[] y2 = new double[g.tam];
+		double[] y3 = new double[g.tam];
+		
+		for(int i = 0; i < g.tam; i++){
+			x[i] = i;
+			y[i] = g.mejoresDeTodas.get(i);
+			y2[i] = g.mejoresIteracion.get(i);
+			y3[i] = g.mediaPorIteracion.get(i);
+		}
+		
+		// create your PlotPanel (you can use it as a JPanel)
+		Plot2DPanel plot = new Plot2DPanel();
+		
+		// define the legend position
+		plot.addLegend("SOUTH");
+		
+		// add a line plot to the PlotPanel
+		plot.addLinePlot("Mejor Puntuacion Global",Color.RED , x, y);
+		plot.addLinePlot("Mejor Puntuacion por Generacion",Color.BLUE , x, y2);
+		plot.addLinePlot("Media de Puntuaciones",Color.GREEN , x, y3);
+		
+		// put the PlotPanel in a JFrame like a JPanel
+		JFrame frame = new JFrame("a plot panel");
+		frame.setSize(600, 600);
+		frame.setContentPane(plot);
+		frame.setVisible(true);
+    }
+    
     /**
      * @param args the command line arguments
      */

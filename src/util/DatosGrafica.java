@@ -16,11 +16,13 @@ public class DatosGrafica {
     public ArrayList<Double> mejoresDeTodas;
     public ArrayList<Double> mejoresIteracion;
     public ArrayList<Double> mediaPorIteracion;
-    public DatosGrafica(ArrayList<Double> mejoresTodo
+    public int tam;
+    public DatosGrafica(ArrayList<Double> mejoresTodo, int tam
             ,ArrayList<Double> mejoresIt, ArrayList<Double> mediaPobIt){
         mejoresDeTodas = mejoresTodo;
         mejoresIteracion = mejoresIt;
         mediaPorIteracion = mediaPobIt; 
+        this.tam = tam;
     }
     
     public String toString(){

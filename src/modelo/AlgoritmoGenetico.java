@@ -31,8 +31,8 @@ public class AlgoritmoGenetico {
         
         tamPoblacion = tampob;
         this.iteraciones = iteraciones;
-        this.probCruces = probCruces;
-        this.probMutacion = probMutacion;
+        this.probCruces = probCruces/100;
+        this.probMutacion = probMutacion/100;
         this.precision = precision;
         f = new Factoria(funcion,tSeleccion);
         seleccion = f.factoriaSeleccion();
@@ -48,17 +48,16 @@ public class AlgoritmoGenetico {
         Cromosoma mejorPob;
         pobInicial(tamCromosoma);
         mejorPob = problema.evaluacion(pob);
-        media.add(problema.media(tamCromosoma));
         for(int i=0; i < iteraciones;i++){
             pob = seleccion.selecciona(pob);
             problema.reproduccion(pob, probCruces);
             problema.mutacion(pob, probMutacion);
             mejorPob = problema.evaluacion(pob);
-            bestPob.add(mejorPob.getAptitudReal());
-            best.add(problema.getBest().getAptitudReal());
-            media.add(problema.media(tamCromosoma));
+            bestPob.add(mejorPob.getAptitud());
+            best.add(problema.getBest().getAptitud());
+            media.add(problema.media(tamPoblacion));
         }
-        return new DatosGrafica(best,bestPob,media);
+        return new DatosGrafica(best,iteraciones,bestPob,media);
     }
     
     

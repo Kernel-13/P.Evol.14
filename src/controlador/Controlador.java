@@ -5,6 +5,8 @@
  */
 package controlador;
 
+import modelo.AlgoritmoGenetico;
+import util.DatosGrafica;
 import util.TipoSeleccion;
 import util.TipoFuncion;
 
@@ -98,9 +100,9 @@ public class Controlador {
     }
     
     public void cambiarPrecision(String pre){
-        int p = 0;
+        double p = 0;
         try{
-            p = Integer.parseInt(pre);
+            p = Double.parseDouble(pre);
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -127,7 +129,11 @@ public class Controlador {
         }
     }
     
-    
+    public DatosGrafica ejecuta(){
+        AlgoritmoGenetico algo = new AlgoritmoGenetico(funcion, poblacion, iteraciones,
+                probCruces, probMutacion,precision,seleccion);
+        return algo.ejecuta();
+    }
     
     
 }
