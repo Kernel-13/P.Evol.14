@@ -33,7 +33,6 @@ public abstract class Problema {
     // 
     public abstract Cromosoma getBest();
     
-    public abstract int longCromosoma(double p);
     
     
 }

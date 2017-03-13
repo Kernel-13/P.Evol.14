@@ -11,14 +11,13 @@ import util.Functions;
 
 /**
  *
- * @author Ederson
+ * @author josemanuel
  */
-public class ProblemaF1 extends Problema
-{
+public class ProblemaF2 extends Problema {
     private Cromosoma best;
     private double sumaPob;
     
-    public ProblemaF1(){
+    public ProblemaF2(){
         sumaPob = 0;
         best = null;
     }
@@ -34,7 +33,7 @@ public class ProblemaF1 extends Problema
         double sum = 0;
         maxApt = pob[0].getAptitud(); 
         for(int j = 1; j < pob.length;j++){
-            if(pob[j].getAptitud() > maxApt)
+            if(pob[j].getAptitud() > maxApt) 
                 maxApt = pob[j].getAptitud();
         }
         for(int i = 0; i < pob.length; i++){
@@ -94,12 +93,12 @@ public class ProblemaF1 extends Problema
 
     @Override
     void cruce(Cromosoma[] pob, Cromosoma new1, Cromosoma new2) {  
-        ArrayList<Boolean> parent1 = ((CromosomaF1)new1).getGenes(); // = pob[pos1].getGenes();
-        ArrayList<Boolean> parent2 = ((CromosomaF1)new2).getGenes();  // = pob[pos2].getGenes();
+        ArrayList<Boolean> parent1 = ((CromosomaF2)new1).getGenes(); // = pob[pos1].getGenes();
+        ArrayList<Boolean> parent2 = ((CromosomaF2)new2).getGenes();  // = pob[pos2].getGenes();
         ArrayList<Boolean> son1 = new ArrayList<>(); 
         ArrayList<Boolean> son2 = new ArrayList<>();
         Random r = new Random();
-        int lcrom = ((CromosomaF1)pob[0]).getGenes().size();
+        int lcrom = ((CromosomaF2)pob[0]).getGenes().size();
         int corte = r.nextInt(lcrom-1)+1;
         
         for (int i = 0; i < lcrom; i++){
@@ -112,18 +111,18 @@ public class ProblemaF1 extends Problema
             }
         }
         
-        new1 = new CromosomaF1(son1);
-        new2 = new CromosomaF1(son2);
+        new1 = new CromosomaF2(son1);
+        new2 = new CromosomaF2(son2);
     }
 
     @Override
     public void mutacion(Cromosoma[] pob, double probMutacion) {
         Random r = new Random();
-        CromosomaF1[] pobAux = new CromosomaF1[pob.length];
+        CromosomaF2[] pobAux = new CromosomaF2[pob.length];
         for(int i = 0; i < pob.length;i++){
-            pobAux[i] = (CromosomaF1)pob[i];
+            pobAux[i] = (CromosomaF2)pob[i];
         }
-        CromosomaF1 individuo;
+        CromosomaF2 individuo;
         for (int j=0; j < pobAux.length;j++) {
             individuo = pobAux[j];
             boolean cambio = false;
@@ -141,15 +140,14 @@ public class ProblemaF1 extends Problema
             }
             
             if(cambio){
-                CromosomaF1 nuevo = new CromosomaF1(mutado);
+                CromosomaF2 nuevo = new CromosomaF2(mutado);
                 pob[j] = nuevo;
             }
         }
        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-   
-
+    
 
     @Override
     public Cromosoma getBest() {

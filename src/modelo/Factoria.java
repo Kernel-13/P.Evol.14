@@ -42,15 +42,25 @@ public class Factoria {
         switch(t){
             case F1:
                 return new ProblemaF1();
+            case F2:
+                return new ProblemaF2();
+            case F3:
+                return new ProblemaF3();
+                
             default:
                 return new ProblemaF1();
         }
     }
     
-    public Cromosoma factoriaCromosoma(int l){
+    public Cromosoma factoriaCromosoma(double l){
         switch(t){
             case F1:
                 return new CromosomaF1(l);
+            case F2:
+                return new CromosomaF2(l);    
+            case F3:
+                return new CromosomaF3(l);    
+            
             default:
                 return new CromosomaF1(l);
         }

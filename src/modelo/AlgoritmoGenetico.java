@@ -43,9 +43,8 @@ public class AlgoritmoGenetico {
         ArrayList<Double> best = new ArrayList<>();
         ArrayList<Double> bestPob = new ArrayList<>();
         ArrayList<Double> media = new ArrayList<>();
-        int tamCromosoma = problema.longCromosoma(precision);
         Cromosoma mejorPob;
-        pobInicial(tamCromosoma,semilla);
+        pobInicial(semilla);
         mejorPob = problema.evaluacion(pob);
         for(int i=0; i < iteraciones;i++){
             pob = seleccion.selecciona(pob);
@@ -61,10 +60,10 @@ public class AlgoritmoGenetico {
     
     
     
-    public void pobInicial(int tamCromosoma,int semilla){
+    public void pobInicial(int semilla){
         pob = new Cromosoma[tamPoblacion];
         for(int i = 0; i < tamPoblacion;i++){
-            pob[i] = f.factoriaCromosoma(tamCromosoma);
+            pob[i] = f.factoriaCromosoma(precision);
             pob[i].inicializa(semilla);
         }
     }
