@@ -30,7 +30,10 @@ public class SeleccionEstocastica extends Seleccion {
                valorAle += valorAle;
                j++;
            }
-           ret[i] = pob[j];
+           if(j < pob.length)
+               ret[i] = pob[j];
+           else
+               ret[i] = pob[pob.length-1];
        }
        return ret;
     }

@@ -16,10 +16,14 @@ public abstract class Problema {
      
     public abstract Cromosoma evaluacion(Cromosoma[] pob);	// Debe devolver la mejor aptitud, y una array de las aptitudes
 	
+    public abstract void init(int tamCromosoma);
+    
     abstract double aptitudReal(Cromosoma individuo, double maxApt);	// Debe devolver la aptitud tras aplicar desplazamiento
     // El parametro maxApt debera ser calculado con anterioridad, y quiza tenerlo como un atributo de AG
     // Quiza es mejor hacerla una funcion privada, ya que solo es utilizada por evaluacion
 	
+    abstract double media(int tam);
+    
     public abstract Cromosoma[] reproduccion(Cromosoma[] pob, double probCruce); // Debe devolver una nueva poblacion con cromosomas 
     // cruzados. 
     // 

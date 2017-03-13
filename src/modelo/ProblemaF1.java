@@ -16,14 +16,19 @@ import util.Functions;
 public class ProblemaF1 extends Problema
 {
     private Cromosoma best;
+    private double sumaPob;
     
     public ProblemaF1(){
-        
+        sumaPob = 0;
+    }
+    
+    public double media(int tam){
+        return sumaPob/tam;
     }
     
     @Override
     public Cromosoma evaluacion(Cromosoma[] pob) {
-        Cromosoma bestPobActual;
+        Cromosoma bestPobActual = pob[0];
         double maxApt = 0, puntAcomulada = 0;  // Se debe calcular fuera, y entrar como parametro de la funcion
         double sum = 0;
         maxApt = pob[0].getAptitud(); 
@@ -31,15 +36,14 @@ public class ProblemaF1 extends Problema
             if(pob[j].getAptitud() > maxApt)
                 maxApt = pob[j].getAptitud();
         }
-        bestPobActual = pob[0];
         for(int i = 0; i < pob.length; i++){
             pob[i].setAptitudReal(aptitudReal(pob[i], maxApt)); 
-            sum += pob[i].getAptitud();
+            sum += pob[i].getAptitudReal();
             if(pob[i].getAptitudReal() > bestPobActual.getAptitudReal()){
                 bestPobActual = pob[i];
             }
         }
-        
+        sumaPob = sum;
         for(int k=0; k < pob.length;k++){
             pob[k].setPuntuacion(sum);
             pob[k].setPuntAcomulada(pob[k].getPuntuacion()+puntAcomulada);
@@ -112,13 +116,16 @@ public class ProblemaF1 extends Problema
     @Override
     public void mutacion(Cromosoma[] pob, double probMutacion) {
         Random r = new Random();
-        CromosomaF1[] pobAux = ((CromosomaF1[])pob);
+        CromosomaF1[] pobAux = new CromosomaF1[pob.length];
+        for(int i = 0; i < pob.length;i++){
+            pobAux[i] = (CromosomaF1)pob[i];
+        }
         CromosomaF1 individuo;
         for (int j=0; j < pobAux.length;j++) {
             individuo = pobAux[j];
             boolean cambio = false;
             ArrayList<Boolean> original = individuo.getGenes();
-            ArrayList<Boolean> mutado = new ArrayList<Boolean>();
+            ArrayList<Boolean> mutado = new ArrayList<>();
            
             original = individuo.getGenes();
             for (int i = 0; i < original.size(); i++){
@@ -139,6 +146,7 @@ public class ProblemaF1 extends Problema
     }
     
     
+    @Override
     public int longCromosoma(double p) {
         return Functions.long_cromosoma(CromosomaF1.min, CromosomaF1.max, p);
     }
@@ -146,6 +154,12 @@ public class ProblemaF1 extends Problema
     @Override
     public Cromosoma getBest() {
         return best;
+    }
+
+    @Override
+    public void init(int tamCromosoma) {
+        best = new CromosomaF1(tamCromosoma);
+        best.inicializa();
     }
 
     

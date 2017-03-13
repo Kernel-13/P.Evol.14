@@ -32,7 +32,10 @@ public class SeleccionRuleta extends Seleccion {
                }
                j++;
            }
-           ret[i] = pob[j];
+           if(j < pob.length)
+               ret[i] = pob[j];
+           else
+               ret[i] = pob[pob.length-1];
        }
        return ret;
     }

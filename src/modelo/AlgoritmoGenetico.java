@@ -6,6 +6,7 @@
 package modelo;
 
 import java.util.ArrayList;
+import util.DatosGrafica;
 import util.TipoFuncion;
 import util.TipoSeleccion;
 
@@ -16,8 +17,8 @@ import util.TipoSeleccion;
 public class AlgoritmoGenetico {
     private int tamPoblacion;
     private int iteraciones;
-    private int probCruces;
-    private int probMutacion;
+    private double probCruces;
+    private double probMutacion;
     private double precision;
     private Seleccion seleccion;
     private Problema problema;
@@ -25,7 +26,7 @@ public class AlgoritmoGenetico {
     Factoria f;
     
     public AlgoritmoGenetico(TipoFuncion funcion, int tampob, int iteraciones,
-            int porbCruces, int porbMutacion, double precision,
+            double probCruces, double probMutacion, double precision,
             TipoSeleccion tSeleccion){
         
         tamPoblacion = tampob;
@@ -38,17 +39,26 @@ public class AlgoritmoGenetico {
         problema = f.factoriaProblema();
     }
     
-    public void ejecuta(){
+    public DatosGrafica ejecuta(){
+        ArrayList<Double> best = new ArrayList<>();
+        ArrayList<Double> bestPob = new ArrayList<>();
+        ArrayList<Double> media = new ArrayList<>();
         int tamCromosoma = problema.longCromosoma(precision);
+        problema.init(tamCromosoma);
         Cromosoma mejorPob;
         pobInicial(tamCromosoma);
         mejorPob = problema.evaluacion(pob);
+        media.add(problema.media(tamCromosoma));
         for(int i=0; i < iteraciones;i++){
             pob = seleccion.selecciona(pob);
             problema.reproduccion(pob, probCruces);
             problema.mutacion(pob, probMutacion);
             mejorPob = problema.evaluacion(pob);
+            bestPob.add(mejorPob.getAptitudReal());
+            best.add(problema.getBest().getAptitudReal());
+            media.add(problema.media(tamCromosoma));
         }
+        return new DatosGrafica(best,bestPob,media);
     }
     
     
