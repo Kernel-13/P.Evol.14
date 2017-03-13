@@ -58,7 +58,7 @@ public class CromosomaF1 extends Cromosoma {
 	}
         
 	public void setPuntuacion (double suma) {
-		this.puntuacion = aptitud/suma;
+		this.puntuacion = aptitudReal/suma;
 	}
         
 	private int bin2dec(){
