@@ -13,6 +13,7 @@ import modelo.CromosomaF1;
 import modelo.Problema;
 import modelo.ProblemaF1;
 import util.DatosGrafica;
+import util.Functions;
 import util.TipoFuncion;
 import util.TipoSeleccion;
 import vista.Interfaz;
@@ -40,9 +41,10 @@ public class Main {
         DatosGrafica g = algo.ejecuta();
         System.out.println(g.toString());
         */
-        Controlador c = new Controlador();
+       Controlador c = new Controlador();
         Interfaz i = new Interfaz(c);
         i.setVisible(true);
+       System.err.println(Functions.long_cromosoma(-250, 250, 0.001));
     }
     
 }

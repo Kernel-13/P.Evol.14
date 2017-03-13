@@ -20,6 +20,7 @@ public class ProblemaF1 extends Problema
     
     public ProblemaF1(){
         sumaPob = 0;
+        best = null;
     }
     
     public double media(int tam){
@@ -49,9 +50,11 @@ public class ProblemaF1 extends Problema
             pob[k].setPuntAcomulada(pob[k].getPuntuacion()+puntAcomulada);
             puntAcomulada += pob[k].getPuntuacion();
         }
-        
+        if(best == null){
+            best = bestPobActual.copy();
+        }
         if(bestPobActual.getAptitudReal()>best.getAptitudReal())
-            best = bestPobActual;
+            best = bestPobActual.copy();
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         return bestPobActual;
     }
@@ -153,14 +156,9 @@ public class ProblemaF1 extends Problema
 
     @Override
     public Cromosoma getBest() {
-        return best;
+        return best.copy();
     }
 
-    @Override
-    public void init(int tamCromosoma) {
-        best = new CromosomaF1(tamCromosoma);
-        best.inicializa();
-    }
 
     
 }

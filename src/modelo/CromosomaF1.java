@@ -35,8 +35,8 @@ public class CromosomaF1 extends Cromosoma {
             return this.genes;
         }
         
-        public void inicializa(){
-            Random r = new Random(); 
+        public void inicializa(int semilla){
+            Random r = new Random(semilla); 
             for(int i = 0; i < tam;i++){
                 genes.add(r.nextBoolean());
             }
@@ -98,4 +98,17 @@ public class CromosomaF1 extends Cromosoma {
         double getAptitudReal() {
             return this.aptitudReal;
         }
+
+    @Override
+    Cromosoma copy() {
+        CromosomaF1 copia = new CromosomaF1();
+        copia.aptitud = this.aptitud;
+        copia.aptitudReal = this.aptitudReal;
+        copia.fenotipo = this.fenotipo;
+        copia.genes = this.genes;
+        copia.puntAcomulada = this.puntAcomulada;
+        copia.puntuacion = this.puntuacion;
+        copia.tam = this.tam;
+        return copia;
+    }
 }

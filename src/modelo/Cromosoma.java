@@ -1,7 +1,7 @@
 package modelo;
 
 public abstract class Cromosoma {
-	public abstract void inicializa();
+	public abstract void inicializa(int semilla);
         abstract double fenotipo();
 	abstract double getAptitud();
 	abstract double getPuntuacion();
@@ -11,4 +11,5 @@ public abstract class Cromosoma {
         abstract void setAptitudReal(double aptR);
         abstract double getAptitudReal();
         abstract int getTamanio();
+        abstract Cromosoma copy();
 }

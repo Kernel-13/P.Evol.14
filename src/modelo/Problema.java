@@ -15,8 +15,6 @@ import util.Functions;
 public abstract class Problema {
      
     public abstract Cromosoma evaluacion(Cromosoma[] pob);	// Debe devolver la mejor aptitud, y una array de las aptitudes
-	
-    public abstract void init(int tamCromosoma);
     
     abstract double aptitudReal(Cromosoma individuo, double maxApt);	// Debe devolver la aptitud tras aplicar desplazamiento
     // El parametro maxApt debera ser calculado con anterioridad, y quiza tenerlo como un atributo de AG

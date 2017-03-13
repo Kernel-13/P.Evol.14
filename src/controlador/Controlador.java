@@ -22,14 +22,16 @@ public class Controlador {
     private int probMutacion;
     private double precision;
     private TipoSeleccion seleccion;
+    private int semilla;
     
     public Controlador(){
         funcion = TipoFuncion.F1;
-        poblacion = 100;
+        poblacion = 10;
         iteraciones = 200;
         probCruces = 20;
         probMutacion = 10;
         precision = 0.001;
+        semilla = 2;
         seleccion = TipoSeleccion.RULETA;
     }
     
@@ -127,6 +129,16 @@ public class Controlador {
             default:
                 seleccion = TipoSeleccion.RULETA;
         }
+    }
+    
+    public void cambiarSemilla(String nueva){
+        int newsemilla = 2;
+        try{
+            newsemilla = Integer.parseInt(nueva);
+        }catch(Exception e){
+            
+        } 
+        semilla = newsemilla;
     }
     
     public DatosGrafica ejecuta(){

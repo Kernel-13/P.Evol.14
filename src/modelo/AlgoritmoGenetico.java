@@ -40,21 +40,21 @@ public class AlgoritmoGenetico {
     }
     
     public DatosGrafica ejecuta(){
+        int semilla = 2;
         ArrayList<Double> best = new ArrayList<>();
         ArrayList<Double> bestPob = new ArrayList<>();
         ArrayList<Double> media = new ArrayList<>();
         int tamCromosoma = problema.longCromosoma(precision);
-        problema.init(tamCromosoma);
         Cromosoma mejorPob;
-        pobInicial(tamCromosoma);
+        pobInicial(tamCromosoma,semilla);
         mejorPob = problema.evaluacion(pob);
         for(int i=0; i < iteraciones;i++){
             pob = seleccion.selecciona(pob);
             problema.reproduccion(pob, probCruces);
             problema.mutacion(pob, probMutacion);
             mejorPob = problema.evaluacion(pob);
-            bestPob.add(mejorPob.getAptitud());
-            best.add(problema.getBest().getAptitud());
+            bestPob.add(mejorPob.getAptitudReal());
+            best.add(problema.getBest().getAptitudReal());
             media.add(problema.media(tamPoblacion));
         }
         return new DatosGrafica(best,iteraciones,bestPob,media);
@@ -62,11 +62,11 @@ public class AlgoritmoGenetico {
     
     
     
-    public void pobInicial(int tamCromosoma){
+    public void pobInicial(int tamCromosoma,int semilla){
         pob = new Cromosoma[tamPoblacion];
         for(int i = 0; i < tamPoblacion;i++){
             pob[i] = f.factoriaCromosoma(tamCromosoma);
-            pob[i].inicializa();
+            pob[i].inicializa(semilla);
         }
     }
 }
