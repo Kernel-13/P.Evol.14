@@ -47,13 +47,16 @@ public class AlgoritmoGenetico {
         Cromosoma mejorPob;
         pobInicial(semilla);
         mejorPob = problema.evaluacion(pob);
-        for(int i=0; i < iteraciones;i++){
+        bestPob.add(mejorPob.getAptitud());
+        best.add(problema.getBest().getAptitud());
+        media.add(problema.media(tamPoblacion));
+        for(int i=1; i < iteraciones;i++){
             pob = seleccion.selecciona(pob);
             problema.reproduccion(pob, probCruces);
             problema.mutacion(pob, probMutacion);
             mejorPob = problema.evaluacion(pob);
-            bestPob.add(mejorPob.getAptitudReal());
-            best.add(problema.getBest().getAptitudReal());
+            bestPob.add(mejorPob.getAptitud());
+            best.add(problema.getBest().getAptitud());
             media.add(problema.media(tamPoblacion));
         }
         return new DatosGrafica(best,iteraciones,bestPob,media);

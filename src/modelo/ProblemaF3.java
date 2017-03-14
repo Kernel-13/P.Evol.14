@@ -31,6 +31,7 @@ public class ProblemaF3 extends Problema {
         Cromosoma bestPobActual = pob[0];
         double minApt = 0, puntAcomulada = 0;  // Se debe calcular fuera, y entrar como parametro de la funcion
         double sum = 0;
+        double sumDefault = 0;
         minApt = pob[0].getAptitud(); 
         for(int j = 1; j < pob.length;j++){
             if(pob[j].getAptitud() < minApt) 
@@ -39,11 +40,12 @@ public class ProblemaF3 extends Problema {
         for(int i = 0; i < pob.length; i++){
             pob[i].setAptitudReal(aptitudReal(pob[i], minApt)); 
             sum += pob[i].getAptitudReal();
+            sumDefault += pob[i].getAptitud();
             if(pob[i].getAptitudReal() > bestPobActual.getAptitudReal()){
                 bestPobActual = pob[i];
             }
         }
-        sumaPob = sum;
+        sumaPob = sumDefault;
         for(int k=0; k < pob.length;k++){
             pob[k].setPuntuacion(sum);
             pob[k].setPuntAcomulada(pob[k].getPuntuacion()+puntAcomulada);
@@ -52,7 +54,7 @@ public class ProblemaF3 extends Problema {
         if(best == null){
             best = bestPobActual.copy();
         }
-        if(bestPobActual.getAptitudReal()>best.getAptitudReal())
+        if(bestPobActual.getAptitud()>best.getAptitud())
             best = bestPobActual.copy();
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         return bestPobActual;

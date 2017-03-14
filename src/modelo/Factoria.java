@@ -46,6 +46,11 @@ public class Factoria {
                 return new ProblemaF2();
             case F3:
                 return new ProblemaF3();
+            case F4:
+                return new ProblemaF4();
+            case F5:
+                return new ProblemaF5();    
+            
                 
             default:
                 return new ProblemaF1();
@@ -59,7 +64,11 @@ public class Factoria {
             case F2:
                 return new CromosomaF2(l);    
             case F3:
-                return new CromosomaF3(l);    
+                return new CromosomaF3(l);
+            case F4:
+                return new CromosomaF4(l,4);
+            case F5:
+                return new CromosomaF5(l);
             
             default:
                 return new CromosomaF1(l);

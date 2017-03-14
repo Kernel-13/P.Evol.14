@@ -7,18 +7,16 @@ package modelo;
 
 import java.util.ArrayList;
 import java.util.Random;
-import util.Functions;
 
 /**
  *
  * @author Ederson
  */
-public class ProblemaF1 extends Problema
-{
+public class ProblemaF5 extends Problema{
     private Cromosoma best;
     private double sumaPob;
     
-    public ProblemaF1(){
+    public ProblemaF5(){
         sumaPob = 0;
         best = null;
     }
@@ -35,13 +33,13 @@ public class ProblemaF1 extends Problema
         double sumDefault = 0;
         maxApt = pob[0].getAptitud(); 
         for(int j = 1; j < pob.length;j++){
-            if(pob[j].getAptitud() > maxApt)
+            if(pob[j].getAptitud() > maxApt) 
                 maxApt = pob[j].getAptitud();
         }
         for(int i = 0; i < pob.length; i++){
-            pob[i].setAptitudReal(aptitudReal(pob[i], maxApt));
-            sumDefault += pob[i].getAptitud();
+            pob[i].setAptitudReal(aptitudReal(pob[i], maxApt)); 
             sum += pob[i].getAptitudReal();
+            sumDefault += pob[i].getAptitud();
             if(pob[i].getAptitudReal() > bestPobActual.getAptitudReal()){
                 bestPobActual = pob[i];
             }
@@ -96,12 +94,12 @@ public class ProblemaF1 extends Problema
 
     @Override
     void cruce(Cromosoma[] pob, Cromosoma new1, Cromosoma new2) {  
-        ArrayList<Boolean> parent1 = ((CromosomaF1)new1).getGenes(); // = pob[pos1].getGenes();
-        ArrayList<Boolean> parent2 = ((CromosomaF1)new2).getGenes();  // = pob[pos2].getGenes();
+        ArrayList<Boolean> parent1 = ((CromosomaF5)new1).getGenes(); // = pob[pos1].getGenes();
+        ArrayList<Boolean> parent2 = ((CromosomaF5)new2).getGenes();  // = pob[pos2].getGenes();
         ArrayList<Boolean> son1 = new ArrayList<>(); 
         ArrayList<Boolean> son2 = new ArrayList<>();
         Random r = new Random();
-        int lcrom = ((CromosomaF1)pob[0]).getGenes().size();
+        int lcrom = ((CromosomaF5)pob[0]).getGenes().size();
         int corte = r.nextInt(lcrom-1)+1;
         
         for (int i = 0; i < lcrom; i++){
@@ -114,18 +112,18 @@ public class ProblemaF1 extends Problema
             }
         }
         
-        new1 = new CromosomaF1(son1);
-        new2 = new CromosomaF1(son2);
+        new1 = new CromosomaF5(son1);
+        new2 = new CromosomaF5(son2);
     }
 
     @Override
     public void mutacion(Cromosoma[] pob, double probMutacion) {
         Random r = new Random();
-        CromosomaF1[] pobAux = new CromosomaF1[pob.length];
+        CromosomaF5[] pobAux = new CromosomaF5[pob.length];
         for(int i = 0; i < pob.length;i++){
-            pobAux[i] = (CromosomaF1)pob[i];
+            pobAux[i] = (CromosomaF5)pob[i];
         }
-        CromosomaF1 individuo;
+        CromosomaF5 individuo;
         for (int j=0; j < pobAux.length;j++) {
             individuo = pobAux[j];
             boolean cambio = false;
@@ -143,21 +141,18 @@ public class ProblemaF1 extends Problema
             }
             
             if(cambio){
-                CromosomaF1 nuevo = new CromosomaF1(mutado);
+                CromosomaF5 nuevo = new CromosomaF5(mutado);
                 pob[j] = nuevo;
             }
         }
        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-   
-
+    
 
     @Override
     public Cromosoma getBest() {
         return best.copy();
     }
 
-
-    
 }
