@@ -1,7 +1,10 @@
 package modelo;
 
+import java.util.Random;
+
+
 public abstract class Cromosoma {
-	public abstract void inicializa(int semilla);
+	public abstract void inicializa(Random r);
         abstract void fenotipo();
 	abstract double getAptitud();
 	abstract double getPuntuacion();

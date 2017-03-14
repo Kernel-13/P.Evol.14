@@ -45,8 +45,7 @@ public class CromosomaF2 extends Cromosoma {
             return this.genes;
         }
         
-        public void inicializa(int semilla){
-            Random r = new Random(semilla); 
+        public void inicializa(Random r){
             for(int i = 0; i < tam;i++){
                 genes.add(r.nextBoolean());
             }

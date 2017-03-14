@@ -6,6 +6,7 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.util.Random;
 import util.DatosGrafica;
 import util.TipoFuncion;
 import util.TipoSeleccion;
@@ -61,10 +62,11 @@ public class AlgoritmoGenetico {
     
     
     public void pobInicial(int semilla){
+        Random r = new Random(semilla);
         pob = new Cromosoma[tamPoblacion];
         for(int i = 0; i < tamPoblacion;i++){
             pob[i] = f.factoriaCromosoma(precision);
-            pob[i].inicializa(semilla);
+            pob[i].inicializa(r);
         }
     }
 }

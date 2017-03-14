@@ -29,15 +29,15 @@ public class ProblemaF3 extends Problema {
     @Override
     public Cromosoma evaluacion(Cromosoma[] pob) {
         Cromosoma bestPobActual = pob[0];
-        double maxApt = 0, puntAcomulada = 0;  // Se debe calcular fuera, y entrar como parametro de la funcion
+        double minApt = 0, puntAcomulada = 0;  // Se debe calcular fuera, y entrar como parametro de la funcion
         double sum = 0;
-        maxApt = pob[0].getAptitud(); 
+        minApt = pob[0].getAptitud(); 
         for(int j = 1; j < pob.length;j++){
-            if(pob[j].getAptitud() > maxApt) 
-                maxApt = pob[j].getAptitud();
+            if(pob[j].getAptitud() < minApt) 
+                minApt = pob[j].getAptitud();
         }
         for(int i = 0; i < pob.length; i++){
-            pob[i].setAptitudReal(aptitudReal(pob[i], maxApt)); 
+            pob[i].setAptitudReal(aptitudReal(pob[i], minApt)); 
             sum += pob[i].getAptitudReal();
             if(pob[i].getAptitudReal() > bestPobActual.getAptitudReal()){
                 bestPobActual = pob[i];
@@ -59,8 +59,8 @@ public class ProblemaF3 extends Problema {
     }
 
     @Override
-    public double aptitudReal(Cromosoma individuo, double maxApt) {
-        return maxApt - individuo.getAptitud();
+    public double aptitudReal(Cromosoma individuo, double minApt) {
+        return individuo.getAptitud();
     }
 
     @Override
@@ -110,8 +110,8 @@ public class ProblemaF3 extends Problema {
             }
         }
         
-        new1 = new CromosomaF3(son1);
-        new2 = new CromosomaF3(son2);
+        new1 = new CromosomaF3(son1, ((CromosomaF3)pob[0]).getTam1(), ((CromosomaF3)pob[0]).getTam2());
+        new2 = new CromosomaF3(son2, ((CromosomaF3)pob[0]).getTam1(), ((CromosomaF3)pob[0]).getTam2());
     }
 
     @Override
@@ -139,7 +139,7 @@ public class ProblemaF3 extends Problema {
             }
             
             if(cambio){
-                CromosomaF3 nuevo = new CromosomaF3(mutado);
+                CromosomaF3 nuevo = new CromosomaF3(mutado, pobAux[0].getTam1(), pobAux[0].getTam2() );
                 pob[j] = nuevo;
             }
         }

@@ -38,9 +38,11 @@ public class CromosomaF3 extends Cromosoma {
             genes = new ArrayList<Boolean>();
         }
         
-	public CromosomaF3(ArrayList<Boolean> genes) {
+	public CromosomaF3(ArrayList<Boolean> genes, int tam1, int tam2) {
             this.genes = genes;
             this.tam = genes.size();
+            this.tam1 = tam1;
+            this.tam2 = tam2;
             fenotipo(); // Necesitamos calcularlo cada vez que cambiemos los genes
             aptitud = Functions.f3(fenotipox1,fenotipox2);
         }
@@ -49,8 +51,7 @@ public class CromosomaF3 extends Cromosoma {
             return this.genes;
         }
         
-        public void inicializa(int semilla){
-            Random r = new Random(semilla); 
+        public void inicializa(Random r){
             for(int i = 0; i < tam;i++){
                 genes.add(r.nextBoolean());
             }
@@ -145,4 +146,14 @@ public class CromosomaF3 extends Cromosoma {
             copia.tam2 = this.tam2;
             return copia;
         }
+        
+        int getTam1(){
+            return this.tam1;
+        }
+        
+        int getTam2(){
+            return this.tam2;
+        }
+        
+        
 }
