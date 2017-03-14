@@ -40,7 +40,8 @@ public class CromosomaF4 extends Cromosoma{
             genes = new ArrayList<Boolean>();
         }
         
-	public CromosomaF4(ArrayList<Boolean> genes) {
+	public CromosomaF4(ArrayList<Boolean> genes,int n) {
+            this.numVar = n;
             this.genes = genes;
             this.tam = genes.size();
             fenotipo(); // Necesitamos calcularlo cada vez que cambiemos los genes

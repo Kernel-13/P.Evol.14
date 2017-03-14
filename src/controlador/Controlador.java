@@ -23,6 +23,7 @@ public class Controlador {
     private double precision;
     private TipoSeleccion seleccion;
     private int semilla;
+    private int nvars;
     
     public Controlador(){
         funcion = TipoFuncion.F1;
@@ -33,6 +34,7 @@ public class Controlador {
         precision = 0.001;
         semilla = 2;
         seleccion = TipoSeleccion.RULETA;
+        nvars = 4;
     }
     
     public void cambiarFuncion (int f){
@@ -141,9 +143,19 @@ public class Controlador {
         semilla = newsemilla;
     }
     
+    public void cambiarNvars(String nuevo){
+        int newNvars = 4;
+        try{
+            newNvars = Integer.parseInt(nuevo);
+        }catch(Exception e){
+            
+        } 
+        nvars = newNvars;
+    }
+    
     public DatosGrafica ejecuta(){
         AlgoritmoGenetico algo = new AlgoritmoGenetico(funcion, poblacion, iteraciones,
-                probCruces, probMutacion,precision,seleccion);
+                probCruces, probMutacion,precision,seleccion,nvars);
         return algo.ejecuta(semilla);
     }
     

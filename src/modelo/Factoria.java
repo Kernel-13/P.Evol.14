@@ -38,7 +38,7 @@ public class Factoria {
     }
     
     
-    public Problema factoriaProblema(){
+    public Problema factoriaProblema(int nvars){
         switch(t){
             case F1:
                 return new ProblemaF1();
@@ -47,7 +47,7 @@ public class Factoria {
             case F3:
                 return new ProblemaF3();
             case F4:
-                return new ProblemaF4();
+                return new ProblemaF4(nvars);
             case F5:
                 return new ProblemaF5();    
             
@@ -57,7 +57,7 @@ public class Factoria {
         }
     }
     
-    public Cromosoma factoriaCromosoma(double l){
+    public Cromosoma factoriaCromosoma(double l,int nvars){
         switch(t){
             case F1:
                 return new CromosomaF1(l);
@@ -66,7 +66,7 @@ public class Factoria {
             case F3:
                 return new CromosomaF3(l);
             case F4:
-                return new CromosomaF4(l,4);
+                return new CromosomaF4(l,nvars);
             case F5:
                 return new CromosomaF5(l);
             

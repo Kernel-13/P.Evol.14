@@ -24,20 +24,22 @@ public class AlgoritmoGenetico {
     private Seleccion seleccion;
     private Problema problema;
     private Cromosoma[] pob;
+    private int nvars;
     Factoria f;
     
     public AlgoritmoGenetico(TipoFuncion funcion, int tampob, int iteraciones,
             double probCruces, double probMutacion, double precision,
-            TipoSeleccion tSeleccion){
+            TipoSeleccion tSeleccion,int nvars){
         
         tamPoblacion = tampob;
         this.iteraciones = iteraciones;
         this.probCruces = probCruces/100;
         this.probMutacion = probMutacion/100;
         this.precision = precision;
+        this.nvars = nvars;
         f = new Factoria(funcion,tSeleccion);
         seleccion = f.factoriaSeleccion();
-        problema = f.factoriaProblema();
+        problema = f.factoriaProblema(nvars);
     }
     
     public DatosGrafica ejecuta(int semilla){
@@ -68,7 +70,7 @@ public class AlgoritmoGenetico {
         Random r = new Random(semilla);
         pob = new Cromosoma[tamPoblacion];
         for(int i = 0; i < tamPoblacion;i++){
-            pob[i] = f.factoriaCromosoma(precision);
+            pob[i] = f.factoriaCromosoma(precision,nvars);
             pob[i].inicializa(r);
         }
     }

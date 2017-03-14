@@ -15,8 +15,10 @@ import java.util.Random;
 public class ProblemaF4 extends Problema{
     private Cromosoma best;
     private double sumaPob;
+    private int nvars;
     
-    public ProblemaF4(){
+    public ProblemaF4(int nvars){
+        this.nvars = nvars;
         sumaPob = 0;
         best = null;
     }
@@ -112,8 +114,8 @@ public class ProblemaF4 extends Problema{
             }
         }
         
-        new1 = new CromosomaF4(son1);
-        new2 = new CromosomaF4(son2);
+        new1 = new CromosomaF4(son1,nvars);
+        new2 = new CromosomaF4(son2,nvars);
     }
 
     @Override
@@ -141,7 +143,7 @@ public class ProblemaF4 extends Problema{
             }
             
             if(cambio){
-                CromosomaF4 nuevo = new CromosomaF4(mutado);
+                CromosomaF4 nuevo = new CromosomaF4(mutado,nvars);
                 pob[j] = nuevo;
             }
         }
