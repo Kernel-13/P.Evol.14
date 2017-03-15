@@ -24,6 +24,7 @@ public class Controlador {
     private TipoSeleccion seleccion;
     private int semilla;
     private int nvars;
+    private boolean elitismo;
     
     public Controlador(){
         funcion = TipoFuncion.F1;
@@ -153,9 +154,13 @@ public class Controlador {
         nvars = newNvars;
     }
     
+    public void cambiarElitismo(boolean el){
+        elitismo = el;
+    }
+    
     public DatosGrafica ejecuta(){
         AlgoritmoGenetico algo = new AlgoritmoGenetico(funcion, poblacion, iteraciones,
-                probCruces, probMutacion,precision,seleccion,nvars);
+                probCruces, probMutacion,precision,seleccion,nvars,elitismo);
         return algo.ejecuta(semilla);
     }
     

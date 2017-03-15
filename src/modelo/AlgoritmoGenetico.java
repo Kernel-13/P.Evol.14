@@ -16,6 +16,8 @@ import util.TipoSeleccion;
  * @author josemanuel
  */
 public class AlgoritmoGenetico {
+    public static double ELITE = 0.05;
+    
     private int tamPoblacion;
     private int iteraciones;
     private double probCruces;
@@ -25,12 +27,14 @@ public class AlgoritmoGenetico {
     private Problema problema;
     private Cromosoma[] pob;
     private int nvars;
-    private boolean elite;
+    private boolean elitismo;
+    private int tamElite;
+    
     Factoria f;
     
     public AlgoritmoGenetico(TipoFuncion funcion, int tampob, int iteraciones,
             double probCruces, double probMutacion, double precision,
-            TipoSeleccion tSeleccion,int nvars){
+            TipoSeleccion tSeleccion,int nvars,boolean elitismo){
         
         tamPoblacion = tampob;
         this.iteraciones = iteraciones;
@@ -38,10 +42,20 @@ public class AlgoritmoGenetico {
         this.probMutacion = probMutacion/100;
         this.precision = precision;
         this.nvars = nvars;
-        this.elite = true;
+        this.elitismo = elitismo;
         f = new Factoria(funcion,tSeleccion);
         seleccion = f.factoriaSeleccion();
         problema = f.factoriaProblema(nvars);
+        tamElite = calcularTamElite();
+    }
+    
+    private int calcularTamElite(){
+        double aux = tamPoblacion*ELITE;
+        int ret = (int)aux;
+        if(ret <= 0 || ret > tamPoblacion){
+            elitismo = false;
+        }
+        return ret;
     }
     
     public DatosGrafica ejecuta(int semilla){
@@ -50,6 +64,10 @@ public class AlgoritmoGenetico {
         ArrayList<Double> media = new ArrayList<>();
         Cromosoma mejorPob;
         pobInicial(semilla);
+        if(this.elitismo){
+            problema.iniElite(pob, tamElite);
+            problema.elitismo(pob, tamElite);
+        }
         mejorPob = problema.evaluacion(pob);
         bestPob.add(mejorPob.getAptitud());
         best.add(problema.getBest().getAptitud());
@@ -58,7 +76,8 @@ public class AlgoritmoGenetico {
             pob = seleccion.selecciona(pob);
             problema.reproduccion(pob, probCruces);
             problema.mutacion(pob, probMutacion);
-            problema.elitismo(pob, 5);
+            if(this.elitismo)
+                problema.elitismo(pob, tamElite);
             mejorPob = problema.evaluacion(pob);
             bestPob.add(mejorPob.getAptitud());
             best.add(problema.getBest().getAptitud());

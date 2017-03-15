@@ -319,6 +319,7 @@ public class Interfaz extends javax.swing.JFrame {
         c.cambiarSeleccion(this.jComboBox2.getSelectedIndex());
         c.cambiarSemilla(this.jTextField6.getText());
         c.cambiarNvars(this.jTextField7.getText());
+        c.cambiarElitismo(this.jCheckBox1.isSelected());
         actualizaGrafica(c.ejecuta());
     }//GEN-LAST:event_jButton1ActionPerformed
 

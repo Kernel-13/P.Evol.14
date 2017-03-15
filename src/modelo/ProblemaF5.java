@@ -13,8 +13,6 @@ import java.util.Random;
  * @author Ederson
  */
 public class ProblemaF5 extends Problema{
-    private Cromosoma best;
-    private double sumaPob;
     
     public ProblemaF5(){
         sumaPob = 0;
@@ -37,7 +35,7 @@ public class ProblemaF5 extends Problema{
                 maxApt = pob[j].getAptitud();
         }
         for(int i = 0; i < pob.length; i++){
-            pob[i].setAptitudReal(aptitudReal(pob[i], maxApt)); 
+            pob[i].setAptitudDesplazada(aptitudReal(pob[i], maxApt)); 
             sum += pob[i].getAptitudReal();
             sumDefault += pob[i].getAptitud();
             if(pob[i].getAptitudReal() > bestPobActual.getAptitudReal()){

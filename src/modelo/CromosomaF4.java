@@ -98,27 +98,27 @@ public class CromosomaF4 extends Cromosoma{
             //return genes.toString() + " " + this.fenotipox1 + " " + this.fenotipox2 + " " + this.aptitud;
         }
 
-        int getTamanio() {
+        protected int getTamanio() {
             return tam;
         }
 
         @Override
-        double getPuntAcomulada() {
+        protected double getPuntAcomulada() {
            return puntAcomulada;
         }
 
         @Override
-        void setPuntAcomulada(double puntuacion) {
+        protected void setPuntAcomulada(double puntuacion) {
             puntAcomulada = puntuacion;
         }
 
         @Override
-        void setAptitudReal(double aptR) {
+        protected void setAptitudDesplazada(double aptR) {
             this.aptitudReal = aptR;
         }
 
         @Override
-        double getAptitudReal() {
+        protected double getAptitudReal() {
             return this.aptitudReal;
         }
 
@@ -127,7 +127,7 @@ public class CromosomaF4 extends Cromosoma{
         }
         
         @Override
-        Cromosoma copy() {
+        protected Cromosoma copy() {
             CromosomaF4 copia = new CromosomaF4();
             copia.aptitud = this.aptitud;
             copia.aptitudReal = this.aptitudReal;

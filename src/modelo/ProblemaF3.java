@@ -14,8 +14,6 @@ import util.Functions;
  * @author josemanuel
  */
 public class ProblemaF3 extends Problema {
-    private Cromosoma best;
-    private double sumaPob;
     
     public ProblemaF3(){
         sumaPob = 0;
@@ -38,7 +36,7 @@ public class ProblemaF3 extends Problema {
                 minApt = pob[j].getAptitud();
         }
         for(int i = 0; i < pob.length; i++){
-            pob[i].setAptitudReal(aptitudReal(pob[i], minApt)); 
+            pob[i].setAptitudDesplazada(aptitudReal(pob[i], minApt)); 
             sum += pob[i].getAptitudReal();
             sumDefault += pob[i].getAptitud();
             if(pob[i].getAptitudReal() > bestPobActual.getAptitudReal()){

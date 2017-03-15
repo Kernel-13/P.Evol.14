@@ -14,6 +14,9 @@ import util.Functions;
  */
 public abstract class Problema {
     
+    protected Cromosoma best;
+    protected double sumaPob;
+    
     protected Cromosoma[] elite;
     
     public abstract Cromosoma evaluacion(Cromosoma[] pob);	// Debe devolver la mejor aptitud, y una array de las aptitudes
@@ -37,30 +40,28 @@ public abstract class Problema {
     
     public abstract void elitismo(Cromosoma[] pob,int elite);
     
+    public void iniElite(Cromosoma[] pob,int numElite){
+        elite = new Cromosoma[numElite];
+        for(int i = 0; i < numElite;i++){
+            elite[i] = pob[i].copy();
+        }
+    }
+    
     public void elitismoMinimizacion(Cromosoma[] pob,int numElite){
         ArrayList<Integer> posElites = new ArrayList<>();
         ArrayList<Integer> posPeores = new ArrayList<>();
         posPeores = maximosElite(pob, numElite);
         int j = 0;
-        boolean elitevacia = false;
-        if(elite == null)
-            elitevacia = true;
-        if(!elitevacia)
-            for(int i :posPeores){
-                if(elite[j].getAptitud() < pob[i].getAptitud()){
-                    pob[i] = elite[j].copy();
-                }
-                j++;
+        for(int i :posPeores){
+            if(elite[j].getAptitud() < pob[i].getAptitud()){
+               pob[i] = elite[j].copy();
             }
-        else{
-            elite = new Cromosoma[numElite];
+            j++;
         }
         posElites = minimosElite(pob, numElite);
         j = 0;
         for(int i :posElites){
-            if(elitevacia)
-                elite[j] = pob[i].copy();
-            else if(elite[j].getAptitud() > pob[i].getAptitud()){
+            if(elite[j].getAptitud() > pob[i].getAptitud()){
                 elite[j] = pob[i].copy();
             }
             j++;
@@ -72,23 +73,16 @@ public abstract class Problema {
         ArrayList<Integer> posPeores = new ArrayList<>();
         posPeores = minimosElite(pob, numElite);
         int j = 0;
-        boolean elitevacia = false;
-        if(elite == null)
-            elitevacia = true;
-        if(elitevacia)
-            for(int i :posPeores){
+        for(int i :posPeores){
+            if(elite[j].getAptitud() > pob[i].getAptitud()){
                 pob[i] = elite[j].copy();
-                j++;
             }
-        else{
-            elite = new Cromosoma[numElite];
+            j++;
         }
         posElites = maximosElite(pob, numElite);
         j = 0;
         for(int i :posElites){
-            if(elitevacia)
-                elite[j] = pob[i].copy();
-            else if(elite[j].getAptitud() > pob[i].getAptitud()){
+            if(elite[j].getAptitud() < pob[i].getAptitud()){
                 elite[j] = pob[i].copy();
             }
             j++;
@@ -97,21 +91,20 @@ public abstract class Problema {
     
 
     
-    public ArrayList<Integer>  minimosElite(Cromosoma[] pob,int numElemElite){
+    private ArrayList<Integer>  minimosElite(Cromosoma[] pob,int numElemElite){
         ArrayList<Integer> pos = new ArrayList<>();
         ArrayList<Double> apt = new ArrayList<>();
         
         for(int j = 0; j < numElemElite; j++){
             pos.add(j);
-            apt.add(pob[j].getAptitud());
+            apt.add(elite[j].getAptitud());
         }
         
         if(numElemElite > pob.length)
             return pos;
+        
         boolean salir = false;
-        int ii = 0;
-        try{
-        for(int i = numElemElite; i < pob.length; i++){
+        for(int i = 0; i < pob.length; i++){
             for(int j = 0; j < numElemElite && !salir;j++){
                 if(apt.get(j) > pob[i].getAptitud()){
                     apt.add(j, pob[i].getAptitud());
@@ -122,28 +115,24 @@ public abstract class Problema {
                 }
             }
             salir = false;
-            ii=i;
-        }
-        }catch(Exception e){
-            System.err.print("error");
         }
         return pos;
     }
     
     
-    public ArrayList<Integer>  maximosElite(Cromosoma[] pob,int numElemElite){
+    private ArrayList<Integer>  maximosElite(Cromosoma[] pob,int numElemElite){
         ArrayList<Integer> pos = new ArrayList<>();
         ArrayList<Double> apt = new ArrayList<>();
         
         for(int j = 0; j < numElemElite; j++){
             pos.add(j);
-            apt.add(pob[j].getAptitud());
+            apt.add(elite[j].getAptitud());
         }
         
         if(numElemElite > pob.length)
             return pos;
         boolean salir = false;
-        for(int i = numElemElite; i < pob.length; i++){
+        for(int i = 0; i < pob.length; i++){
             for(int j = 0; j < numElemElite && !salir;j++){
                 if(apt.get(j) < pob[i].getAptitud()){
                     apt.add(j, pob[i].getAptitud());
