@@ -15,6 +15,7 @@ import util.Functions;
  */
 public class CromosomaF4 extends Cromosoma{
     private ArrayList<Boolean> genes;
+    
 	private ArrayList<Double> fenotipo;
 	private double aptitud;
         private double aptitudReal;
@@ -63,7 +64,7 @@ public class CromosomaF4 extends Cromosoma{
 	public void fenotipo() {
             fenotipo = new ArrayList<Double>();
             for(int i = 1; i <= numVar; i++){
-                double aux = Functions.fenotipoBin(max, min, this.bin2dec(0,(tam/numVar)*i), tam/numVar);
+                double aux = Functions.fenotipoBin(max, min, this.bin2dec((tam/numVar)*(i-1),(tam/numVar)*i), tam/numVar);
                 fenotipo.add(aux);
             }
 	}

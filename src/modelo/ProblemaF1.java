@@ -151,11 +151,15 @@ public class ProblemaF1 extends Problema
     }
     
    
-
-
+    
     @Override
     public Cromosoma getBest() {
         return best.copy();
+    }
+
+    @Override
+    public void elitismo(Cromosoma[] pob,int numElite) {
+        super.elitismoMinimizacion(pob, numElite);
     }
 
 

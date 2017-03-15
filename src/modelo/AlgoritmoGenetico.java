@@ -25,6 +25,7 @@ public class AlgoritmoGenetico {
     private Problema problema;
     private Cromosoma[] pob;
     private int nvars;
+    private boolean elite;
     Factoria f;
     
     public AlgoritmoGenetico(TipoFuncion funcion, int tampob, int iteraciones,
@@ -37,6 +38,7 @@ public class AlgoritmoGenetico {
         this.probMutacion = probMutacion/100;
         this.precision = precision;
         this.nvars = nvars;
+        this.elite = true;
         f = new Factoria(funcion,tSeleccion);
         seleccion = f.factoriaSeleccion();
         problema = f.factoriaProblema(nvars);
@@ -56,6 +58,7 @@ public class AlgoritmoGenetico {
             pob = seleccion.selecciona(pob);
             problema.reproduccion(pob, probCruces);
             problema.mutacion(pob, probMutacion);
+            problema.elitismo(pob, 5);
             mejorPob = problema.evaluacion(pob);
             bestPob.add(mejorPob.getAptitud());
             best.add(problema.getBest().getAptitud());
@@ -64,7 +67,10 @@ public class AlgoritmoGenetico {
         return new DatosGrafica(best,iteraciones,bestPob,media);
     }
     
-    
+    public Cromosoma[] elitismo(){
+        
+        return null;
+    }
     
     public void pobInicial(int semilla){
         Random r = new Random(semilla);

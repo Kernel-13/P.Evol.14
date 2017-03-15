@@ -156,4 +156,9 @@ public class ProblemaF4 extends Problema{
     public Cromosoma getBest() {
         return best.copy();
     }
+
+    @Override
+    public void elitismo(Cromosoma[] pob,int numElite) {
+        super.elitismoMinimizacion(pob, numElite);
+    }
 }
