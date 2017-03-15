@@ -36,7 +36,7 @@ public class ProblemaF3 extends Problema {
                 minApt = pob[j].getAptitud();
         }
         for(int i = 0; i < pob.length; i++){
-            pob[i].setAptitudDesplazada(aptitudReal(pob[i], minApt)); 
+            pob[i].setAptitudDesplazada(aptitudDesplazada(pob[i], minApt)); 
             sum += pob[i].getAptitudReal();
             sumDefault += pob[i].getAptitud();
             if(pob[i].getAptitudReal() > bestPobActual.getAptitudReal()){
@@ -59,7 +59,7 @@ public class ProblemaF3 extends Problema {
     }
 
     @Override
-    public double aptitudReal(Cromosoma individuo, double minApt) {
+    public double aptitudDesplazada(Cromosoma individuo, double minApt) {
         return individuo.getAptitud();
     }
 

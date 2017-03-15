@@ -25,42 +25,10 @@ public class ProblemaF1 extends Problema
         return sumaPob/tam;
     }
     
-    @Override
-    public Cromosoma evaluacion(Cromosoma[] pob) {
-        Cromosoma bestPobActual = pob[0];
-        double maxApt = 0, puntAcomulada = 0;  // Se debe calcular fuera, y entrar como parametro de la funcion
-        double sum = 0;
-        double sumDefault = 0;
-        maxApt = pob[0].getAptitud(); 
-        for(int j = 1; j < pob.length;j++){
-            if(pob[j].getAptitud() > maxApt)
-                maxApt = pob[j].getAptitud();
-        }
-        for(int i = 0; i < pob.length; i++){
-            pob[i].setAptitudDesplazada(aptitudReal(pob[i], maxApt));
-            sumDefault += pob[i].getAptitud();
-            sum += pob[i].getAptitudReal();
-            if(pob[i].getAptitudReal() > bestPobActual.getAptitudReal()){
-                bestPobActual = pob[i];
-            }
-        }
-        sumaPob = sumDefault;
-        for(int k=0; k < pob.length;k++){
-            pob[k].setPuntuacion(sum);
-            pob[k].setPuntAcomulada(pob[k].getPuntuacion()+puntAcomulada);
-            puntAcomulada += pob[k].getPuntuacion();
-        }
-        if(best == null){
-            best = bestPobActual.copy();
-        }
-        if(bestPobActual.getAptitud()<best.getAptitud())
-            best = bestPobActual.copy();
-        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        return bestPobActual;
-    }
+    
 
     @Override
-    public double aptitudReal(Cromosoma individuo, double maxApt) {
+    public double aptitudDesplazada(Cromosoma individuo, double maxApt) {
         return maxApt - individuo.getAptitud();
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
