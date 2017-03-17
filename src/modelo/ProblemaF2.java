@@ -20,10 +20,7 @@ public class ProblemaF2 extends Problema {
         sumaPob = 0;
         best = null;
     }
-    
-    public double media(int tam){
-        return sumaPob/tam;
-    }
+
     
     
 

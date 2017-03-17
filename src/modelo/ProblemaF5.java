@@ -19,9 +19,7 @@ public class ProblemaF5 extends Problema{
         best = null;
     }
     
-    public double media(int tam){
-        return sumaPob/tam;
-    }
+
 
     @Override
     public double aptitudDesplazada(Cromosoma individuo, double maxApt) {
@@ -47,12 +45,6 @@ public class ProblemaF5 extends Problema{
              cruce(pob, pob[elegidos.get(i)], pob[elegidos.get(i+1)]);
         }
         
-        /*
-         Debemos sustituir los padres con los hijos
-         Creo que seria ideal cambiar el array de Cromosomas por un ArraList de Cromosomas
-         --> pob.set(elegidos.get(i), new1);
-         --> pob.set(elegidos.get(i+1), new2);
-         */
         return pob;
     }
 
@@ -109,7 +101,6 @@ public class ProblemaF5 extends Problema{
                 pob[j] = nuevo;
             }
         }
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     

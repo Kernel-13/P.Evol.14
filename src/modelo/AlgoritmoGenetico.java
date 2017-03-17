@@ -49,6 +49,12 @@ public class AlgoritmoGenetico {
         tamElite = calcularTamElite();
     }
     
+    /**
+     * funcion que calcula el tamanio que debe tener la elite
+     * teniendo en cuenta el porcentaje de la poblacion 
+     * que forma parte de la elite
+     * @return 
+     */
     private int calcularTamElite(){
         double aux = tamPoblacion*ELITE;
         int ret = (int)aux;
@@ -58,6 +64,11 @@ public class AlgoritmoGenetico {
         return ret;
     }
     
+    /**
+     * algoritmo genetico
+     * @param semilla
+     * @return 
+     */
     public DatosGrafica ejecuta(int semilla){
         ArrayList<Double> best = new ArrayList<>();
         ArrayList<Double> bestPob = new ArrayList<>();
@@ -86,12 +97,11 @@ public class AlgoritmoGenetico {
         return new DatosGrafica(best,iteraciones,bestPob,media);
     }
     
-    public Cromosoma[] elitismo(){
-        
-        return null;
-    }
-    
-    public void pobInicial(int semilla){
+    /**
+     * funcion que genera la población inicial
+     * @param semilla 
+     */
+    private void pobInicial(int semilla){
         Random r = new Random(semilla);
         pob = new Cromosoma[tamPoblacion];
         for(int i = 0; i < tamPoblacion;i++){

@@ -21,9 +21,6 @@ public class ProblemaF1 extends Problema
         best = null;
     }
     
-    public double media(int tam){
-        return sumaPob/tam;
-    }
     
     
 

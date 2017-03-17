@@ -19,6 +19,12 @@ public abstract class Problema {
     
     protected Cromosoma[] elite;
     
+    /**
+     * calcula el fitness desplazado, las puntuaciones 
+     * y las puntuaciones acomuladas
+     * @param pob
+     * @return 
+     */
     public Cromosoma evaluacion(Cromosoma[] pob) {
         Cromosoma bestPobActual = pob[0];
         double maxApt = 0, puntAcomulada = 0;  // Se debe calcular fuera, y entrar como parametro de la funcion
@@ -32,8 +38,8 @@ public abstract class Problema {
         for(int i = 0; i < pob.length; i++){
             pob[i].setAptitudDesplazada(aptitudDesplazada(pob[i], maxApt));
             sumDefault += pob[i].getAptitud();
-            sum += pob[i].getAptitudReal();
-            if(pob[i].getAptitudReal() > bestPobActual.getAptitudReal()){
+            sum += pob[i].getAptitudDesplazada();
+            if(pob[i].getAptitudDesplazada() > bestPobActual.getAptitudDesplazada()){
                 bestPobActual = pob[i];
             }
         }
@@ -52,25 +58,68 @@ public abstract class Problema {
         return bestPobActual;
     }	// Debe devolver la mejor aptitud, y una array de las aptitudes
     
+    /**
+     * calcula el valor del fitness desplazado
+     * @param individuo
+     * @param maxApt
+     * @return 
+     */
     abstract double aptitudDesplazada(Cromosoma individuo, double maxApt);	// Debe devolver la aptitud tras aplicar desplazamiento
     // El parametro maxApt debera ser calculado con anterioridad, y quiza tenerlo como un atributo de AG
     // Quiza es mejor hacerla una funcion privada, ya que solo es utilizada por evaluacion
 	
-    abstract double media(int tam);
+    /**
+     * calcula la media de la poblacion
+     * @param tam
+     * @return 
+     */
+    public double media(int tam){
+        return sumaPob/tam;
+    }
+    /**
+     * devuelve una nueva poblacion con cromosomas 
+     * cruzados. 
+     * @param pob
+     * @param probCruce
+     * @return 
+     */
+    public abstract Cromosoma[] reproduccion(Cromosoma[] pob, double probCruce); 
+
+    /**
+     * Cruza 2 cromosomas - obtenemos 2 hijos
+     * @param pob
+     * @param son1
+     * @param son2 
+     */
+    abstract void cruce(Cromosoma[] pob, Cromosoma son1, Cromosoma son2); 
+
+    /**
+     * Recorre la pob. y cada individuo, 
+     * y segun la probabilidad cambia un gen o no
+     * @param pob
+     * @param probMutacion 
+     */
+    public abstract void mutacion(Cromosoma[] pob, double probMutacion);
     
-    public abstract Cromosoma[] reproduccion(Cromosoma[] pob, double probCruce); // Debe devolver una nueva poblacion con cromosomas 
-    // cruzados. 
-    // 
-
-    abstract void cruce(Cromosoma[] pob, Cromosoma son1, Cromosoma son2); // Cruza 2 cromosomas - obtenemos 2 hijos
-    // Tambien creo que deberia ser privada
-
-    public abstract void mutacion(Cromosoma[] pob, double probMutacion);	// Recorre la pob. y cada individuo, y segun la probabilidad cambia un gen o no
-    // 
+    /**
+     * devuelve el mejor de la poblacion
+     * @return 
+     */
     public abstract Cromosoma getBest();
     
+    /**
+     * llama a la funcion elitismo maximizacion o minimizacion segun
+     * el problema
+     * @param pob
+     * @param elite 
+     */
     public abstract void elitismo(Cromosoma[] pob,int elite);
     
+    /**
+     * inicializa el valor de la elite
+     * @param pob
+     * @param numElite 
+     */
     public void iniElite(Cromosoma[] pob,int numElite){
         elite = new Cromosoma[numElite];
         for(int i = 0; i < numElite;i++){
@@ -78,10 +127,15 @@ public abstract class Problema {
         }
     }
     
+    /**
+     * actualiza la elite en problemas de minimizacion
+     * @param pob
+     * @param numElite 
+     */
     public void elitismoMinimizacion(Cromosoma[] pob,int numElite){
         ArrayList<Integer> posElites = new ArrayList<>();
         ArrayList<Integer> posPeores = new ArrayList<>();
-        posPeores = maximosElite(pob, numElite);
+        posPeores = maximosPoblacion(pob, numElite);
         int j = 0;
         for(int i :posPeores){
             if(elite[j].getAptitud() < pob[i].getAptitud()){
@@ -89,7 +143,7 @@ public abstract class Problema {
             }
             j++;
         }
-        posElites = minimosElite(pob, numElite);
+        posElites = minimosPoblacion(pob, numElite);
         j = 0;
         for(int i :posElites){
             if(elite[j].getAptitud() > pob[i].getAptitud()){
@@ -99,10 +153,16 @@ public abstract class Problema {
         }
     }
     
+    
+    /**
+     * actualiza la elite en problemas de maximizacion
+     * @param pob
+     * @param numElite 
+     */
     public void elitismoMaximizacion(Cromosoma[] pob,int numElite){
         ArrayList<Integer> posElites = new ArrayList<>();
         ArrayList<Integer> posPeores = new ArrayList<>();
-        posPeores = minimosElite(pob, numElite);
+        posPeores = minimosPoblacion(pob, numElite);
         int j = 0;
         for(int i :posPeores){
             if(elite[j].getAptitud() > pob[i].getAptitud()){
@@ -110,7 +170,7 @@ public abstract class Problema {
             }
             j++;
         }
-        posElites = maximosElite(pob, numElite);
+        posElites = maximosPoblacion(pob, numElite);
         j = 0;
         for(int i :posElites){
             if(elite[j].getAptitud() < pob[i].getAptitud()){
@@ -121,8 +181,14 @@ public abstract class Problema {
     }
     
 
-    
-    private ArrayList<Integer>  minimosElite(Cromosoma[] pob,int numElemElite){
+    /**
+     * devuelve un array con las posiciones de los minimos de
+     * la poblacion
+     * @param pob
+     * @param numElemElite
+     * @return 
+     */
+    private ArrayList<Integer>  minimosPoblacion(Cromosoma[] pob,int numElemElite){
         ArrayList<Integer> pos = new ArrayList<>();
         ArrayList<Double> apt = new ArrayList<>();
         
@@ -151,7 +217,15 @@ public abstract class Problema {
     }
     
     
-    private ArrayList<Integer>  maximosElite(Cromosoma[] pob,int numElemElite){
+    
+    /**
+     * devuelve un array con las posiciones de los maximos de
+     * la poblacion
+     * @param pob
+     * @param numElemElite
+     * @return 
+     */
+    private ArrayList<Integer>  maximosPoblacion(Cromosoma[] pob,int numElemElite){
         ArrayList<Integer> pos = new ArrayList<>();
         ArrayList<Double> apt = new ArrayList<>();
         

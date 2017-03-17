@@ -38,6 +38,11 @@ public class Controlador {
         nvars = 4;
     }
     
+    /**
+     * (funcion que se llama desde la vista)
+     * cambia el parametro correspondiente a la funcion
+     * @param f 
+     */
     public void cambiarFuncion (int f){
         switch(f){
             case 0:
@@ -60,6 +65,11 @@ public class Controlador {
         }
     }
     
+    /**
+     * (funcion que se llama desde la vista)
+     * cambia el parametro correspondiente al tamaño de población
+     * @param pob 
+     */
     public void cambiarPoblacion(String pob){
         int p = 0;
         try{
@@ -72,6 +82,12 @@ public class Controlador {
             poblacion = p;
     }
     
+    
+    /**
+     * (funcion que se llama desde la vista)
+     * cambia el parametro correspondiente al numero de iteraciones
+     * @param it 
+     */
     public void cambiarIteraciones(String it){
         int i = 0;
         try{
@@ -82,6 +98,11 @@ public class Controlador {
         iteraciones = i;
     }
     
+    /**
+     * (funcion que se llama desde la vista)
+     * cambia el parametro correspondiente a la probabilidad de cruce
+     * @param probc 
+     */
     public void cambiarPorcCruces(String probc){
         int pc = 0;
         try{
@@ -93,6 +114,11 @@ public class Controlador {
            probCruces = pc;
     }
     
+    /**
+     * (funcion que se llama desde la vista)
+     * cambia el parametro correspondiente a la probabilidad de mutacion
+     * @param probm 
+     */
     public void cambiarPorcMutacion(String probm){
         int pm = 0;
         try{
@@ -104,6 +130,11 @@ public class Controlador {
             probMutacion = pm;
     }
     
+    /**
+     * (funcion que se llama desde la vista)
+     * cambia el parametro correspondiente a la precision
+     * @param pre 
+     */
     public void cambiarPrecision(String pre){
         double p = 0;
         try{
@@ -115,6 +146,11 @@ public class Controlador {
             precision = p;
     }
     
+    /**
+     * (funcion que se llama desde la vista)
+     * cambia el parametro correspondiente al tipo de seleccion
+     * @param s 
+     */
     public void cambiarSeleccion(int s){
         switch(s){
             case 0:
@@ -134,6 +170,10 @@ public class Controlador {
         }
     }
     
+    /**
+     * cambia la semilla que se usa para generar la poblacion inicial
+     * @param nueva 
+     */
     public void cambiarSemilla(String nueva){
         int newsemilla = 2;
         try{
@@ -144,6 +184,10 @@ public class Controlador {
         semilla = newsemilla;
     }
     
+    /**
+     * cambia el numero de variables de la funcion 4
+     * @param nuevo 
+     */
     public void cambiarNvars(String nuevo){
         int newNvars = 4;
         try{
@@ -154,10 +198,19 @@ public class Controlador {
         nvars = newNvars;
     }
     
+    /**
+     * actica/desactiva el elitismo
+     * @param el 
+     */
     public void cambiarElitismo(boolean el){
         elitismo = el;
     }
     
+    /**
+     * ejecuta el algoritmo genetico y devuelve los datos para generar 
+     * la grafica
+     * @return 
+     */
     public DatosGrafica ejecuta(){
         AlgoritmoGenetico algo = new AlgoritmoGenetico(funcion, poblacion, iteraciones,
                 probCruces, probMutacion,precision,seleccion,nvars,elitismo);

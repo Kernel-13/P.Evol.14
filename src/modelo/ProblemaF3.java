@@ -20,9 +20,7 @@ public class ProblemaF3 extends Problema {
         best = null;
     }
     
-    public double media(int tam){
-        return sumaPob/tam;
-    }
+
     
     @Override
     public Cromosoma evaluacion(Cromosoma[] pob) {
@@ -37,9 +35,9 @@ public class ProblemaF3 extends Problema {
         }
         for(int i = 0; i < pob.length; i++){
             pob[i].setAptitudDesplazada(aptitudDesplazada(pob[i], minApt)); 
-            sum += pob[i].getAptitudReal();
+            sum += pob[i].getAptitudDesplazada();
             sumDefault += pob[i].getAptitud();
-            if(pob[i].getAptitudReal() > bestPobActual.getAptitudReal()){
+            if(pob[i].getAptitudDesplazada() > bestPobActual.getAptitudDesplazada()){
                 bestPobActual = pob[i];
             }
         }
