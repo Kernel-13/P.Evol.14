@@ -94,6 +94,7 @@ public class AlgoritmoGenetico {
             best.add(problema.getBest().getAptitud());
             media.add(problema.media(tamPoblacion));
         }
+        System.out.println(mejorPob.toString());
         return new DatosGrafica(best,iteraciones,bestPob,media);
     }
     

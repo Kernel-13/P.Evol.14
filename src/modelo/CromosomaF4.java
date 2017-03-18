@@ -96,7 +96,13 @@ public class CromosomaF4 extends Cromosoma {
 
     @Override
     public String toString() {
-        return "ok";
+        String aux = "Fenotipo(s): ";
+        aux += fenotipo.get(0);
+        for(int i = 1; i < fenotipo.size(); i++){
+            aux +=  " , " + fenotipo.get(i);
+        }
+        aux += " --- Aptitud:" + this.aptitud;
+        return aux;
         //return genes.toString() + " " + this.fenotipox1 + " " + this.fenotipox2 + " " + this.aptitud;
     }
 

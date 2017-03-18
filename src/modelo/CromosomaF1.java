@@ -73,7 +73,7 @@ public class CromosomaF1 extends Cromosoma {
 
     @Override
     public String toString() {
-        return genes.toString() + " " + this.fenotipo + " " + this.aptitud;
+        return "Fenotipo(s): " + this.fenotipo + " --- Aptitud:" + this.aptitud;
     }
 
     @Override

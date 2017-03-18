@@ -27,7 +27,7 @@ public class Main {
        Controlador c = new Controlador();
         Interfaz i = new Interfaz(c);
         i.setVisible(true);
-       System.err.println(Functions.long_cromosoma(-250, 250, 0.001));
+       //System.err.println(Functions.long_cromosoma(-250, 250, 0.001));
        
     }
     

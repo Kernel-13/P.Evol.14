@@ -77,7 +77,7 @@ public class Controlador {
         }catch(Exception e){
             e.printStackTrace();
         }
-        System.out.println(pob);
+        //System.out.println(pob);
         if(p > 0)
             poblacion = p;
     }

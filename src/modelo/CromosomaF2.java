@@ -86,7 +86,7 @@ public class CromosomaF2 extends Cromosoma {
 
     @Override
     public String toString() {
-        return genes.toString() + " " + this.fenotipox1 + " " + this.fenotipox2 + " " + this.aptitud;
+        return "Fenotipo(s): " + this.fenotipox1 + " , " + this.fenotipox2 + " --- Aptitud:" + this.aptitud;
     }
 
     @Override
