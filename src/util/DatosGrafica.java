@@ -17,11 +17,13 @@ public class DatosGrafica {
     public ArrayList<Double> mejoresIteracion;
     public ArrayList<Double> mediaPorIteracion;
     public int tam;
+    public double mejorAptitud;
     public DatosGrafica(ArrayList<Double> mejoresTodo, int tam
             ,ArrayList<Double> mejoresIt, ArrayList<Double> mediaPobIt){
         mejoresDeTodas = mejoresTodo;
         mejoresIteracion = mejoresIt;
         mediaPorIteracion = mediaPobIt; 
+        mejorAptitud = mejoresDeTodas.get(mejoresTodo.size()-1);
         this.tam = tam;
     }
     

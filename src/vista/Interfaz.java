@@ -40,7 +40,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboBox1 = new javax.swing.JComboBox<String>();
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
@@ -53,8 +53,8 @@ public class Interfaz extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jComboBox3 = new javax.swing.JComboBox<>();
+        jComboBox2 = new javax.swing.JComboBox<String>();
+        jComboBox3 = new javax.swing.JComboBox<String>();
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel9 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
@@ -62,13 +62,16 @@ public class Interfaz extends javax.swing.JFrame {
         jTextField6 = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
         jTextField7 = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jTextField8 = new javax.swing.JTextField();
         jInternalFrame1 = new javax.swing.JInternalFrame();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Funcion");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Funcion 1", "Funcion 2", "Funcion 3", "Funcion 4", "Funcion 5" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Funcion 1", "Funcion 2", "Funcion 3", "Funcion 4", "Funcion 5" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -117,9 +120,9 @@ public class Interfaz extends javax.swing.JFrame {
 
         jLabel8.setText("Seleccion");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ruleta", "Torneo determinista", "Estocastico", "Torneo probabilista" }));
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ruleta", "Torneo determinista", "Estocastico", "Torneo probabilista" }));
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jCheckBox1.setText("Elitismo");
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -144,6 +147,12 @@ public class Interfaz extends javax.swing.JFrame {
         jLabel11.setText("nvars");
 
         jTextField7.setText("4");
+
+        jLabel12.setForeground(new java.awt.Color(240, 0, 0));
+
+        jLabel13.setText("Mejor aptitud");
+
+        jTextField8.setText("jTextField8");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -171,14 +180,7 @@ public class Interfaz extends javax.swing.JFrame {
                                     .addComponent(jComboBox2, 0, 141, Short.MAX_VALUE)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jCheckBox1)
-                                        .addGap(0, 0, Short.MAX_VALUE))))))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(56, 56, 56)
-                        .addComponent(jButton1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGap(0, 0, Short.MAX_VALUE))))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -206,7 +208,17 @@ public class Interfaz extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jTextField6)
                                     .addComponent(jTextField1)
-                                    .addComponent(jTextField7))))))
+                                    .addComponent(jTextField7)))
+                            .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(58, 58, 58)
+                        .addComponent(jButton1)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField8)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -256,9 +268,15 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9))
-                .addGap(98, 98, 98)
+                .addGap(30, 30, 30)
+                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
                 .addComponent(jButton1)
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addGap(24, 24, 24))
         );
 
         jInternalFrame1.setVisible(true);
@@ -323,19 +341,31 @@ public class Interfaz extends javax.swing.JFrame {
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String error = "";
         c.cambiarFuncion(jComboBox1.getSelectedIndex());
-        c.cambiarPoblacion(this.jTextField1.getText());
-        c.cambiarIteraciones(this.jTextField2.getText());
-        c.cambiarPorcCruces(this.jTextField3.getText());
-        c.cambiarPorcMutacion(this.jTextField4.getText());
-        c.cambiarPrecision(this.jTextField5.getText());
+        error += c.cambiarPoblacion(this.jTextField1.getText()) + " ";
+        error += c.cambiarIteraciones(this.jTextField2.getText())+ " ";
+        error += c.cambiarPorcCruces(this.jTextField3.getText())+ " ";
+        error += c.cambiarPorcMutacion(this.jTextField4.getText())+ " ";
+        error += c.cambiarPrecision(this.jTextField5.getText())+ " ";
         c.cambiarSeleccion(this.jComboBox2.getSelectedIndex());
-        c.cambiarSemilla(this.jTextField6.getText());
-        c.cambiarNvars(this.jTextField7.getText());
+        error += c.cambiarSemilla(this.jTextField6.getText())+ " ";
+        error += c.cambiarNvars(this.jTextField7.getText())+ " ";
         c.cambiarElitismo(this.jCheckBox1.isSelected());
-        actualizaGrafica(c.ejecuta());
+        if(error.length()<8)
+            actualizaGrafica(c.ejecuta());
+        actualizaLogErrores(error);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void actualizaLogErrores(String error){
+        if(error.length()>7){
+            this.jLabel12.setText("errores en: " + error);
+            this.jTextField8.setText("");
+        } else{
+            this.jLabel12.setText("");
+        }
+    }
+    
     private void actualizaGrafica(DatosGrafica g){
 		double[] x = new double[g.tam];
 		double[] y = new double[g.tam] ;
@@ -348,6 +378,8 @@ public class Interfaz extends javax.swing.JFrame {
 			y2[i] = g.mejoresIteracion.get(i);
 			y3[i] = g.mediaPorIteracion.get(i);
 		}
+                
+                this.jTextField8.setText(""+ g.mejorAptitud);
 		
 		// create your PlotPanel (you can use it as a JPanel)
 		Plot2DPanel plot = new Plot2DPanel();
@@ -410,6 +442,8 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -426,5 +460,6 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
+    private javax.swing.JTextField jTextField8;
     // End of variables declaration//GEN-END:variables
 }

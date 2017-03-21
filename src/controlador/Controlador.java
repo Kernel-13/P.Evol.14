@@ -70,16 +70,22 @@ public class Controlador {
      * cambia el parametro correspondiente al tamaño de población
      * @param pob 
      */
-    public void cambiarPoblacion(String pob){
+    public String cambiarPoblacion(String pob){
+        String error = "";
         int p = 0;
         try{
             p = Integer.parseInt(pob);
+            if(p < 1){
+                error += "poblacion";
+            }
         }catch(Exception e){
-            e.printStackTrace();
+            error += "poblacion";
+            return error;
         }
         //System.out.println(pob);
         if(p > 0)
             poblacion = p;
+        return error;
     }
     
     
@@ -88,14 +94,21 @@ public class Controlador {
      * cambia el parametro correspondiente al numero de iteraciones
      * @param it 
      */
-    public void cambiarIteraciones(String it){
+    public String cambiarIteraciones(String it){
+        String error = "";
         int i = 0;
         try{
             i = Integer.parseInt(it);
+            if(i < 1){
+                error += "iteraciones";
+            }
         }catch(Exception e){
-            e.printStackTrace();
+            error += "iteraciones";
+            return error;
         }
-        iteraciones = i;
+        if(i > 0)
+            iteraciones = i;
+        return error;
     }
     
     /**
@@ -103,15 +116,21 @@ public class Controlador {
      * cambia el parametro correspondiente a la probabilidad de cruce
      * @param probc 
      */
-    public void cambiarPorcCruces(String probc){
+    public String cambiarPorcCruces(String probc){
+        String error = "";
         int pc = 0;
         try{
             pc = Integer.parseInt(probc);
         }catch(Exception e){
-            e.printStackTrace();
+            error += "cruce";
+            return error;
         }
         if(pc >= 0 && pc <= 100)
            probCruces = pc;
+        else{
+            error+="cruce";
+        }
+        return error;
     }
     
     /**
@@ -119,15 +138,21 @@ public class Controlador {
      * cambia el parametro correspondiente a la probabilidad de mutacion
      * @param probm 
      */
-    public void cambiarPorcMutacion(String probm){
+    public String cambiarPorcMutacion(String probm){
+        String error = "";
         int pm = 0;
         try{
             pm = Integer.parseInt(probm);
         }catch(Exception e){
-            e.printStackTrace();
+            error += "mutacion";
+            return error;
         } 
         if(pm >= 0 && pm <= 100)
             probMutacion = pm;
+        else{
+            error += "mutacion";
+        }
+        return error;
     }
     
     /**
@@ -135,15 +160,19 @@ public class Controlador {
      * cambia el parametro correspondiente a la precision
      * @param pre 
      */
-    public void cambiarPrecision(String pre){
+    public String cambiarPrecision(String pre){
         double p = 0;
         try{
             p = Double.parseDouble(pre);
         }catch(Exception e){
-            e.printStackTrace();
+            return "precision";
         }
         if(p > 0 && p < 1)
             precision = p;
+        else{
+            return "precision";
+        }
+        return "";
     }
     
     /**
@@ -174,28 +203,34 @@ public class Controlador {
      * cambia la semilla que se usa para generar la poblacion inicial
      * @param nueva 
      */
-    public void cambiarSemilla(String nueva){
+    public String cambiarSemilla(String nueva){
         int newsemilla = 2;
         try{
             newsemilla = Integer.parseInt(nueva);
         }catch(Exception e){
-            
+            return "semilla";
         } 
         semilla = newsemilla;
+        return "";
     }
     
     /**
      * cambia el numero de variables de la funcion 4
      * @param nuevo 
      */
-    public void cambiarNvars(String nuevo){
+    public String cambiarNvars(String nuevo){
         int newNvars = 4;
         try{
             newNvars = Integer.parseInt(nuevo);
         }catch(Exception e){
-            
+            return "vars f4";
         } 
-        nvars = newNvars;
+        if(newNvars > 0)
+            nvars = newNvars;
+        else{
+            return "vars f4";
+        }
+        return "";
     }
     
     /**
