@@ -18,11 +18,11 @@ public class Functions {
 	}
 	
         
-        public static double valorAsignacion(int[] pos,double[][] f,double[][] d ,int n){
+        public static double valorAsignacion(Integer[] s,int[][] f,int[][] d ,int n){
             double suma = 0;
             for(int i=0; i < n; i++)
                 for(int j=0; j < n; j++)
-                    suma+=f[i][j]*d[pos[i]][pos[j]];
+                    suma+=f[i][j]*d[s[i]][s[j]];
             return suma;
         }
         

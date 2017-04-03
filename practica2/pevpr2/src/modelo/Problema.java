@@ -8,6 +8,7 @@ package modelo;
 import java.util.ArrayList;
 import java.util.Random;
 import util.Functions;
+import util.TipoCruce;
 
 /**
  *
@@ -84,7 +85,24 @@ public abstract class Problema {
      * @param probCruce
      * @return 
      */
-    public abstract Cromosoma[] reproduccion(Cromosoma[] pob, double probCruce); 
+    public Cromosoma[] reproduccion(TipoCruce c,Cromosoma[] pob, double probCruce) {
+        Random r = new Random();
+	ArrayList<Integer> elegidos = new ArrayList<>(); 
+        for (int i = 0; i < pob.length; i++){
+            if (r.nextDouble() < probCruce){
+                elegidos.add(i);
+            }
+        }
+        
+        if(elegidos.size()%2 != 0){
+            elegidos.remove(elegidos.size() - 1);
+        }
+        
+         for (int i = 0; i < elegidos.size(); i+=2){ 
+             cruce(c,pob[elegidos.get(i)], pob[elegidos.get(i+1)]);
+        }
+        return pob;
+    }
 
     /**
      * Cruza 2 cromosomas - obtenemos 2 hijos
@@ -94,25 +112,14 @@ public abstract class Problema {
      * @param son1
      * @param son2 
      */
-    protected void cruce(Cromosoma new1, Cromosoma new2) {  
-        Object[] parent1 = new1.toArray(); // = pob[pos1].getGenes();
-        Object[] parent2 = new2.toArray();  // = pob[pos2].getGenes();
-        Object[] son1 = new Object[new1.getTamanio()]; 
-        Object[] son2 = new Object[new2.getTamanio()];
-        Random r = new Random();
-        int corte = r.nextInt(new1.getTamanio()-1)+1;
-        
-        for (int i = 0; i < new1.getTamanio(); i++){
-            if(i > corte){
-                son1[i] = parent2[2];
-                son2[i] = parent1[1];
-            } else {
-                son1[i] = parent1[2];
-                son2[i] = parent2[1];
-            }
+    protected void cruce(TipoCruce c,Cromosoma new1, Cromosoma new2) {  
+        switch(c){
+            case CICLOS:
+                cruceCiclos(new1,new2);
+                break;
+            default:
+                cruceDeUnPunto(new1,new2);
         }
-        new1.setGenes(son1);
-        new2.setGenes(son2);
     }
     
     
@@ -123,7 +130,7 @@ public abstract class Problema {
      * @param son1
      * @param son2 
      */
-    protected void cruceRuleta(Cromosoma new1, Cromosoma new2) {  
+    private void cruceDeUnPunto(Cromosoma new1, Cromosoma new2) {  
         Object[] parent1 = new1.toArray(); // = pob[pos1].getGenes();
         Object[] parent2 = new2.toArray();  // = pob[pos2].getGenes();
         Object[] son1 = new Object[new1.getTamanio()]; 
@@ -151,28 +158,28 @@ public abstract class Problema {
      * @param son1
      * @param son2 
      */
-    protected void cruceCiclos(Cromosoma new1, Cromosoma new2) {  
-        Object[] parent1 = new1.toArray(); // = pob[pos1].getGenes();
-        Object[] parent2 = new2.toArray();  // = pob[pos2].getGenes();
+    private void cruceCiclos(Cromosoma new1, Cromosoma new2) {  
+        Integer[] parent1 = (Integer[])new1.toArray(); // = pob[pos1].getGenes();
+        Integer[] parent2 = (Integer[])new2.toArray();  // = pob[pos2].getGenes();
         Object[] son1 = new Object[new1.getTamanio()]; 
         Object[] son2 = new Object[new2.getTamanio()];
-        Random r = new Random();
-        int corte = r.nextInt(new1.getTamanio()-1)+1;
-        
-        for (int i = 0; i < new1.getTamanio(); i++){
-            if(i > corte){
-                son1[i] = parent2[2];
-                son2[i] = parent1[1];
-            } else {
-                son1[i] = parent1[2];
-                son2[i] = parent2[1];
-            }
+        ArrayList<Integer> array = new ArrayList<>();
+        for(int i=0; i < parent1.length; i++)
+            array.add(i);
+        int i = 0;
+        while(i!=parent1[0]){
+            i = parent2[i];
+            son1[i] = parent1[i];
+            son2[i] = parent2[i];
+            array.remove(i);
+        }
+        for(Integer x:array){
+            son1[x] = parent2[x];
+            son2[x] = parent1[x];
         }
         new1.setGenes(son1);
         new2.setGenes(son2);
     }
-
-
     
     /**
      * Recorre la pob. y cada individuo, 

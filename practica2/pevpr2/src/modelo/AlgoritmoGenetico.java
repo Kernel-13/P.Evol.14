@@ -8,6 +8,7 @@ package modelo;
 import java.util.ArrayList;
 import java.util.Random;
 import util.DatosGrafica;
+import util.TipoCruce;
 import util.TipoFuncion;
 import util.TipoSeleccion;
 
@@ -29,6 +30,8 @@ public class AlgoritmoGenetico {
     private int nvars;
     private boolean elitismo;
     private int tamElite;
+    private TipoCruce cruce;
+    
     
     Factoria f;
     
@@ -85,7 +88,7 @@ public class AlgoritmoGenetico {
         media.add(problema.media(tamPoblacion));
         for(int i=1; i < iteraciones;i++){
             pob = seleccion.selecciona(pob);
-            problema.reproduccion(pob, probCruces);
+            problema.reproduccion(cruce,pob, probCruces);
             problema.mutacion(pob, probMutacion);
             if(this.elitismo)
                 problema.elitismo(pob, tamElite);
