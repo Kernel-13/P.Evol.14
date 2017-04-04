@@ -78,6 +78,7 @@ public abstract class Problema {
     public double media(int tam){
         return sumaPob/tam;
     }
+    
     /**
      * devuelve una nueva poblacion con cromosomas 
      * cruzados. 
@@ -151,7 +152,7 @@ public abstract class Problema {
         new2.setGenes(son2);
     }
 
-/**
+    /**
      * Cruza 2 cromosomas - obtenemos 2 hijos
      * El cruce aplicado en este caso es por ruleta
      * @param pob
@@ -176,6 +177,138 @@ public abstract class Problema {
         for(Integer x:array){
             son1[x] = parent2[x];
             son2[x] = parent1[x];
+        }
+        new1.setGenes(son1);
+        new2.setGenes(son2);
+    }
+    
+    protected void crucePMX(Cromosoma new1, Cromosoma new2) {  
+        Integer[] parent1 = (Integer[])new1.toArray();
+        Integer[] parent2 = (Integer[])new2.toArray();
+        ArrayList<Integer> segmento1 = new ArrayList<>();
+        ArrayList<Integer> segmento2 = new ArrayList<>();
+        Object[] son1 = new Object[new1.getTamanio()]; 
+        Object[] son2 = new Object[new2.getTamanio()];
+        Random r = new Random();
+        int puntoUno = r.nextInt(new1.getTamanio()-1)+1;
+        int puntoDos = r.nextInt(new1.getTamanio()-1)+1;    
+        
+        ArrayList<Integer> pos1 = new ArrayList<>();
+        ArrayList<Integer> pos2 = new ArrayList<>();
+        for (int i = 0; i < new1.getTamanio(); i++){ pos1.add(i); pos2.add(i); }
+        
+        // Repetimos hasta conseguir 2 puntos separados
+        while(puntoUno >= puntoDos){
+            puntoUno = r.nextInt(new1.getTamanio()-1)+1;
+            puntoDos = r.nextInt(new1.getTamanio()-1)+1;
+        }
+        
+        // Hacemos el intercambio de ambos segmentos
+        for (int i = puntoUno; i < puntoDos; i++) {
+            son1[i] = parent2[i];
+            son2[i] = parent1[i];
+            segmento1.add(parent2[i]);
+            segmento2.add(parent1[i]);
+            pos1.remove(i);
+            pos2.remove(i);
+        }
+        
+        // Dejamos los numeros originales que no generan conflicto (Derecha)
+        for (int i = puntoDos; i < new1.getTamanio(); i++) {
+            if(!segmento1.contains(parent1[i])){
+                son1[i] = parent1[i];
+                pos1.remove(i);
+            }
+            if(!segmento2.contains(parent2[i])){
+                son2[i] = parent2[i];
+                pos2.remove(i);
+            }
+        }
+        
+        // Dejamos los numeros originales que no generan conflicto (Izquierda)       
+        for (int i = 0; i < puntoUno; i++) {
+            if(!segmento1.contains(parent1[i])){
+                son1[i] = parent1[i];
+                pos1.remove(i);
+            }
+            if(!segmento2.contains(parent2[i])){
+                son2[i] = parent2[i];
+                pos2.remove(i);
+            }
+        }
+        
+        // Rellenamos los que faltan
+        for (int i = 0; i < pos1.size(); i++){
+            son1[pos1.get(i)] = segmento1.get(i);
+        }
+        for (int i = 0; i < pos2.size(); i++){
+            son2[pos2.get(i)] = segmento2.get(i);
+        }
+        new1.setGenes(son1);
+        new2.setGenes(son2);
+    }
+    
+    protected void cruceOX(Cromosoma new1, Cromosoma new2) {  
+        Integer[] parent1 = (Integer[])new1.toArray();
+        Integer[] parent2 = (Integer[])new2.toArray();
+        ArrayList<Integer> segmento1 = new ArrayList<>();
+        ArrayList<Integer> segmento2 = new ArrayList<>();
+        Object[] son1 = new Object[new1.getTamanio()]; 
+        Object[] son2 = new Object[new2.getTamanio()];
+        Random r = new Random();
+        int puntoUno = r.nextInt(new1.getTamanio()-1)+1;
+        int puntoDos = r.nextInt(new1.getTamanio()-1)+1;    
+        
+        ArrayList<Integer> pos1 = new ArrayList<>();
+        ArrayList<Integer> pos2 = new ArrayList<>();
+        for (int i = 0; i < new1.getTamanio(); i++){ pos1.add(i); pos2.add(i); }
+        
+        // Repetimos hasta conseguir 2 puntos separados
+        while(puntoUno >= puntoDos){
+            puntoUno = r.nextInt(new1.getTamanio()-1)+1;
+            puntoDos = r.nextInt(new1.getTamanio()-1)+1;
+        }
+        
+        // Hacemos el intercambio de ambos segmentos
+        for (int i = puntoUno; i < puntoDos; i++) {
+            son1[i] = parent2[i];
+            son2[i] = parent1[i];
+            segmento1.add(parent2[i]);
+            segmento2.add(parent1[i]);
+            pos1.remove(i);
+            pos2.remove(i);
+        }
+        
+        // Dejamos los numeros originales que no generan conflicto (Derecha)
+        for (int i = puntoDos; i < new1.getTamanio(); i++) {
+            if(!segmento1.contains(parent1[i])){
+                son1[i] = parent1[i];
+                pos1.remove(i);
+            }
+            if(!segmento2.contains(parent2[i])){
+                son2[i] = parent2[i];
+                pos2.remove(i);
+            }
+        }
+        
+        // Dejamos los numeros originales que no generan conflicto (Izquierda)       
+        for (int i = 0; i < puntoUno; i++) {
+            if(!segmento1.contains(parent1[i])){
+                son1[i] = parent1[i];
+                pos1.remove(i);
+            }
+            if(!segmento2.contains(parent2[i])){
+                son2[i] = parent2[i];
+                pos2.remove(i);
+            }
+        }
+        
+        // Rellenamos los que faltan
+        for (int i = 0; i < pos1.size(); i++){
+            son1[pos1.get(i)] = segmento1.get(i);
+        }
+        for (int i = 0; i < pos2.size(); i++){
+            son2[pos2.get(i)] = segmento2.get(i);
         }
         new1.setGenes(son1);
         new2.setGenes(son2);
@@ -243,7 +376,6 @@ public abstract class Problema {
         }
     }
     
-    
     /**
      * actualiza la elite en problemas de maximizacion
      * @param pob
@@ -270,7 +402,6 @@ public abstract class Problema {
         }
     }
     
-
     /**
      * devuelve un array con las posiciones de los minimos de
      * la poblacion
@@ -305,9 +436,7 @@ public abstract class Problema {
         }
         return pos;
     }
-    
-    
-    
+       
     /**
      * devuelve un array con las posiciones de los maximos de
      * la poblacion
