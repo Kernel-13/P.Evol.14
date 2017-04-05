@@ -6,6 +6,7 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import util.Functions;
 
@@ -15,77 +16,65 @@ import util.Functions;
  */
 public class CromosomaAsigC extends Cromosoma {
     private ArrayList<Integer> genes;
-    private int tamanio;
     
     public CromosomaAsigC(int tam){
         genes = new ArrayList<>();
-        tamanio = tam;
+        this.tam = tam;
+    }
+    
+    public CromosomaAsigC(ArrayList<Integer> x){
+        genes = x;
+        this.tam = x.size();
     }
     
     
     public void inicializa(Random r,int[][] f,int[][] d) {
-        while(genes.size()<tamanio){
-            Integer rand = r.nextInt(tamanio);
+        while(genes.size()<tam){
+            Integer rand = r.nextInt(tam);
             if(!genes.contains(rand)){
                 genes.add(rand);
             }
         }
-        aptitud = Functions.valorAsignacion((Integer[])genes.toArray(), f, d, tamanio);
+        aptitud = Functions.valorAsignacion(Functions.toArrayInt(genes.toArray()), f, d, tam);
     }
 
     @Override
-    protected double getAptitud() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    protected double getPuntuacion() {
+    public void inicializa(Random r) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     protected Object[] toArray() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return genes.toArray();
     }
 
-    @Override
-    protected void setGenes(Object[] array) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    protected void setPuntuacion(double suma) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    protected double getPuntAcomulada() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    protected void setPuntAcomulada(double puntuacion) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    protected void setAptitudDesplazada(double aptR) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    protected double getAptitudDesplazada() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    protected int getTamanio() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected void setGenes(Object[] array,int f[][],int d[][]) {
+        genes = new ArrayList<>();
+        for(int i = 0;i<array.length;i++){
+            genes.add((Integer)array[i]);
+        }
+        aptitud = Functions.valorAsignacion(Functions.toArrayInt(genes.toArray()), f, d, tam);
     }
 
     @Override
     protected Cromosoma copy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        CromosomaAsigC ret = new CromosomaAsigC(tam);
+        ret.aptitud = this.aptitud;
+        ret.aptitudReal = this.aptitudReal;
+        ret.genes = this.genes;
+        ret.puntAcomulada = this.puntAcomulada;
+        ret.puntuacion = this.puntuacion;
+        return ret;
+    }
+    
+    protected CromosomaAsigC copy2() {
+        CromosomaAsigC ret = new CromosomaAsigC(tam);
+        ret.aptitud = this.aptitud;
+        ret.aptitudReal = this.aptitudReal;
+        ret.genes = this.genes;
+        ret.puntAcomulada = this.puntAcomulada;
+        ret.puntuacion = this.puntuacion;
+        return ret;
     }
 
     @Override
@@ -93,8 +82,17 @@ public class CromosomaAsigC extends Cromosoma {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    protected void setGenes(int[] array) {
+        genes = new ArrayList<>();
+        for(int i = 0; i < array.length;i++)
+            genes.add(array[i]);
+    }
+    protected ArrayList<Integer> getGenes(){
+        return genes;
+    }
+
     @Override
-    public void inicializa(Random r) {
+    protected void setGenes(Object[] array) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

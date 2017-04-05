@@ -5,8 +5,14 @@
  */
 package controlador;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import modelo.AlgoritmoGenetico;
 import util.DatosGrafica;
+import util.TipoCruce;
 import util.TipoSeleccion;
 import util.TipoFuncion;
 
@@ -16,6 +22,7 @@ import util.TipoFuncion;
  */
 public class Controlador {
     private TipoFuncion funcion;
+    private TipoCruce cruce;
     private int poblacion;
     private int iteraciones;
     private int probCruces;
@@ -25,6 +32,8 @@ public class Controlador {
     private int semilla;
     private int nvars;
     private boolean elitismo;
+    private int f[][];
+    private int d[][];
     
     public Controlador(){
         funcion = TipoFuncion.F1;
@@ -175,6 +184,38 @@ public class Controlador {
         return "";
     }
     
+    
+    
+    public void cambiarCruce(int c){
+        switch(c){
+            case 0:
+                cruce = TipoCruce.OX;
+                break;
+            case 1:
+                cruce = TipoCruce.PMX;
+                break;
+            case 2:
+                cruce = TipoCruce.ERX;
+                break;
+            case 3:
+                cruce = TipoCruce.CODORD;
+                break;
+            case 4:
+                cruce = TipoCruce.CICLOS;
+                break;
+            case 5:
+                cruce = TipoCruce.VAROX1;
+                break;
+            case 6:
+                cruce = TipoCruce.VAROX2;
+                break;
+            case 7:
+                cruce = TipoCruce.PROPIO;
+                break;
+            default:
+                cruce = TipoCruce.OX;
+        }
+    }
     /**
      * (funcion que se llama desde la vista)
      * cambia el parametro correspondiente al tipo de seleccion
@@ -241,16 +282,73 @@ public class Controlador {
         elitismo = el;
     }
     
+    
     /**
      * ejecuta el algoritmo genetico y devuelve los datos para generar 
      * la grafica
      * @return 
      */
-    public DatosGrafica ejecuta(){
+    public DatosGrafica ejecuta(String archivo){
+        //aqui hay que leer archivo e inicializar f y d
+        nvars = leerArchivo(archivo);
         AlgoritmoGenetico algo = new AlgoritmoGenetico(funcion, poblacion, iteraciones,
-                probCruces, probMutacion,precision,seleccion,nvars,elitismo);
+                probCruces, probMutacion,precision,seleccion,nvars,elitismo,f,d,cruce);
         return algo.ejecuta(semilla);
     }
     
+    /**
+     * lee un archivo de datos con el siguiente formato
+     * el 5 es el valor de n , la primera tabla es f y la segunda es d 
+5
+
+0 5 2 4 1
+5 0 3 0 2
+2 3 0 0 0
+4 0 0 0 5
+1 2 0 5 0
+
+0 1 1 2 3
+1 0 2 1 2
+1 2 0 1 2
+2 1 1 0 1
+3 2 2 1 0
+
+     * @param archivo
+     * @param f
+     * @param d
+     * @return 
+     */
+    private int leerArchivo(String archivo){
+        int n = 0;
+        String cadena;
+        try {
+            FileReader file = new FileReader(archivo);
+            BufferedReader b = new BufferedReader(file);
+            cadena = b.readLine();
+            n = Integer.parseInt(cadena);
+            f = new int[n][n];
+            d = new int[n][n];
+            b.readLine();
+            procesaMatriz(b,f);
+            b.readLine();
+            procesaMatriz(b,d);
+            b.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return n; 
+    }
+    
+    private void procesaMatriz(BufferedReader b,int[][]matriz) throws IOException{
+        String cadena;
+        for(int i = 0; i < matriz.length;i++){
+            cadena = b.readLine();
+            int k = 0;
+            for(int j = 0; j < matriz.length;j++){
+                matriz[i][j] = Integer.parseInt(cadena.charAt(k)+"");
+                k+=2;
+            }
+        }
+    }
     
 }

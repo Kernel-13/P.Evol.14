@@ -8,8 +8,6 @@ package vista;
 import controlador.Controlador;
 import util.DatosGrafica;
 import java.awt.Color;
-import java.util.Random;
-
 import javax.swing.*;
 import org.math.plot.*;
 
@@ -25,8 +23,6 @@ public class Interfaz extends javax.swing.JFrame {
     public Interfaz(Controlador c) {
         this.c = c;
         initComponents();
-        this.jTextField7.setVisible(false);
-        this.jLabel11.setVisible(false);
     }
 
     /**
@@ -40,7 +36,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<String>();
+        jComboBox1 = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
@@ -53,8 +49,8 @@ public class Interfaz extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<String>();
-        jComboBox3 = new javax.swing.JComboBox<String>();
+        jComboBox2 = new javax.swing.JComboBox<>();
+        jComboBox3 = new javax.swing.JComboBox<>();
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel9 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
@@ -69,9 +65,10 @@ public class Interfaz extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("Funcion");
+        jLabel1.setText("Cruce");
+        jLabel1.setToolTipText("");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Funcion 1", "Funcion 2", "Funcion 3", "Funcion 4", "Funcion 5" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "OX", "PMX", "ERX", "CODORD", "CICLOS", "VAROX1", "VAROX2", "PROPIO" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -120,9 +117,9 @@ public class Interfaz extends javax.swing.JFrame {
 
         jLabel8.setText("Seleccion");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ruleta", "Torneo determinista", "Estocastico", "Torneo probabilista" }));
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ruleta", "Torneo determinista", "Estocastico", "Torneo probabilista" }));
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jCheckBox1.setText("Elitismo");
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -144,9 +141,14 @@ public class Interfaz extends javax.swing.JFrame {
 
         jTextField6.setText("2");
 
-        jLabel11.setText("nvars");
+        jLabel11.setText("archivo");
 
-        jTextField7.setText("4");
+        jTextField7.setText("ajuste.dat");
+        jTextField7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField7ActionPerformed(evt);
+            }
+        });
 
         jLabel12.setForeground(new java.awt.Color(240, 0, 0));
 
@@ -163,13 +165,6 @@ public class Interfaz extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(12, 12, 12)
-                                .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -198,9 +193,6 @@ public class Interfaz extends javax.swing.JFrame {
                                 .addGap(7, 7, 7)
                                 .addComponent(jTextField2))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel10)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel2)
                                     .addComponent(jLabel11))
@@ -209,7 +201,12 @@ public class Interfaz extends javax.swing.JFrame {
                                     .addComponent(jTextField6)
                                     .addComponent(jTextField1)
                                     .addComponent(jTextField7)))
-                            .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel10))
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(58, 58, 58)
                         .addComponent(jButton1)
@@ -218,17 +215,18 @@ public class Interfaz extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField8)))
+                        .addComponent(jTextField8))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)
+                        .addGap(12, 12, 12)
+                        .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(13, 13, 13)
+                .addGap(44, 44, 44)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel11)
                     .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -258,7 +256,11 @@ public class Interfaz extends javax.swing.JFrame {
                     .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel7)
-                .addGap(62, 62, 62)
+                .addGap(31, 31, 31)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -311,13 +313,7 @@ public class Interfaz extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        if(this.jComboBox1.getSelectedIndex() == 3){
-            this.jTextField7.setVisible(true);
-            this.jLabel11.setVisible(true);
-        }else{
-            this.jTextField7.setVisible(false);
-            this.jLabel11.setVisible(false);
-        }
+        
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
@@ -342,7 +338,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String error = "";
-        c.cambiarFuncion(jComboBox1.getSelectedIndex());
+        c.cambiarCruce(jComboBox1.getSelectedIndex());
         error += c.cambiarPoblacion(this.jTextField1.getText()) + " ";
         error += c.cambiarIteraciones(this.jTextField2.getText())+ " ";
         error += c.cambiarPorcCruces(this.jTextField3.getText())+ " ";
@@ -350,12 +346,16 @@ public class Interfaz extends javax.swing.JFrame {
         error += c.cambiarPrecision(this.jTextField5.getText())+ " ";
         c.cambiarSeleccion(this.jComboBox2.getSelectedIndex());
         error += c.cambiarSemilla(this.jTextField6.getText())+ " ";
-        error += c.cambiarNvars(this.jTextField7.getText())+ " ";
+        //error += c.cambiarNvars(this.jTextField7.getText())+ " ";
         c.cambiarElitismo(this.jCheckBox1.isSelected());
-        if(error.length()<8)
-            actualizaGrafica(c.ejecuta());
+        if(error.length()<7)
+            actualizaGrafica(c.ejecuta(this.jTextField7.getText()));
         actualizaLogErrores(error);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField7ActionPerformed
 
     private void actualizaLogErrores(String error){
         if(error.length()>7){

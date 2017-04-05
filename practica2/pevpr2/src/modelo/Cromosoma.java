@@ -8,9 +8,8 @@ public abstract class Cromosoma {
         protected double aptitudReal;
 	protected double puntuacion;
         protected double puntAcomulada;
+        protected int tam;
         public abstract void inicializa(Random r);//inicializa el cromosoma
-	protected abstract double getAptitud(); //devuelve la aptitud del individuo
-	protected abstract double getPuntuacion(); //devuelve la puntuacion del individuo
         protected abstract Object[] toArray();
         protected abstract void setGenes(Object[] array);
 	/**
@@ -18,12 +17,6 @@ public abstract class Cromosoma {
          * de la poblacion y la guarda en el atributo puntuacion
          * @param suma 
          */
-        protected abstract void setPuntuacion(double suma); 
-        protected abstract double getPuntAcomulada(); //devuelve la puntuacion acomulada
-	protected abstract void setPuntAcomulada(double puntuacion); 
-        protected abstract void setAptitudDesplazada(double aptR); 
-        protected abstract double getAptitudDesplazada();
-        protected abstract int getTamanio(); //devuelve el tamanio del array de genes
         protected abstract Cromosoma copy(); //devuelve una copia del individuo
         /**
          * calcula la longitud del cromosoma utilizando la precision
@@ -31,4 +24,40 @@ public abstract class Cromosoma {
          * @return 
          */
         public abstract int longCromosoma(double p); 
+        
+        protected void setPuntAcomulada(double puntuacion) {
+            puntAcomulada = puntuacion;
+        }
+
+        protected void setAptitudDesplazada(double aptR) {
+            this.aptitudReal = aptR;
+        }
+        
+        public void setPuntuacion(double suma) {
+            this.puntuacion = aptitudReal / suma;
+        }
+
+        protected double getAptitudDesplazada() {
+            return this.aptitudReal;
+        }
+        
+        public double getAptitud() {
+            return aptitud;
+        }
+
+        public double getPuntuacion() {
+            return puntuacion;
+        }
+        
+        /**
+         * devuelve el tamanio del array de genes
+         * @return 
+         */
+        protected int getTamanio() {
+            return tam;
+        }
+        
+        protected double getPuntAcomulada() {
+            return puntAcomulada;
+        }
 }

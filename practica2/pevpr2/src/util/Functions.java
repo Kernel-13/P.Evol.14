@@ -1,6 +1,7 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Functions {
 	
@@ -18,12 +19,17 @@ public class Functions {
 	}
 	
         
-        public static double valorAsignacion(Integer[] s,int[][] f,int[][] d ,int n){
+        public static double valorAsignacion(int[] s,int[][] f,int[][] d ,int n){
             double suma = 0;
             for(int i=0; i < n; i++)
                 for(int j=0; j < n; j++)
                     suma+=f[i][j]*d[s[i]][s[j]];
             return suma;
+        }
+        
+        public static int[] toArrayInt(Object[] ob){
+            int[] ret = Arrays.stream(ob).mapToInt(o -> (int)o).toArray();
+            return ret;
         }
         
 	/**

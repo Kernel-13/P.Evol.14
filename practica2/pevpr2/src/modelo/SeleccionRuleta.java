@@ -16,11 +16,11 @@ public class SeleccionRuleta extends Seleccion {
     }
 
     @Override
-    Cromosoma[] selecciona(Cromosoma[] pob) {
+    CromosomaAsigC[] selecciona(CromosomaAsigC[] pob) {
        Random r = new Random();
        int j;
        boolean salir;
-       Cromosoma[] ret = new Cromosoma[pob.length];
+       CromosomaAsigC[] ret = new CromosomaAsigC[pob.length];
        for(int i=0; i < pob.length;i++){
            double valorAle = r.nextDouble();
            j = 0;

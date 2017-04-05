@@ -10,7 +10,6 @@ public class CromosomaF1 extends Cromosoma {
     private double fenotipo;
     public static double max = 250;
     public static double min = -250;
-    private int tam;
 
     public CromosomaF1() {
         genes = new ArrayList<Boolean>();
@@ -45,21 +44,6 @@ public class CromosomaF1 extends Cromosoma {
         fenotipo = Functions.fenotipoBin(max, min, this.bin2dec(), tam);
     }
 
-    @Override
-    public double getAptitud() {
-        return aptitud;
-    }
-
-    @Override
-    public double getPuntuacion() {
-        return puntuacion;
-    }
-
-    @Override
-    public void setPuntuacion(double suma) {
-        this.puntuacion = aptitudReal / suma;
-    }
-
     private int bin2dec() {
         int ret = 0;
         for (int i = 0; i < tam; i++) {
@@ -75,30 +59,6 @@ public class CromosomaF1 extends Cromosoma {
         return "Fenotipo(s): " + this.fenotipo + " --- Aptitud:" + this.aptitud;
     }
 
-    @Override
-    protected int getTamanio() {
-        return tam;
-    }
-
-    @Override
-    protected double getPuntAcomulada() {
-        return puntAcomulada;
-    }
-
-    @Override
-    protected void setPuntAcomulada(double puntuacion) {
-        puntAcomulada = puntuacion;
-    }
-
-    @Override
-    protected void setAptitudDesplazada(double aptR) {
-        this.aptitudReal = aptR;
-    }
-
-    @Override
-    protected double getAptitudDesplazada() {
-        return this.aptitudReal;
-    }
 
     @Override
     public int longCromosoma(double p) {

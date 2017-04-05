@@ -14,21 +14,32 @@ import util.TipoCruce;
  *
  * @author Ederson
  */
-public abstract class Problema {
+public class Problema {
     
-    protected Cromosoma best;
+    protected int[][]f;
+    protected int[][]d;
+    protected CromosomaAsigC best;
     protected double sumaPob;
+    protected TipoCruce cruce;
     
-    protected Cromosoma[] elite;
+    protected CromosomaAsigC[] elite;
     
+    
+    public Problema(TipoCruce c,int[][] f,int[][] d){
+        sumaPob = 0;
+        best = null;
+        this.f = f;
+        this.d = d;
+        this.cruce = c;
+    }
     /**
      * calcula el fitness desplazado, las puntuaciones 
      * y las puntuaciones acomuladas
      * @param pob
      * @return 
      */
-    public Cromosoma evaluacion(Cromosoma[] pob) {
-        Cromosoma bestPobActual = pob[0];
+    public CromosomaAsigC evaluacion(CromosomaAsigC[] pob) {
+        CromosomaAsigC bestPobActual = pob[0];
         double maxApt = 0, puntAcomulada = 0;  // Se debe calcular fuera, y entrar como parametro de la funcion
         double sum = 0;
         double sumDefault = 0;
@@ -52,10 +63,10 @@ public abstract class Problema {
             puntAcomulada += pob[k].getPuntuacion();
         }
         if(best == null){
-            best = bestPobActual.copy();
+            best = bestPobActual.copy2();
         }
         if(bestPobActual.getAptitud()<best.getAptitud())
-            best = bestPobActual.copy();
+            best = bestPobActual.copy2();
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         return bestPobActual;
     }	// Debe devolver la mejor aptitud, y una array de las aptitudes
@@ -66,9 +77,9 @@ public abstract class Problema {
      * @param maxApt
      * @return 
      */
-    abstract double aptitudDesplazada(Cromosoma individuo, double maxApt);	// Debe devolver la aptitud tras aplicar desplazamiento
-    // El parametro maxApt debera ser calculado con anterioridad, y quiza tenerlo como un atributo de AG
-    // Quiza es mejor hacerla una funcion privada, ya que solo es utilizada por evaluacion
+    public double aptitudDesplazada(Cromosoma individuo, double maxApt) {
+        return maxApt - individuo.getAptitud();
+    }
 	
     /**
      * calcula la media de la poblacion
@@ -86,7 +97,7 @@ public abstract class Problema {
      * @param probCruce
      * @return 
      */
-    public Cromosoma[] reproduccion(TipoCruce c,Cromosoma[] pob, double probCruce) {
+    public CromosomaAsigC[] reproduccion(CromosomaAsigC[] pob, double probCruce) {
         Random r = new Random();
 	ArrayList<Integer> elegidos = new ArrayList<>(); 
         for (int i = 0; i < pob.length; i++){
@@ -100,7 +111,7 @@ public abstract class Problema {
         }
         
          for (int i = 0; i < elegidos.size(); i+=2){ 
-             cruce(c,pob[elegidos.get(i)], pob[elegidos.get(i+1)]);
+             cruce(pob[elegidos.get(i)], pob[elegidos.get(i+1)]);
         }
         return pob;
     }
@@ -113,8 +124,8 @@ public abstract class Problema {
      * @param son1
      * @param son2 
      */
-    protected void cruce(TipoCruce c,Cromosoma new1, Cromosoma new2) {  
-        switch(c){
+    protected void cruce(CromosomaAsigC new1, CromosomaAsigC new2) {  
+        switch(cruce){
             case CICLOS:
                 cruceCiclos(new1,new2);
                 break;
@@ -131,7 +142,7 @@ public abstract class Problema {
      * @param son1
      * @param son2 
      */
-    private void cruceDeUnPunto(Cromosoma new1, Cromosoma new2) {  
+    private void cruceDeUnPunto(CromosomaAsigC new1, CromosomaAsigC new2) {  
         Object[] parent1 = new1.toArray(); // = pob[pos1].getGenes();
         Object[] parent2 = new2.toArray();  // = pob[pos2].getGenes();
         Object[] son1 = new Object[new1.getTamanio()]; 
@@ -148,8 +159,8 @@ public abstract class Problema {
                 son2[i] = parent2[1];
             }
         }
-        new1.setGenes(son1);
-        new2.setGenes(son2);
+        new1.setGenes(son1,f,d);
+        new2.setGenes(son2,f,d);
     }
 
     /**
@@ -159,11 +170,11 @@ public abstract class Problema {
      * @param son1
      * @param son2 
      */
-    private void cruceCiclos(Cromosoma new1, Cromosoma new2) {  
-        Integer[] parent1 = (Integer[])new1.toArray(); // = pob[pos1].getGenes();
-        Integer[] parent2 = (Integer[])new2.toArray();  // = pob[pos2].getGenes();
-        Object[] son1 = new Object[new1.getTamanio()]; 
-        Object[] son2 = new Object[new2.getTamanio()];
+    private void cruceCiclos(CromosomaAsigC new1, CromosomaAsigC new2) {  
+        int[] parent1 = Functions.toArrayInt(new1.toArray()); // = pob[pos1].getGenes();
+        int[] parent2 = Functions.toArrayInt(new2.toArray());   // = pob[pos2].getGenes();
+        int[] son1 = new int[new1.getTamanio()]; 
+        int[] son2 = new int[new2.getTamanio()];
         ArrayList<Integer> array = new ArrayList<>();
         for(int i=0; i < parent1.length; i++)
             array.add(i);
@@ -182,13 +193,13 @@ public abstract class Problema {
         new2.setGenes(son2);
     }
     
-    protected void crucePMX(Cromosoma new1, Cromosoma new2) {  
-        Integer[] parent1 = (Integer[])new1.toArray();
-        Integer[] parent2 = (Integer[])new2.toArray();
+    protected void crucePMX(CromosomaAsigC new1, CromosomaAsigC new2) {  
+        int [] parent1 = Functions.toArrayInt(new1.toArray()); 
+        int [] parent2 = Functions.toArrayInt(new2.toArray()); 
         ArrayList<Integer> segmento1 = new ArrayList<>();
         ArrayList<Integer> segmento2 = new ArrayList<>();
-        Object[] son1 = new Object[new1.getTamanio()]; 
-        Object[] son2 = new Object[new2.getTamanio()];
+        int[] son1 = new int[new1.getTamanio()]; 
+        int[] son2 = new int[new2.getTamanio()];
         Random r = new Random();
         int puntoUno = r.nextInt(new1.getTamanio()-1)+1;
         int puntoDos = r.nextInt(new1.getTamanio()-1)+1;    
@@ -248,13 +259,13 @@ public abstract class Problema {
         new2.setGenes(son2);
     }
     
-    protected void cruceOX(Cromosoma new1, Cromosoma new2) {  
-        Integer[] parent1 = (Integer[])new1.toArray();
-        Integer[] parent2 = (Integer[])new2.toArray();
+    protected void cruceOX(CromosomaAsigC new1, CromosomaAsigC new2) {  
+        int[] parent1 = Functions.toArrayInt(new1.toArray()); 
+        int[] parent2 = Functions.toArrayInt(new2.toArray()); 
         ArrayList<Integer> segmento1 = new ArrayList<>();
         ArrayList<Integer> segmento2 = new ArrayList<>();
-        Object[] son1 = new Object[new1.getTamanio()]; 
-        Object[] son2 = new Object[new2.getTamanio()];
+        int[] son1 = new int[new1.getTamanio()]; 
+        int[] son2 = new int[new2.getTamanio()];
         Random r = new Random();
         int puntoUno = r.nextInt(new1.getTamanio()-1)+1;
         int puntoDos = r.nextInt(new1.getTamanio()-1)+1;    
@@ -320,14 +331,43 @@ public abstract class Problema {
      * @param pob
      * @param probMutacion 
      */
-    public abstract void mutacion(Cromosoma[] pob, double probMutacion);
+    public void mutacion(Cromosoma[] pob, double probMutacion) {
+        Random r = new Random();
+        CromosomaAsigC[] pobAux = new CromosomaAsigC[pob.length];
+        for(int i = 0; i < pob.length;i++){
+            pobAux[i] = (CromosomaAsigC)pob[i];
+        }
+        CromosomaAsigC individuo;
+        for (int j=0; j < pobAux.length;j++) {
+            individuo = pobAux[j];
+            boolean cambio = false;
+            ArrayList<Integer> original = individuo.getGenes();
+            ArrayList<Integer> mutado = new ArrayList<>();
+           
+            original = individuo.getGenes();
+            for (int i = 0; i < original.size(); i++){
+                if (r.nextDouble() < probMutacion){
+                    mutado.add(original.get(i));  
+                    cambio = true;
+                } else {
+                    mutado.add(original.get(i));
+                }
+            }
+            
+            if(cambio){
+                CromosomaAsigC nuevo = new CromosomaAsigC(mutado);
+                pob[j] = nuevo;
+            }
+        }
+       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     /**
      * devuelve el mejor de la poblacion
      * @return 
      */
-    public Cromosoma getBest(){
-        return best.copy();
+    public CromosomaAsigC getBest(){
+        return best.copy2();
     }
     
     /**
@@ -336,17 +376,19 @@ public abstract class Problema {
      * @param pob
      * @param elite 
      */
-    public abstract void elitismo(Cromosoma[] pob,int elite);
+    public void elitismo(CromosomaAsigC[] pob,int elite){
+        elitismoMinimizacion(pob,elite);
+    }
     
     /**
      * inicializa el valor de la elite
      * @param pob
      * @param numElite 
      */
-    public void iniElite(Cromosoma[] pob,int numElite){
-        elite = new Cromosoma[numElite];
+    public void iniElite(CromosomaAsigC[] pob,int numElite){
+        elite = new CromosomaAsigC[numElite];
         for(int i = 0; i < numElite;i++){
-            elite[i] = pob[i].copy();
+            elite[i] = pob[i].copy2();
         }
     }
     
@@ -355,14 +397,14 @@ public abstract class Problema {
      * @param pob
      * @param numElite 
      */
-    public void elitismoMinimizacion(Cromosoma[] pob,int numElite){
+    public void elitismoMinimizacion(CromosomaAsigC[] pob,int numElite){
         ArrayList<Integer> posElites = new ArrayList<>();
         ArrayList<Integer> posPeores = new ArrayList<>();
         posPeores = maximosPoblacion(pob, numElite);
         int j = 0;
         for(int i :posPeores){
             if(elite[j].getAptitud() < pob[i].getAptitud()){
-               pob[i] = elite[j].copy();
+               pob[i] = elite[j].copy2();
             }
             j++;
         }
@@ -370,7 +412,7 @@ public abstract class Problema {
         j = 0;
         for(int i :posElites){
             if(elite[j].getAptitud() > pob[i].getAptitud()){
-                elite[j] = pob[i].copy();
+                elite[j] = pob[i].copy2();
             }
             j++;
         }
@@ -381,14 +423,14 @@ public abstract class Problema {
      * @param pob
      * @param numElite 
      */
-    public void elitismoMaximizacion(Cromosoma[] pob,int numElite){
+    public void elitismoMaximizacion(CromosomaAsigC[] pob,int numElite){
         ArrayList<Integer> posElites = new ArrayList<>();
         ArrayList<Integer> posPeores = new ArrayList<>();
         posPeores = minimosPoblacion(pob, numElite);
         int j = 0;
         for(int i :posPeores){
             if(elite[j].getAptitud() > pob[i].getAptitud()){
-                pob[i] = elite[j].copy();
+                pob[i] = elite[j].copy2();
             }
             j++;
         }
@@ -396,7 +438,7 @@ public abstract class Problema {
         j = 0;
         for(int i :posElites){
             if(elite[j].getAptitud() < pob[i].getAptitud()){
-                elite[j] = pob[i].copy();
+                elite[j] = pob[i].copy2();
             }
             j++;
         }
@@ -409,7 +451,7 @@ public abstract class Problema {
      * @param numElemElite
      * @return 
      */
-    private ArrayList<Integer>  minimosPoblacion(Cromosoma[] pob,int numElemElite){
+    private ArrayList<Integer>  minimosPoblacion(CromosomaAsigC[] pob,int numElemElite){
         ArrayList<Integer> pos = new ArrayList<>();
         ArrayList<Double> apt = new ArrayList<>();
         
@@ -444,7 +486,7 @@ public abstract class Problema {
      * @param numElemElite
      * @return 
      */
-    private ArrayList<Integer>  maximosPoblacion(Cromosoma[] pob,int numElemElite){
+    private ArrayList<Integer>  maximosPoblacion(CromosomaAsigC[] pob,int numElemElite){
         ArrayList<Integer> pos = new ArrayList<>();
         ArrayList<Double> apt = new ArrayList<>();
         

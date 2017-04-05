@@ -38,15 +38,15 @@ public class Factoria {
     }
     
     
-    public Problema factoriaProblema(int nvars){
+   /* public Problema factoriaProblema(int nvars){
         switch(t){
             case F1:
-                return new ProblemaF1();  
+                return new Problema();  
             default:
-                return new ProblemaF1();
+                return new Problema();
         }
     }
-    
+    */
     public Cromosoma factoriaCromosoma(double l,int nvars){
         switch(t){
             case F1:

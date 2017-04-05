@@ -26,18 +26,18 @@ public class AlgoritmoGenetico {
     private double precision;
     private Seleccion seleccion;
     private Problema problema;
-    private Cromosoma[] pob;
+    private CromosomaAsigC[] pob;
     private int nvars;
     private boolean elitismo;
     private int tamElite;
-    private TipoCruce cruce;
-    
+    private int[][] f2;
+    private int[][] d;
     
     Factoria f;
     
     public AlgoritmoGenetico(TipoFuncion funcion, int tampob, int iteraciones,
             double probCruces, double probMutacion, double precision,
-            TipoSeleccion tSeleccion,int nvars,boolean elitismo){
+            TipoSeleccion tSeleccion,int nvars,boolean elitismo,int[][]f2,int[][]d,TipoCruce c){
         
         tamPoblacion = tampob;
         this.iteraciones = iteraciones;
@@ -48,8 +48,11 @@ public class AlgoritmoGenetico {
         this.elitismo = elitismo;
         f = new Factoria(funcion,tSeleccion);
         seleccion = f.factoriaSeleccion();
-        problema = f.factoriaProblema(nvars);
+        //problema = f.factoriaProblema(nvars);
         tamElite = calcularTamElite();
+        this.f2 = f2;
+        this.d = d;
+        problema = new Problema(c,f2,d);
     }
     
     /**
@@ -76,7 +79,7 @@ public class AlgoritmoGenetico {
         ArrayList<Double> best = new ArrayList<>();
         ArrayList<Double> bestPob = new ArrayList<>();
         ArrayList<Double> media = new ArrayList<>();
-        Cromosoma mejorPob;
+        CromosomaAsigC mejorPob;
         pobInicial(semilla);
         if(this.elitismo){
             problema.iniElite(pob, tamElite);
@@ -88,7 +91,7 @@ public class AlgoritmoGenetico {
         media.add(problema.media(tamPoblacion));
         for(int i=1; i < iteraciones;i++){
             pob = seleccion.selecciona(pob);
-            problema.reproduccion(cruce,pob, probCruces);
+            problema.reproduccion(pob, probCruces);
             problema.mutacion(pob, probMutacion);
             if(this.elitismo)
                 problema.elitismo(pob, tamElite);
@@ -107,10 +110,11 @@ public class AlgoritmoGenetico {
      */
     private void pobInicial(int semilla){
         Random r = new Random(semilla);
-        pob = new Cromosoma[tamPoblacion];
+        pob = new CromosomaAsigC[tamPoblacion];
         for(int i = 0; i < tamPoblacion;i++){
-            pob[i] = f.factoriaCromosoma(precision,nvars);
-            pob[i].inicializa(r);
+            //pob[i] = f.factoriaCromosoma(precision,nvars); find
+            pob[i] = new CromosomaAsigC(nvars);
+            pob[i].inicializa(r,f2,d);
         }
     }
 }
