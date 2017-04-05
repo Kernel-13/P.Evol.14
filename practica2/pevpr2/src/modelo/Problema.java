@@ -15,7 +15,7 @@ import util.TipoCruce;
  * @author Ederson
  */
 public class Problema {
-    
+
     protected int[][]f;
     protected int[][]d;
     protected CromosomaAsigC best;
@@ -80,7 +80,7 @@ public class Problema {
     public double aptitudDesplazada(Cromosoma individuo, double maxApt) {
         return maxApt - individuo.getAptitud();
     }
-	
+
     /**
      * calcula la media de la poblacion
      * @param tam
@@ -99,7 +99,7 @@ public class Problema {
      */
     public CromosomaAsigC[] reproduccion(CromosomaAsigC[] pob, double probCruce) {
         Random r = new Random();
-	ArrayList<Integer> elegidos = new ArrayList<>(); 
+        ArrayList<Integer> elegidos = new ArrayList<>(); 
         for (int i = 0; i < pob.length; i++){
             if (r.nextDouble() < probCruce){
                 elegidos.add(i);
@@ -110,11 +110,11 @@ public class Problema {
             elegidos.remove(elegidos.size() - 1);
         }
         
-         for (int i = 0; i < elegidos.size(); i+=2){ 
-             cruce(pob[elegidos.get(i)], pob[elegidos.get(i+1)]);
-        }
-        return pob;
-    }
+        for (int i = 0; i < elegidos.size(); i+=2){ 
+         cruce(pob[elegidos.get(i)], pob[elegidos.get(i+1)]);
+     }
+     return pob;
+ }
 
     /**
      * Cruza 2 cromosomas - obtenemos 2 hijos
@@ -127,10 +127,10 @@ public class Problema {
     protected void cruce(CromosomaAsigC new1, CromosomaAsigC new2) {  
         switch(cruce){
             case CICLOS:
-                cruceCiclos(new1,new2);
-                break;
+            cruceCiclos(new1,new2);
+            break;
             default:
-                cruceDeUnPunto(new1,new2);
+            cruceDeUnPunto(new1,new2);
         }
     }
     
@@ -207,120 +207,146 @@ public class Problema {
         ArrayList<Integer> pos1 = new ArrayList<>();
         ArrayList<Integer> pos2 = new ArrayList<>();
         for (int i = 0; i < new1.getTamanio(); i++){ pos1.add(i); pos2.add(i); }
-        
+
         // Repetimos hasta conseguir 2 puntos separados
-        while(puntoUno >= puntoDos){
-            puntoUno = r.nextInt(new1.getTamanio()-1)+1;
-            puntoDos = r.nextInt(new1.getTamanio()-1)+1;
-        }
-        
+            while(puntoUno >= puntoDos){
+                puntoUno = r.nextInt(new1.getTamanio()-1)+1;
+                puntoDos = r.nextInt(new1.getTamanio()-1)+1;
+            }
+
         // Hacemos el intercambio de ambos segmentos
-        for (int i = puntoUno; i < puntoDos; i++) {
-            son1[i] = parent2[i];
-            son2[i] = parent1[i];
-            segmento1.add(parent2[i]);
-            segmento2.add(parent1[i]);
-            pos1.remove(i);
-            pos2.remove(i);
-        }
-        
+            for (int i = puntoUno; i < puntoDos; i++) {
+                son1[i] = parent2[i];
+                son2[i] = parent1[i];
+                segmento1.add(parent2[i]);
+                segmento2.add(parent1[i]);
+                pos1.remove(i);
+                pos2.remove(i);
+            }
+
         // Dejamos los numeros originales que no generan conflicto (Derecha)
-        for (int i = puntoDos; i < new1.getTamanio(); i++) {
-            if(!segmento1.contains(parent1[i])){
-                son1[i] = parent1[i];
-                pos1.remove(i);
+            for (int i = puntoDos; i < new1.getTamanio(); i++) {
+                if(!segmento1.contains(parent1[i])){
+                    son1[i] = parent1[i];
+                    pos1.remove(i);
+                }
+                if(!segmento2.contains(parent2[i])){
+                    son2[i] = parent2[i];
+                    pos2.remove(i);
+                }
             }
-            if(!segmento2.contains(parent2[i])){
-                son2[i] = parent2[i];
-                pos2.remove(i);
-            }
-        }
-        
+
         // Dejamos los numeros originales que no generan conflicto (Izquierda)       
-        for (int i = 0; i < puntoUno; i++) {
-            if(!segmento1.contains(parent1[i])){
-                son1[i] = parent1[i];
-                pos1.remove(i);
+            for (int i = 0; i < puntoUno; i++) {
+                if(!segmento1.contains(parent1[i])){
+                    son1[i] = parent1[i];
+                    pos1.remove(i);
+                }
+                if(!segmento2.contains(parent2[i])){
+                    son2[i] = parent2[i];
+                    pos2.remove(i);
+                }
             }
-            if(!segmento2.contains(parent2[i])){
-                son2[i] = parent2[i];
-                pos2.remove(i);
-            }
-        }
-        
+
         // Rellenamos los que faltan
-        for (int i = 0; i < pos1.size(); i++){
-            son1[pos1.get(i)] = segmento1.get(i);
+            for (int i = 0; i < pos1.size(); i++){
+                son1[pos1.get(i)] = segmento1.get(i);
+            }
+            for (int i = 0; i < pos2.size(); i++){
+                son2[pos2.get(i)] = segmento2.get(i);
+            }
+            new1.setGenes(son1);
+            new2.setGenes(son2);
         }
-        for (int i = 0; i < pos2.size(); i++){
-            son2[pos2.get(i)] = segmento2.get(i);
-        }
-        new1.setGenes(son1);
-        new2.setGenes(son2);
-    }
-    
-    protected void cruceOX(CromosomaAsigC new1, CromosomaAsigC new2) {  
-        int[] parent1 = Functions.toArrayInt(new1.toArray()); 
-        int[] parent2 = Functions.toArrayInt(new2.toArray()); 
+
+        protected void cruceOX(CromosomaAsigC new1, CromosomaAsigC new2) {  
+        int[] parent1 = Functions.toArrayInt(new1.toArray()); // = pob[pos1].getGenes();
+        int[] parent2 = Functions.toArrayInt(new2.toArray());   // = pob[pos2].getGenes();    
         ArrayList<Integer> segmento1 = new ArrayList<>();
         ArrayList<Integer> segmento2 = new ArrayList<>();
         int[] son1 = new int[new1.getTamanio()]; 
         int[] son2 = new int[new2.getTamanio()];
         Random r = new Random();
         int puntoUno = r.nextInt(new1.getTamanio()-1)+1;
-        int puntoDos = r.nextInt(new1.getTamanio()-1)+1;    
+        int puntoDos = r.nextInt(new1.getTamanio()-1)+1; 
+
+        ArrayList<Integer> alreadyIn1 = new ArrayList<>();
+        ArrayList<Integer> alreadyIn2 = new ArrayList<>();
         
         ArrayList<Integer> pos1 = new ArrayList<>();
         ArrayList<Integer> pos2 = new ArrayList<>();
         for (int i = 0; i < new1.getTamanio(); i++){ pos1.add(i); pos2.add(i); }
-        
+
         // Repetimos hasta conseguir 2 puntos separados
-        while(puntoUno >= puntoDos){
-            puntoUno = r.nextInt(new1.getTamanio()-1)+1;
-            puntoDos = r.nextInt(new1.getTamanio()-1)+1;
-        }
-        
+            while(puntoUno >= puntoDos){
+                puntoUno = r.nextInt(new1.getTamanio()-1)+1;
+                puntoDos = r.nextInt(new1.getTamanio()-1)+1;
+            }
+
         // Hacemos el intercambio de ambos segmentos
-        for (int i = puntoUno; i < puntoDos; i++) {
-            son1[i] = parent2[i];
-            son2[i] = parent1[i];
-            segmento1.add(parent2[i]);
-            segmento2.add(parent1[i]);
-            pos1.remove(i);
-            pos2.remove(i);
+            for (int i = puntoUno; i < puntoDos; i++) {
+                son1[i] = parent2[i];
+                son2[i] = parent1[i];
+                segmento1.add(parent2[i]);
+                segmento2.add(parent1[i]);
+                pos1.remove(pos1.indexOf(i));
+                pos2.remove(pos2.indexOf(i));
+                alreadyIn1.add(parent2[i]);
+                alreadyIn2.add(parent1[i]);
+            }
+
+
+        // Dejamos los numeros originales que no generan conflicto (Primer Hijo)
+            int ii = puntoDos, jj = puntoDos;
+            while(!pos1.isEmpty()){
+                if(ii == parent1.length){
+                    ii = 0;
+                }
+                if(jj == parent1.length){
+                    jj = 0;
+                }
+
+            if(pos1.contains(ii)){              // Si la posicion ii esta disponible
+                int val = parent1[jj];
+                if(alreadyIn1.contains(val)){
+                    jj++;
+                } else {
+                    son1[ii] = val;
+                    pos1.remove(pos1.indexOf(ii));
+                    alreadyIn1.add(val);
+                    ii++;
+                }
+            } else {
+                ii++;
+            }            
         }
         
-        // Dejamos los numeros originales que no generan conflicto (Derecha)
-        for (int i = puntoDos; i < new1.getTamanio(); i++) {
-            if(!segmento1.contains(parent1[i])){
-                son1[i] = parent1[i];
-                pos1.remove(i);
+        // Dejamos los numeros originales que no generan conflicto (Segundo Hijo)
+        ii = puntoDos;
+        jj = puntoDos;
+        while(!pos2.isEmpty()){
+            if(ii == parent2.length){
+                ii = 0;
             }
-            if(!segmento2.contains(parent2[i])){
-                son2[i] = parent2[i];
-                pos2.remove(i);
+            if(jj == parent2.length){
+                jj = 0;
             }
+            
+            if(pos2.contains(ii)){              // Si la posicion ii esta disponible
+                int val = parent2[jj];
+                if(alreadyIn2.contains(val)){
+                    jj++;
+                } else {
+                    son2[ii] = val;
+                    pos2.remove(pos2.indexOf(ii));
+                    alreadyIn2.add(val);
+                    ii++;
+                }
+            } else {
+                ii++;
+            }            
         }
-        
-        // Dejamos los numeros originales que no generan conflicto (Izquierda)       
-        for (int i = 0; i < puntoUno; i++) {
-            if(!segmento1.contains(parent1[i])){
-                son1[i] = parent1[i];
-                pos1.remove(i);
-            }
-            if(!segmento2.contains(parent2[i])){
-                son2[i] = parent2[i];
-                pos2.remove(i);
-            }
-        }
-        
-        // Rellenamos los que faltan
-        for (int i = 0; i < pos1.size(); i++){
-            son1[pos1.get(i)] = segmento1.get(i);
-        }
-        for (int i = 0; i < pos2.size(); i++){
-            son2[pos2.get(i)] = segmento2.get(i);
-        }
+
         new1.setGenes(son1);
         new2.setGenes(son2);
     }
@@ -343,7 +369,7 @@ public class Problema {
             boolean cambio = false;
             ArrayList<Integer> original = individuo.getGenes();
             ArrayList<Integer> mutado = new ArrayList<>();
-           
+
             original = individuo.getGenes();
             for (int i = 0; i < original.size(); i++){
                 if (r.nextDouble() < probMutacion){
@@ -405,19 +431,19 @@ public class Problema {
         for(int i :posPeores){
             if(elite[j].getAptitud() < pob[i].getAptitud()){
                pob[i] = elite[j].copy2();
-            }
-            j++;
+           }
+           j++;
+       }
+       posElites = minimosPoblacion(pob, numElite);
+       j = 0;
+       for(int i :posElites){
+        if(elite[j].getAptitud() > pob[i].getAptitud()){
+            elite[j] = pob[i].copy2();
         }
-        posElites = minimosPoblacion(pob, numElite);
-        j = 0;
-        for(int i :posElites){
-            if(elite[j].getAptitud() > pob[i].getAptitud()){
-                elite[j] = pob[i].copy2();
-            }
-            j++;
-        }
+        j++;
     }
-    
+}
+
     /**
      * actualiza la elite en problemas de maximizacion
      * @param pob
@@ -478,7 +504,7 @@ public class Problema {
         }
         return pos;
     }
-       
+
     /**
      * devuelve un array con las posiciones de los maximos de
      * la poblacion
