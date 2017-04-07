@@ -21,7 +21,8 @@ public class Problema {
     protected CromosomaAsigC best;
     protected double sumaPob;
     protected TipoCruce cruce;
-    protected double mejorAptitud = 0; // Para la mutacion heuristica
+    protected double mejorAptitud = 0;          // Para la mutacion heuristica
+    protected ArrayList<Integer> mejorMutacion; // Para la mutacion heuristica
 
     protected CromosomaAsigC[] elite;
 
@@ -516,7 +517,6 @@ public class Problema {
             if (r.nextDouble() < probMutacion) {
 
                 ArrayList<Integer> original = pobAux[j].getGenes();
-                ArrayList<Integer> mutado = pobAux[j].getGenes();
                 ArrayList<Integer> pos = new ArrayList<>();
                 ArrayList<Integer> val = new ArrayList<>();
 
@@ -528,9 +528,9 @@ public class Problema {
                     }
                 }
 
-                backtracking(pos, val, original, mutado);       
-                
-                CromosomaAsigC nuevo = new CromosomaAsigC(mutado);
+                backtracking(pos, val, original);
+
+                CromosomaAsigC nuevo = new CromosomaAsigC(mejorMutacion);
                 pob[j] = nuevo;
             }
 
@@ -538,7 +538,7 @@ public class Problema {
     }
 
     private void backtracking(ArrayList<Integer> pos, ArrayList<Integer> valores,
-            ArrayList<Integer> mutado, ArrayList<Integer> mejor) {
+            ArrayList<Integer> mutado) {
         ArrayList<Integer> nuevo = new ArrayList<Integer>(mutado);
         ArrayList<Integer> pos2 = new ArrayList<Integer>(pos);
         ArrayList<Integer> val2 = new ArrayList<Integer>(valores);
@@ -547,7 +547,7 @@ public class Problema {
                 nuevo.set(pos2.get(j), val2.get(i));
                 val2.remove(i);
                 pos2.remove(j);
-                backtracking(pos2, val2, nuevo, mejor);
+                backtracking(pos2, val2, nuevo);
                 pos2 = new ArrayList<Integer>(pos);
                 val2 = new ArrayList<Integer>(valores);
             }
@@ -557,7 +557,7 @@ public class Problema {
             CromosomaAsigC aux = new CromosomaAsigC(nuevo);
             double apt = aux.getAptitud();
             if (apt > mejorAptitud) {
-                mejor = new ArrayList<Integer>(nuevo);
+                mejorMutacion = new ArrayList<Integer>(nuevo);
                 mejorAptitud = apt;
             }
         }
