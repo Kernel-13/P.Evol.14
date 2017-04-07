@@ -21,6 +21,7 @@ public class Problema {
     protected CromosomaAsigC best;
     protected double sumaPob;
     protected TipoCruce cruce;
+    protected double mejorAptitud = 0; // Para la mutacion heuristica
 
     protected CromosomaAsigC[] elite;
 
@@ -501,12 +502,75 @@ public class Problema {
                 CromosomaAsigC nuevo = new CromosomaAsigC(mutado);
                 pob[j] = nuevo;
             }
+        }
+    }
+
+    public void mutacionHeuristica(Cromosoma[] pob, double probMutacion, int n) {
+        Random r = new Random();
+        CromosomaAsigC[] pobAux = new CromosomaAsigC[pob.length];
+        for (int i = 0; i < pob.length; i++) {
+            pobAux[i] = (CromosomaAsigC) pob[i];
+        }
+
+        for (int j = 0; j < pobAux.length; j++) {
+            if (r.nextDouble() < probMutacion) {
+
+                ArrayList<Integer> original = pobAux[j].getGenes();
+                ArrayList<Integer> mutado = pobAux[j].getGenes();
+                ArrayList<Integer> pos = new ArrayList<>();
+                ArrayList<Integer> val = new ArrayList<>();
+
+                while (pos.size() < n) {
+                    int aux = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
+                    if (!pos.contains(aux)) {
+                        pos.add(aux);
+                        val.add(original.get(aux));
+                    }
+                }
+
+                backtracking(pos, val, original, mutado);       
+                
+                CromosomaAsigC nuevo = new CromosomaAsigC(mutado);
+                pob[j] = nuevo;
+            }
 
         }
     }
 
-    public void mutacionHeuristica(Cromosoma[] pob, double probMutacion) {
+    private void backtracking(ArrayList<Integer> pos, ArrayList<Integer> valores,
+            ArrayList<Integer> mutado, ArrayList<Integer> mejor) {
+        ArrayList<Integer> nuevo = new ArrayList<Integer>(mutado);
+        ArrayList<Integer> pos2 = new ArrayList<Integer>(pos);
+        ArrayList<Integer> val2 = new ArrayList<Integer>(valores);
+        for (int i = 0; i < val2.size(); i++) {
+            for (int j = 0; j < pos2.size(); j++) {
+                nuevo.set(pos2.get(j), val2.get(i));
+                val2.remove(i);
+                pos2.remove(j);
+                backtracking(pos2, val2, nuevo, mejor);
+                pos2 = new ArrayList<Integer>(pos);
+                val2 = new ArrayList<Integer>(valores);
+            }
+        }
 
+        if (esValido(nuevo)) {
+            CromosomaAsigC aux = new CromosomaAsigC(nuevo);
+            double apt = aux.getAptitud();
+            if (apt > mejorAptitud) {
+                mejor = new ArrayList<Integer>(nuevo);
+                mejorAptitud = apt;
+            }
+        }
+    }
+
+    private boolean esValido(ArrayList<Integer> crom) {
+        boolean exit = true;
+        for (int i = 0; i < crom.size() && exit; i++) {
+            if (!crom.contains(i + 1)) {
+                exit = false;
+            }
+        }
+        return exit;
     }
 
     /**
