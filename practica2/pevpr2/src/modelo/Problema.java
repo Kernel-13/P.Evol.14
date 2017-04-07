@@ -365,6 +365,64 @@ public class Problema {
         new2.setGenes(son2);
     }
 
+    public void cruceOrdinal(CromosomaAsigC new1, CromosomaAsigC new2) {
+        Random r = new Random();
+        int[] son1 = new int[new1.getTamanio()];
+        int[] son2 = new int[new2.getTamanio()];
+             
+        ArrayList<Integer> recorrido1 = new ArrayList<>(new1.getGenes());
+        ArrayList<Integer> recorrido2 = new ArrayList<>(new2.getGenes());
+        ArrayList<Integer> listaDinamica1 = new ArrayList<>();
+        ArrayList<Integer> listaDinamica2 = new ArrayList<>();
+        ArrayList<Integer> listaPos1 = new ArrayList<>();
+        ArrayList<Integer> listaPos2 = new ArrayList<>();
+        
+        for(int i = 1; i <= new1.getTamanio(); i++){
+            listaDinamica1.add(i);  
+            listaDinamica2.add(i);
+        }      
+        
+        for(int i = 0; i < recorrido1.size(); i++){
+            int val1 = recorrido1.get(i);
+            int val2 = recorrido2.get(i);
+            int pos1 = listaDinamica1.indexOf(val1);
+            int pos2 = listaDinamica2.indexOf(val2);
+            listaPos1.add(pos1);
+            listaPos2.add(pos2);
+            listaDinamica1.remove(pos1);
+            listaDinamica2.remove(pos2);
+        }
+        
+        int puntoCorte = r.nextInt(new1.getTamanio() - 1) + 1;
+        
+        ArrayList<Integer> listaCruce1 = new ArrayList<>(listaPos1);
+        ArrayList<Integer> listaCruce2 = new ArrayList<>(listaPos2);
+        
+        // Hacemos el cruce clasico con la lista de posiciones
+        for (int i = puntoCorte; i < listaPos1.size(); i++) {
+            listaCruce1.set(i, listaPos2.get(i));
+            listaCruce2.set(i, listaPos1.get(i));
+        }
+        
+        // Volvemos a inicializar la lista dinamica
+        for(int i = 1; i <= new1.getTamanio(); i++){
+            listaDinamica1.add(i);  
+            listaDinamica2.add(i);
+        }
+        
+        for(int i = 0; i < new2.getTamanio(); i++){
+            int pos1 = listaCruce1.get(i);
+            int pos2 = listaCruce2.get(i);
+            son1[i] = listaDinamica1.get(pos1);
+            son2[i] = listaDinamica2.get(pos2);
+            listaDinamica1.remove(pos1);
+            listaDinamica2.remove(pos2);
+        }
+
+        new1.setGenes(son1);
+        new2.setGenes(son2);
+    }
+
     /**
      * Recorre la pob. y cada individuo, y segun la probabilidad cambia un gen o
      * no
