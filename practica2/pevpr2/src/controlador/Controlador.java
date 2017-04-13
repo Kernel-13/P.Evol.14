@@ -15,6 +15,7 @@ import util.DatosGrafica;
 import util.TipoCruce;
 import util.TipoSeleccion;
 import util.TipoFuncion;
+import util.TipoMutacion;
 
 /**
  *
@@ -23,6 +24,7 @@ import util.TipoFuncion;
 public class Controlador {
     private TipoFuncion funcion;
     private TipoCruce cruce;
+    private TipoMutacion mutacion;
     private int poblacion;
     private int iteraciones;
     private int probCruces;
@@ -44,6 +46,8 @@ public class Controlador {
         precision = 0.001;
         semilla = 2;
         seleccion = TipoSeleccion.RULETA;
+        cruce = TipoCruce.OX;
+        mutacion = TipoMutacion.INS;
         nvars = 4;
     }
     
@@ -184,8 +188,34 @@ public class Controlador {
         return "";
     }
     
+    /**
+     * Cambia el tipo de mutacion. 
+     * @param m 
+     */
+    public void cambiarMutacion(int m){
+        // Inserción, Intercambio, Inversión, Heurística
+        switch(m){
+            case 0:
+                mutacion = TipoMutacion.INS;
+                break;
+            case 1:
+                mutacion = TipoMutacion.INT;
+                break;
+            case 2:
+                mutacion = TipoMutacion.INV;
+                break;
+            case 3:
+                mutacion = TipoMutacion.HEU;
+                break;
+            default:
+                mutacion = TipoMutacion.INS;
+        }
+    }
     
-    
+    /**
+     * Cambia el tipio de cruce.
+     * @param c 
+     */
     public void cambiarCruce(int c){
         switch(c){
             case 0:
@@ -292,7 +322,7 @@ public class Controlador {
         //aqui hay que leer archivo e inicializar f y d
         nvars = leerArchivo(archivo);
         AlgoritmoGenetico algo = new AlgoritmoGenetico(funcion, poblacion, iteraciones,
-                probCruces, probMutacion,precision,seleccion,nvars,elitismo,f,d,cruce);
+                probCruces, probMutacion,precision,seleccion,nvars,elitismo,f,d,cruce,mutacion);
         return algo.ejecuta(semilla);
     }
     

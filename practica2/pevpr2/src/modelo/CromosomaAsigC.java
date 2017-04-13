@@ -48,10 +48,10 @@ public class CromosomaAsigC extends Cromosoma {
         return genes.toArray();
     }
 
-    protected void setGenes(Object[] array,int f[][],int d[][]) {
+    protected void setGenes(int[] array,int f[][],int d[][]) {
         genes = new ArrayList<>();
         for(int i = 0;i<array.length;i++){
-            genes.add((Integer)array[i]);
+            genes.add(array[i]);
         }
         aptitud = Functions.valorAsignacion(Functions.toArrayInt(genes.toArray()), f, d, tam);
     }
@@ -94,6 +94,11 @@ public class CromosomaAsigC extends Cromosoma {
     @Override
     protected void setGenes(Object[] array) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public String toString() {
+        return "Fenotipo(s): " + this.genes.toString() + " --- Aptitud:" + this.aptitud;
     }
     
 }

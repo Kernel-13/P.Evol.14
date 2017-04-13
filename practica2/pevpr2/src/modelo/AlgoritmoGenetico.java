@@ -10,6 +10,7 @@ import java.util.Random;
 import util.DatosGrafica;
 import util.TipoCruce;
 import util.TipoFuncion;
+import util.TipoMutacion;
 import util.TipoSeleccion;
 
 /**
@@ -37,7 +38,7 @@ public class AlgoritmoGenetico {
     
     public AlgoritmoGenetico(TipoFuncion funcion, int tampob, int iteraciones,
             double probCruces, double probMutacion, double precision,
-            TipoSeleccion tSeleccion,int nvars,boolean elitismo,int[][]f2,int[][]d,TipoCruce c){
+            TipoSeleccion tSeleccion,int nvars,boolean elitismo,int[][]f2,int[][]d,TipoCruce c,TipoMutacion m){
         
         tamPoblacion = tampob;
         this.iteraciones = iteraciones;
@@ -52,7 +53,7 @@ public class AlgoritmoGenetico {
         tamElite = calcularTamElite();
         this.f2 = f2;
         this.d = d;
-        problema = new Problema(c,f2,d);
+        problema = new Problema(c,m,f2,d);
     }
     
     /**
@@ -100,7 +101,10 @@ public class AlgoritmoGenetico {
             best.add(problema.getBest().getAptitud());
             media.add(problema.media(tamPoblacion));
         }
-        System.out.println(mejorPob.toString());
+        for(CromosomaAsigC c: pob){
+            System.out.println(c.toString());
+        }
+        System.out.println(problema.getBest().toString());
         return new DatosGrafica(best,iteraciones,bestPob,media);
     }
     

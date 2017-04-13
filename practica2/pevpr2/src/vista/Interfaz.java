@@ -36,7 +36,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboBox1 = new javax.swing.JComboBox<String>();
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
@@ -49,8 +49,8 @@ public class Interfaz extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jComboBox3 = new javax.swing.JComboBox<>();
+        jComboBox2 = new javax.swing.JComboBox<String>();
+        jComboBox3 = new javax.swing.JComboBox<String>();
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel9 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
@@ -68,7 +68,7 @@ public class Interfaz extends javax.swing.JFrame {
         jLabel1.setText("Cruce");
         jLabel1.setToolTipText("");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "OX", "PMX", "ERX", "CODORD", "CICLOS", "VAROX1", "VAROX2", "PROPIO" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "OX", "PMX", "ERX", "CODORD", "CICLOS", "VAROX1", "VAROX2", "PROPIO" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -117,9 +117,9 @@ public class Interfaz extends javax.swing.JFrame {
 
         jLabel8.setText("Seleccion");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ruleta", "Torneo determinista", "Estocastico", "Torneo probabilista" }));
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ruleta", "Torneo determinista", "Estocastico", "Torneo probabilista" }));
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Inserción", "Intercambio", "Inversión", "Heurística" }));
 
         jCheckBox1.setText("Elitismo");
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -339,15 +339,18 @@ public class Interfaz extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String error = "";
         c.cambiarCruce(jComboBox1.getSelectedIndex());
+        c.cambiarSeleccion(this.jComboBox2.getSelectedIndex());
+        c.cambiarMutacion(this.jComboBox3.getSelectedIndex());
+        c.cambiarElitismo(this.jCheckBox1.isSelected());
         error += c.cambiarPoblacion(this.jTextField1.getText()) + " ";
         error += c.cambiarIteraciones(this.jTextField2.getText())+ " ";
         error += c.cambiarPorcCruces(this.jTextField3.getText())+ " ";
         error += c.cambiarPorcMutacion(this.jTextField4.getText())+ " ";
         error += c.cambiarPrecision(this.jTextField5.getText())+ " ";
-        c.cambiarSeleccion(this.jComboBox2.getSelectedIndex());
+        
         error += c.cambiarSemilla(this.jTextField6.getText())+ " ";
         //error += c.cambiarNvars(this.jTextField7.getText())+ " ";
-        c.cambiarElitismo(this.jCheckBox1.isSelected());
+        
         if(error.length()<7)
             actualizaGrafica(c.ejecuta(this.jTextField7.getText()));
         actualizaLogErrores(error);
