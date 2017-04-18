@@ -10,5 +10,5 @@ package util;
  * @author josemanuel
  */
 public enum TipoMutacion {
-    INS, INT, INV, HEU, PROPIO
+    INS, INT, INV, HEU
 }
