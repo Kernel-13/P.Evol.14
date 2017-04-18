@@ -151,6 +151,8 @@ public class Problema {
             case PMX:
                 crucePMX(new1,new2);
                 break;
+            case PROPIO:
+                crucePropio(new1,new2);
             default:
                 cruceOX(new1,new2);
         }
@@ -207,7 +209,7 @@ public class Problema {
         new2.setGenes(son2,f,d);
     }
     
-    private void cruceERX(CromosomaAsigC new1, CromosomaAsigC new2){
+    private void cruceERX(CromosomaAsigC new1, CromosomaAsigC new2) {
         int[] parent1 = Functions.toArrayInt(new1.toArray()); // = pob[pos1].getGenes();
         int[] parent2 = Functions.toArrayInt(new2.toArray());   // = pob[pos2].getGenes();
         int[] son1 = new int[new1.getTamanio()];
@@ -216,45 +218,40 @@ public class Problema {
         Random r = new Random();
         boolean[] cogido = new boolean[new1.getTamanio()];
         boolean[] cogido2 = new boolean[new1.getTamanio()];
-        for(int i = 0; i < cogido.length; i++){
+        for (int i = 0; i < cogido.length; i++) {
             cogido[i] = false;
             cogido2[i] = false;
             son1[i] = -1;
             son2[i] = -1;
         }
-        for(int i = 0;i < 2;i++)
-            for(int j = 0;j < parent1.length;j++){
-                if(r.nextDouble()<0.5 && !cogido[j]){
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < parent1.length; j++) {
+                if (r.nextDouble() < 0.5 && !cogido[j]) {
                     tabla[i][j] = parent1[j];
                     cogido[j] = true;
-                }else if(!cogido2[j]){
+                } else if (!cogido2[j]) {
                     tabla[i][j] = parent2[j];
                     cogido2[j] = true;
-                }else{
+                } else {
                     tabla[i][j] = parent1[j];
                     cogido[j] = true;
                 }
             }
-        int size1 = 0, size2 = 0;
-        for(int i = 0;i < 2;i++)
-            for(int j = 0;j < parent1.length;j++){
-                if(!contiene(son1,tabla[i][j]) && size1 < parent1.length){
-                    son1[j] = tabla[i][j];
-                    size1++;
-                }else if(i == 0){
-                    son1[j] = tabla[i+1][j];
-                    size1++;
-                }
-                if(i == 0 && !contiene(son2,tabla[i+1][j])){
-                    son2[j] = tabla[i+1][j];
-                    size2++;
-                }else if(size2 < parent1.length) {
-                    son2[j] = tabla[i-1][j];
-                    size2++;
-                }
+        }
+        for (int j = 0; j < parent1.length; j++) {
+            if (!contiene(son1, tabla[0][j])) {
+                son1[j] = tabla[0][j];
+            } else {
+                son1[j] = tabla[1][j];
             }
-        new1.setGenes(son1,f,d);
-        new2.setGenes(son2,f,d);
+            if (!contiene(son2, tabla[1][j])) {
+                son2[j] = tabla[1][j];
+            } else {
+                son2[j] = tabla[0][j];
+            }
+        }
+        new1.setGenes(son1, f, d);
+        new2.setGenes(son2, f, d);
     }
 
     private void crucePMX(CromosomaAsigC new1, CromosomaAsigC new2) {
@@ -265,20 +262,17 @@ public class Problema {
         int[] son1 = new int[new1.getTamanio()];
         int[] son2 = new int[new2.getTamanio()];
         Random r = new Random();
-        int puntoUno = r.nextInt(new1.getTamanio() - 1) + 1;
-        int puntoDos = r.nextInt(new1.getTamanio() - 1) + 1;
-
-        ArrayList<Integer> pos1 = new ArrayList<>();
-        ArrayList<Integer> pos2 = new ArrayList<>();
+        int puntoUno = r.nextInt(new1.getTamanio());
+        int puntoDos = r.nextInt(new1.getTamanio());
         for (int i = 0; i < new1.getTamanio(); i++) {
-            pos1.add(i);
-            pos2.add(i);
+            son1[i] = -1;
+            son1[i] = -1;
         }
 
         // Repetimos hasta conseguir 2 puntos separados
         while (puntoUno >= puntoDos) {
-            puntoUno = r.nextInt(new1.getTamanio() - 1) + 1;
-            puntoDos = r.nextInt(new1.getTamanio() - 1) + 1;
+            puntoUno = r.nextInt(new1.getTamanio());
+            puntoDos = r.nextInt(new1.getTamanio());
         }
 
         // Hacemos el intercambio de ambos segmentos
@@ -287,43 +281,45 @@ public class Problema {
             son2[i] = parent1[i];
             segmento1.add(parent2[i]);
             segmento2.add(parent1[i]);
-            pos1.remove(new Integer(i));
-            pos2.remove(new Integer(i));
         }
-
-        // Dejamos los numeros originales que no generan conflicto (Derecha)
-        for (int i = puntoDos; i < new1.getTamanio(); i++) {
-            if (!segmento1.contains(parent1[i])) {
+        
+        int i = 0;
+        while(i < parent1.length){
+            if(!contiene(son1,parent1[i])){
                 son1[i] = parent1[i];
-                pos1.remove(new Integer(i));
+            }else{
+                auxCrucePMX(i,son1,segmento2,parent2);
             }
-            if (!segmento2.contains(parent2[i])) {
+            if(!contiene(son2,parent2[i])){
                 son2[i] = parent2[i];
-                pos2.remove(new Integer(i));
+            }else{
+                auxCrucePMX(i,son2,segmento1,parent1);
             }
-        }
-
-        // Dejamos los numeros originales que no generan conflicto (Izquierda)       
-        for (int i = 0; i < puntoUno; i++) {
-            if (!segmento1.contains(parent1[i])) {
-                son1[i] = parent1[i];
-                pos1.remove(new Integer(i));
-            }
-            if (!segmento2.contains(parent2[i])) {
-                son2[i] = parent2[i];
-                pos2.remove(new Integer(i));
-            }
-        }
-
-        // Rellenamos los que faltan
-        for (int i = 0; i < pos1.size(); i++) {
-            son1[pos1.get(i)] = segmento1.get(i);
-        }
-        for (int i = 0; i < pos2.size(); i++) {
-            son2[pos2.get(i)] = segmento2.get(i);
+            if(i == puntoUno)
+                i = puntoDos;
+            else
+                i++;
         }
         new1.setGenes(son1,f,d);
         new2.setGenes(son2,f,d);
+    }
+    
+    private void auxCrucePMX(int i, int[] son, ArrayList<Integer> segmento, int parent[]) {
+        boolean salir = false;
+        for (int k = 0; k < segmento.size() && !salir; k++) {
+            if (!contiene(son, segmento.get(k))) {
+                son[i] = segmento.get(k);
+                salir = true;
+            }
+        }
+        if(!salir){
+            for(int j = 0; j < parent.length && !salir; j++){
+                if (!contiene(son, parent[j])) {
+                    son[i] = parent[j];
+                    salir = true;
+                }
+            }
+        }
     }
 
     private void cruceOX(CromosomaAsigC new1, CromosomaAsigC new2) {
@@ -462,7 +458,6 @@ public class Problema {
         new1.setGenes(son1,f,d);
         new2.setGenes(son2,f,d);
     }
-
     
     private void crucePropio(CromosomaAsigC new1, CromosomaAsigC new2) {
 	ArrayList<Integer> parent1 = new ArrayList<>(new1.getGenes());
@@ -967,7 +962,7 @@ public class Problema {
         int ret = -1;
         for(int i = 0; i < array.length;i++)
             for(int j = 0; j < array.length;j++)
-                if(array[j] == array[i] && (i != j))
+                if(array[j] == array[i] && (i != j) && array[j]!=-1)
                     ret = j;
         return ret;
     }
