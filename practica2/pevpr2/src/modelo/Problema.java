@@ -253,8 +253,8 @@ public class Problema {
                     size2++;
                 }
             }
-        new1.setGenes(son1);
-        new2.setGenes(son2);
+        new1.setGenes(son1,f,d);
+        new2.setGenes(son2,f,d);
     }
 
     private void crucePMX(CromosomaAsigC new1, CromosomaAsigC new2) {
@@ -322,8 +322,8 @@ public class Problema {
         for (int i = 0; i < pos2.size(); i++) {
             son2[pos2.get(i)] = segmento2.get(i);
         }
-        new1.setGenes(son1);
-        new2.setGenes(son2);
+        new1.setGenes(son1,f,d);
+        new2.setGenes(son2,f,d);
     }
 
     private void cruceOX(CromosomaAsigC new1, CromosomaAsigC new2) {
@@ -395,7 +395,12 @@ public class Problema {
                 k++;
             }
         }
-
+        if(duplicado(son1) != -1){
+            
+        }
+        if(duplicado(son1) != -1){
+            
+        }
         new1.setGenes(son1,f,d);
         new2.setGenes(son2,f,d);
     }
@@ -458,6 +463,92 @@ public class Problema {
         new2.setGenes(son2,f,d);
     }
 
+    
+    private void crucePropio(CromosomaAsigC new1, CromosomaAsigC new2) {
+	ArrayList<Integer> parent1 = new ArrayList<>(new1.getGenes());
+	ArrayList<Integer> parent2 = new ArrayList<>(new2.getGenes());
+	ArrayList<Integer> sonOne = new ArrayList<>();
+	ArrayList<Integer> sonTwo = new ArrayList<>();
+	int[] son1 = new int[new1.getTamanio()];
+	int[] son2 = new int[new2.getTamanio()];
+
+	int contUno = 0;
+	int contDos = 0;
+	boolean intercalate = false;
+	while (sonOne.size() < new1.getTamanio()) {
+		if (!intercalate) {
+			if (!parent1.isEmpty() && !sonOne.contains(parent1.get(contUno))) {
+				sonOne.add(parent1.get(contUno));
+				parent1.remove(contUno);
+				intercalate = true;
+			} else {
+				contUno++;
+			}
+		}
+
+		if (intercalate) {
+			if (!parent2.isEmpty() && !sonOne.contains(parent2.get(contDos))) {
+				sonOne.add(parent2.get(contDos));
+				parent2.remove(contDos);
+				intercalate = false;
+			} else {
+				contDos++;
+			}
+		}
+
+		if (contUno >= parent1.size()) {
+			contUno = 0;
+		}
+		if (contDos >= parent2.size()) {
+			contDos = 0;
+		}
+
+	}
+
+	contUno = 0;
+	contDos = 0;
+	intercalate = false;
+	while (sonTwo.size() < new1.getTamanio()) {
+		if (!intercalate) {
+			if (!parent2.isEmpty() && !sonTwo.contains(parent2.get(contUno))) {
+				sonTwo.add(parent2.get(contUno));
+				parent2.remove(contUno);
+				intercalate = true;
+			} else {
+				contUno++;
+			}
+		}
+
+		if (intercalate) {
+			if (!parent1.isEmpty() && !sonTwo.contains(parent1.get(contDos))) {
+				sonTwo.add(parent1.get(contDos));
+				parent1.remove(contDos);
+				intercalate = false;
+			} else {
+				contDos++;
+			}
+		}
+
+		if (contUno >= parent1.size()) {
+			contUno = 0;
+		}
+		if (contDos >= parent2.size()) {
+			contDos = 0;
+		}
+
+	}
+
+		// Rellenamos
+	for (int i = 0; i < sonOne.size(); i++) {
+		son1[i] = sonOne.get(i);
+	}
+	for (int i = 0; i < sonTwo.size(); i++) {
+		son2[i] = sonTwo.get(i);
+	}
+	new1.setGenes(son1, f, d);
+	new2.setGenes(son2, f, d);
+    }
+
     /**
      * Recorre la pob. y cada individuo, y segun la probabilidad cambia un gen o
      * no
@@ -498,18 +589,18 @@ public class Problema {
         int puntoUno,puntoDos;
         for (int j = 0; j < pobAux.length; j++) {
             if (r.nextDouble() < probMutacion) {
-                puntoUno = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
-                puntoDos = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
+                puntoUno = r.nextInt(pobAux[j].getTamanio()-1);
+                puntoDos = r.nextInt(pobAux[j].getTamanio()-1);
                 // Repetimos hasta conseguir 2 puntos separados
                 while (puntoUno >= puntoDos) {
-                    puntoUno = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
-                    puntoDos = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
+                    puntoUno = r.nextInt(pobAux[j].getTamanio() - 1);
+                    puntoDos = r.nextInt(pobAux[j].getTamanio() - 1);
                 }
                 ArrayList<Integer> mutado1 = pobAux[j].getGenes();
                 Integer elem1 = pobAux[j].getGenes().get(puntoUno);
                 Integer elem2 = pobAux[j].getGenes().get(puntoDos);
-                mutado1.set(puntoUno , elem2);
-                mutado1.set(puntoDos, elem1);
+                mutado1.set(puntoUno , new Integer(elem2));
+                mutado1.set(puntoDos, new Integer(elem1));
                 pob[j] =  new CromosomaAsigC(mutado1);
             }
         }
@@ -653,11 +744,55 @@ public class Problema {
             }
         }
     }
+    
+    public void mutacionPropia(Cromosoma[] pob, double probMutacion) {
+	Random r = new Random();
+	CromosomaAsigC[] pobAux = new CromosomaAsigC[pob.length];
+	for (int i = 0; i < pob.length; i++) {
+		pobAux[i] = (CromosomaAsigC) pob[i];
+	}
+
+	for (int j = 0; j < pobAux.length; j++) {
+		if (r.nextDouble() < probMutacion) {
+			int puntoUno = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
+			int puntoDos = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
+
+				// Repetimos hasta conseguir 2 puntos separados
+			while (puntoUno >= puntoDos) {
+				puntoUno = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
+				puntoDos = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
+			}
+
+			ArrayList<Integer> mutado = new ArrayList<Integer>(pobAux[j].getGenes());
+			ArrayList<Integer> segmento = new ArrayList<Integer>();
+
+				// Seleccionamos el segmento que queremos mover
+			for (int i = puntoUno; i < puntoDos; i++) {
+				segmento.add(mutado.get(i));
+			}
+
+			for (int i = 0; i < segmento.size(); i++) {
+				mutado.remove(segmento.get(i));
+			}
+
+			while (!segmento.isEmpty()) {
+				mutado.add(0, segmento.get(0));
+				segmento.remove(0);
+			}
+
+			CromosomaAsigC nuevo = new CromosomaAsigC(mutado);
+			pob[j] = nuevo;
+
+		}
+	}
+		// throw new UnsupportedOperationException("Not supported yet."); //To
+		// change body of generated methods, choose Tools | Templates.
+    }
 
     private boolean esValido(ArrayList<Integer> crom) {
         boolean exit = true;
         for (int i = 0; i < crom.size() && exit; i++) {
-            if (!crom.contains(i + 1)) {
+            if (!crom.contains(i)) {
                 exit = false;
             }
         }
