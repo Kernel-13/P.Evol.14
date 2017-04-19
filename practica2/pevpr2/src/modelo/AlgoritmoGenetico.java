@@ -92,14 +92,15 @@ public class AlgoritmoGenetico {
         media.add(problema.media(tamPoblacion));
         for(int i=1; i < iteraciones;i++){
             pob = seleccion.selecciona(pob);
-            problema.reproduccion(pob, probCruces);
-            //problema.mutacion(pob, probMutacion);
+            //problema.reproduccion(pob, probCruces);
+            problema.mutacion(pob, probMutacion);
             if(this.elitismo)
                 problema.elitismo(pob, tamElite);
             mejorPob = problema.evaluacion(pob);
             bestPob.add(mejorPob.getAptitud());
             best.add(problema.getBest().getAptitud());
             media.add(problema.media(tamPoblacion));
+            System.out.println(problema.getBest().toString());
         }
         for(CromosomaAsigC c: pob){
             System.out.println(c.toString());

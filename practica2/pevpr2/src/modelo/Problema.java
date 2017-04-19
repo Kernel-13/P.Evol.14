@@ -564,12 +564,14 @@ public class Problema {
                 break;
             case INT:
                 mutacionIntercambio(pob,probMutacion);
+                break;
             default:
                 mutacionInversion(pob,probMutacion);
                 break;
         }
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+   
     /**
      * ya funciona
      * @param pob
@@ -596,6 +598,9 @@ public class Problema {
                 Integer elem2 = pobAux[j].getGenes().get(puntoDos);
                 mutado1.set(puntoUno , new Integer(elem2));
                 mutado1.set(puntoDos, new Integer(elem1));
+                /*if(!esValido(mutado1)){
+                    System.out.println("ERROR -- DUPLCADO GENERADO");
+                }*/
                 pob[j] =  new CromosomaAsigC(mutado1);
             }
         }
@@ -615,22 +620,27 @@ public class Problema {
         }
         int puntoUno,puntoDos;
         for (int j = 0; j < pobAux.length; j++) {
-            puntoUno = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
-            puntoDos = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
-            // Repetimos hasta conseguir 2 puntos separados
-            while (puntoUno >= puntoDos) {
+            if (r.nextDouble() < probMutacion) {
                 puntoUno = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
                 puntoDos = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
-            }
-
-            ArrayList<Integer> original = pobAux[j].getGenes();
-            ArrayList<Integer> mutado = pobAux[j].getGenes();
-
-            if (r.nextDouble() < probMutacion) {
-                for (int i = puntoUno; i < puntoDos; i++) {
-                    mutado.add(puntoDos - i, original.get(i));
-                    mutado.remove(puntoDos);
+                // Repetimos hasta conseguir 2 puntos separados
+                while (puntoUno >= puntoDos) {
+                    puntoUno = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
+                    puntoDos = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
                 }
+
+                ArrayList<Integer> original = new ArrayList<Integer>(pobAux[j].getGenes());
+                ArrayList<Integer> mutado = new ArrayList<Integer>(pobAux[j].getGenes());
+
+                int c = 0;
+                for (int i = puntoUno; i <= puntoDos; i++) {
+                    mutado.set(puntoDos - c, original.get(i));
+                    c++;
+                    //mutado.remove(puntoDos);
+                }
+                /*if(!esValido(mutado)){
+                    System.out.println("ERROR -- DUPLCADO GENERADO");
+                }*/
                 CromosomaAsigC nuevo = new CromosomaAsigC(mutado);
                 pob[j] = nuevo;
             }
@@ -647,7 +657,7 @@ public class Problema {
 
         for (int j = 0; j < pobAux.length; j++) {
             if (r.nextDouble() < probMutacion) {
-                ArrayList<Integer> mutado = pobAux[j].getGenes();
+                ArrayList<Integer> mutado = new ArrayList<Integer>(pobAux[j].getGenes());
                 ArrayList<Integer> posiciones = new ArrayList<>();
                 ArrayList<Integer> valores = new ArrayList<>();
 
@@ -659,8 +669,10 @@ public class Problema {
                     }
                 }
 
+                int punto = r.nextInt(pobAux[j].getTamanio());
+                
                 for (int i = 0; i < cont; i++) {
-                    int pos = r.nextInt(pobAux.length - 1) + 1;
+                    int pos = r.nextInt(pobAux.length);
                     posiciones.add(pos);
                 }
 
