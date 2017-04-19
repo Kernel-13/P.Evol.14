@@ -92,7 +92,7 @@ public class AlgoritmoGenetico {
         media.add(problema.media(tamPoblacion));
         for(int i=1; i < iteraciones;i++){
             pob = seleccion.selecciona(pob);
-            //problema.reproduccion(pob, probCruces);
+            problema.reproduccion(pob, probCruces);
             problema.mutacion(pob, probMutacion);
             if(this.elitismo)
                 problema.elitismo(pob, tamElite);
