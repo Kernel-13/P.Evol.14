@@ -207,6 +207,9 @@ public class Controlador {
             case 3:
                 mutacion = TipoMutacion.HEU;
                 break;
+            case 4:
+                mutacion = TipoMutacion.PROPIO;
+                break;    
             default:
                 mutacion = TipoMutacion.INS;
         }
@@ -374,9 +377,21 @@ public class Controlador {
         for(int i = 0; i < matriz.length;i++){
             cadena = b.readLine();
             int k = 0;
-            for(int j = 0; j < matriz.length;j++){
-                matriz[i][j] = Integer.parseInt(cadena.charAt(k)+"");
-                k+=2;
+            int j = 0;
+            while(j < matriz.length){
+                String subcadena = "";
+                String c = cadena.charAt(k)+"";
+                while (!c.equals(" ")){
+                    subcadena += c;
+                    k++;
+                    if(k < cadena.length())
+                        c = cadena.charAt(k)+"";
+                    else
+                        c = " ";
+                }
+                matriz[i][j] = Integer.parseInt(subcadena);
+                j++;
+                k++;
             }
         }
     }

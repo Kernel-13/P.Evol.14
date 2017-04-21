@@ -142,6 +142,12 @@ public class Problema {
             case OX:
                 cruceOX(new1,new2);
                 break;
+            case VAROX1:
+                cruceVarOX1(new1,new2);
+                break;    
+            case VAROX2:
+                cruceVarOX2(new1,new2);
+                break;    
             case ERX:
                 cruceERX(new1,new2);
                 break;
@@ -341,8 +347,8 @@ public class Problema {
         
         // Repetimos hasta conseguir 2 puntos separados
         while (puntoUno >= puntoDos) {
-            puntoUno = r.nextInt(new1.getTamanio() - 1) + 1;
-            puntoDos = r.nextInt(new1.getTamanio() - 1) + 1;
+            puntoUno = r.nextInt(new1.getTamanio());
+            puntoDos = r.nextInt(new1.getTamanio());
         }
 
         // Hacemos el intercambio de ambos segmentos
@@ -401,6 +407,155 @@ public class Problema {
         new2.setGenes(son2,f,d);
     }
 
+    private void cruceVarOX1(CromosomaAsigC new1, CromosomaAsigC new2) {
+        int[] parent1 = Functions.toArrayInt(new1.toArray()); 
+        int[] parent2 = Functions.toArrayInt(new2.toArray());   
+        int[] son1 = new int[new1.getTamanio()];
+        int[] son2 = new int[new2.getTamanio()];
+        Random r = new Random();
+        int numEscogidos = new1.getTamanio()/3; 
+        ArrayList<Integer> pos1 = new ArrayList<>();
+        ArrayList<Integer> pos2 = new ArrayList<>();
+        ArrayList<Integer> seleccionados = new ArrayList();
+        
+        for (int i = 0; i < new1.getTamanio(); i++) {
+            pos1.add(i);
+            pos2.add(i);
+            son1[i] = -1;
+            son2[i] = -1;
+        }
+        
+        Integer j = r.nextInt(new1.getTamanio());
+        for (int i = 0; i < numEscogidos; i++) {
+            while(seleccionados.contains(j)){
+                j = r.nextInt(new1.getTamanio());
+            }
+            seleccionados.add(j);
+            son1[j] = parent2[j];
+            son2[j] = parent1[j];
+            pos1.remove(pos1.indexOf(j));
+            pos2.remove(pos2.indexOf(j));
+        }
+
+        // Dejamos los numeros originales que no generan conflicto (Primer Hijo)
+        int ii = numEscogidos, jj = numEscogidos;
+        int k = numEscogidos, h = numEscogidos;
+        
+        while (!pos1.isEmpty() || !pos2.isEmpty()) {
+            if (ii == parent1.length) ii = 0;
+            if (jj == parent1.length) jj = 0;
+            if (k == parent2.length) k = 0;
+            if (h == parent2.length) h = 0;
+          
+            // Dejamos los numeros originales que no generan conflicto (Primer Hijo)
+            if (pos1.contains(ii) && !pos1.isEmpty()) {              // Si la posicion ii esta disponible
+                int val = parent1[jj];
+                if (contiene(son1,val)) {
+                    jj++;
+                } else {
+                    son1[ii] = val;
+                    pos1.remove(pos1.indexOf(ii));
+                    ii++;
+                }
+            } else {
+                ii++;
+            }
+            
+            // Dejamos los numeros originales que no generan conflicto (Segundo Hijo)
+            if (pos2.contains(k) && !pos2.isEmpty()) {              // Si la posicion k esta disponible
+                int val = parent2[h];
+                if (contiene(son2,val)) {
+                    h++;
+                } else {
+                    son2[k] = val;
+                    pos2.remove(pos2.indexOf(k));
+                    k++;
+                }
+            } else {
+                k++;
+            }
+        }
+        new1.setGenes(son1,f,d);
+        new2.setGenes(son2,f,d);
+    }
+
+    private void cruceVarOX2(CromosomaAsigC new1, CromosomaAsigC new2) {
+        int[] parent1 = Functions.toArrayInt(new1.toArray()); 
+        int[] parent2 = Functions.toArrayInt(new2.toArray());   
+        int[] son1 = new int[new1.getTamanio()];
+        int[] son2 = new int[new2.getTamanio()];
+        Random r = new Random();
+        int numEscogidos = new1.getTamanio()/3; 
+        ArrayList<Integer> pos1 = new ArrayList<>();
+        ArrayList<Integer> pos2 = new ArrayList<>();
+        ArrayList<Integer> seleccionados = new ArrayList();
+        
+        for (int i = 0; i < new1.getTamanio(); i++) {
+            pos1.add(i);
+            pos2.add(i);
+            son1[i] = -1;
+            son2[i] = -1;
+        }
+        
+        Integer j;
+        for (int i = 0; i < numEscogidos; i++) {
+            j = r.nextInt(new1.getTamanio());
+            while(seleccionados.contains(j)){
+                j = r.nextInt(new1.getTamanio());
+            }
+        }
+        
+        for (Integer i : seleccionados) {
+            j = son1[i];
+            son1[j] = parent2[j];
+            son2[j] = parent1[j];
+            pos1.remove(pos1.indexOf(j));
+            pos2.remove(pos2.indexOf(j));
+        }
+
+        // Dejamos los numeros originales que no generan conflicto (Primer Hijo)
+        int ii = numEscogidos, jj = numEscogidos;
+        int k = numEscogidos, h = numEscogidos;
+        
+        while (!pos1.isEmpty() || !pos2.isEmpty()) {
+            if (ii == parent1.length) ii = 0;
+            if (jj == parent1.length) jj = 0;
+            if (k == parent2.length) k = 0;
+            if (h == parent2.length) h = 0;
+          
+            // Dejamos los numeros originales que no generan conflicto (Primer Hijo)
+            if (pos1.contains(ii) && !pos1.isEmpty()) {              // Si la posicion ii esta disponible
+                int val = parent1[jj];
+                if (contiene(son1,val)) {
+                    jj++;
+                } else {
+                    son1[ii] = val;
+                    pos1.remove(pos1.indexOf(ii));
+                    ii++;
+                }
+            } else {
+                ii++;
+            }
+            
+            // Dejamos los numeros originales que no generan conflicto (Segundo Hijo)
+            if (pos2.contains(k) && !pos2.isEmpty()) {              // Si la posicion k esta disponible
+                int val = parent2[h];
+                if (contiene(son2,val)) {
+                    h++;
+                } else {
+                    son2[k] = val;
+                    pos2.remove(pos2.indexOf(k));
+                    k++;
+                }
+            } else {
+                k++;
+            }
+        }
+        new1.setGenes(son1,f,d);
+        new2.setGenes(son2,f,d);
+    }
+
+    
     private void cruceOrdinal(CromosomaAsigC new1, CromosomaAsigC new2) {
         Random r = new Random();
         int[] p1 = new int[new1.getTamanio()];
@@ -602,7 +757,7 @@ public class Problema {
                 /*if(!esValido(mutado1)){
                     System.out.println("ERROR -- DUPLICADO GENERADO");
                 }*/
-                pob[j] =  new CromosomaAsigC(mutado1);
+                pob[j] =  new CromosomaAsigC(mutado1,f,d);
             }
         }
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -642,7 +797,7 @@ public class Problema {
                 /*if(!esValido(mutado)){
                     System.out.println("ERROR -- DUPLICADO GENERADO");
                 }*/
-                CromosomaAsigC nuevo = new CromosomaAsigC(mutado);
+                CromosomaAsigC nuevo = new CromosomaAsigC(mutado,f,d);
                 pob[j] = nuevo;
             }
         }
@@ -692,7 +847,7 @@ public class Problema {
                     }
                 }
 
-                CromosomaAsigC nuevo = new CromosomaAsigC(mutado);
+                CromosomaAsigC nuevo = new CromosomaAsigC(mutado,f,d);
                 pob[j] = nuevo;
             }
         }
@@ -796,7 +951,7 @@ public class Problema {
 				segmento.remove(0);
 			}
 
-			CromosomaAsigC nuevo = new CromosomaAsigC(mutado);
+			CromosomaAsigC nuevo = new CromosomaAsigC(mutado,f,d);
 			pob[j] = nuevo;
 
 		}

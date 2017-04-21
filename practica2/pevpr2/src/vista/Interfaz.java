@@ -119,7 +119,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ruleta", "Torneo determinista", "Estocastico", "Torneo probabilista" }));
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Inserción", "Intercambio", "Inversión", "Heurística" }));
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Inserción", "Intercambio", "Inversión", "Heurística", "Propio" }));
 
         jCheckBox1.setText("Elitismo");
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -128,7 +128,7 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
 
-        jLabel9.setText("T cruce");
+        jLabel9.setText("T mutacion");
 
         jButton1.setText("Generar grafica");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -179,7 +179,7 @@ public class Interfaz extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE))
+                                .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel6)
                                 .addGap(19, 19, 19)
@@ -287,7 +287,7 @@ public class Interfaz extends javax.swing.JFrame {
         jInternalFrame1.getContentPane().setLayout(jInternalFrame1Layout);
         jInternalFrame1Layout.setHorizontalGroup(
             jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 793, Short.MAX_VALUE)
+            .addGap(0, 785, Short.MAX_VALUE)
         );
         jInternalFrame1Layout.setVerticalGroup(
             jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

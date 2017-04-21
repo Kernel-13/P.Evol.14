@@ -26,7 +26,11 @@ public class CromosomaAsigC extends Cromosoma {
         genes = x;
         this.tam = x.size();
     }
-    
+    public CromosomaAsigC(ArrayList<Integer> x,int f[][],int d[][]){
+        genes = x;
+        this.tam = x.size();
+        aptitud = Functions.valorAsignacion(Functions.toArrayInt(genes.toArray()), f, d, tam);
+    }
     
     public void inicializa(Random r,int[][] f,int[][] d) {
         while(genes.size()<tam){
