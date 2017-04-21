@@ -555,13 +555,16 @@ public class Problema {
                 mutacionInsercion(pob,probMutacion);
                 break;
             case HEU:
-                mutacionHeuristica(pob,probMutacion,pob[0].getTamanio());
+                mutacionHeuristica(pob,probMutacion);
                 break;
             case INV:
                 mutacionInversion(pob,probMutacion);
                 break;
             case INT:
                 mutacionIntercambio(pob,probMutacion);
+                break;
+            case PROPIO:
+                mutacionPropia(pob,probMutacion);
                 break;
             default:
                 mutacionInversion(pob,probMutacion);
@@ -597,7 +600,7 @@ public class Problema {
                 mutado1.set(puntoUno , new Integer(elem2));
                 mutado1.set(puntoDos, new Integer(elem1));
                 /*if(!esValido(mutado1)){
-                    System.out.println("ERROR -- DUPLCADO GENERADO");
+                    System.out.println("ERROR -- DUPLICADO GENERADO");
                 }*/
                 pob[j] =  new CromosomaAsigC(mutado1);
             }
@@ -637,7 +640,7 @@ public class Problema {
                     //mutado.remove(puntoDos);
                 }
                 /*if(!esValido(mutado)){
-                    System.out.println("ERROR -- DUPLCADO GENERADO");
+                    System.out.println("ERROR -- DUPLICADO GENERADO");
                 }*/
                 CromosomaAsigC nuevo = new CromosomaAsigC(mutado);
                 pob[j] = nuevo;
@@ -657,20 +660,23 @@ public class Problema {
             if (r.nextDouble() < probMutacion) {
                 ArrayList<Integer> mutado = new ArrayList<Integer>(pobAux[j].getGenes());
                 ArrayList<Integer> posiciones = new ArrayList<>();
-                ArrayList<Integer> valores = new ArrayList<>();
-
+                ArrayList<Integer> valores = new ArrayList<>();     
+                
                 int cont = 0;
-                for (int i = 0; i < pobAux.length; i++) {
-                    if (r.nextDouble() < probMutacion) {
-                        cont++;
-                        valores.add(mutado.get(i));
+                while(cont < 1){
+                     for (int i = 0; i < mutado.size() && cont < 3; i++) {
+                        if (r.nextDouble() < probMutacion) {
+                            if(!valores.contains(i)){
+                                cont++;
+                                valores.add(mutado.get(i));
+                            }
+                        }
                     }
                 }
-
-                int punto = r.nextInt(pobAux[j].getTamanio());
+               
                 
                 for (int i = 0; i < cont; i++) {
-                    int pos = r.nextInt(pobAux.length);
+                    int pos = r.nextInt(mutado.size());
                     posiciones.add(pos);
                 }
 
@@ -692,13 +698,18 @@ public class Problema {
         }
     }
 
-    public void mutacionHeuristica(Cromosoma[] pob, double probMutacion, int n) {
+    public void mutacionHeuristica(Cromosoma[] pob, double probMutacion) {
         Random r = new Random();
         CromosomaAsigC[] pobAux = new CromosomaAsigC[pob.length];
         for (int i = 0; i < pob.length; i++) {
             pobAux[i] = (CromosomaAsigC) pob[i];
         }
 
+        int n = r.nextInt(pobAux[0].getTamanio());
+        while(n < 2 || n >= pobAux[0].getTamanio()){
+            n = r.nextInt(pobAux[0].getTamanio());
+        }
+        
         for (int j = 0; j < pobAux.length; j++) {
             if (r.nextDouble() < probMutacion) {
 
@@ -759,20 +770,20 @@ public class Problema {
 
 	for (int j = 0; j < pobAux.length; j++) {
 		if (r.nextDouble() < probMutacion) {
-			int puntoUno = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
-			int puntoDos = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
+			int puntoUno = r.nextInt(pobAux[j].getTamanio());
+			int puntoDos = r.nextInt(pobAux[j].getTamanio());
 
 				// Repetimos hasta conseguir 2 puntos separados
 			while (puntoUno >= puntoDos) {
-				puntoUno = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
-				puntoDos = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
+				puntoUno = r.nextInt(pobAux[j].getTamanio());
+				puntoDos = r.nextInt(pobAux[j].getTamanio());
 			}
 
 			ArrayList<Integer> mutado = new ArrayList<Integer>(pobAux[j].getGenes());
 			ArrayList<Integer> segmento = new ArrayList<Integer>();
 
 				// Seleccionamos el segmento que queremos mover
-			for (int i = puntoUno; i < puntoDos; i++) {
+			for (int i = puntoUno; i <= puntoDos; i++) {
 				segmento.add(mutado.get(i));
 			}
 
@@ -793,7 +804,7 @@ public class Problema {
 		// throw new UnsupportedOperationException("Not supported yet."); //To
 		// change body of generated methods, choose Tools | Templates.
     }
-
+    
     private boolean esValido(ArrayList<Integer> crom) {
         boolean exit = true;
         for (int i = 0; i < crom.size() && exit; i++) {
