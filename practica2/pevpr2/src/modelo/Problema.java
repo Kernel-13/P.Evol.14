@@ -555,7 +555,6 @@ public class Problema {
         new2.setGenes(son2,f,d);
     }
 
-    
     private void cruceOrdinal(CromosomaAsigC new1, CromosomaAsigC new2) {
         Random r = new Random();
         int[] p1 = new int[new1.getTamanio()];
@@ -602,7 +601,6 @@ public class Problema {
         new1.setGenes(son1,f,d);
         new2.setGenes(son2,f,d);
     }
-   
     
     private ArrayList<Integer> generaListaDinamica(int tam){
         ArrayList<Integer> ret = new ArrayList();
@@ -713,7 +711,7 @@ public class Problema {
                 mutacionHeuristica(pob,probMutacion);
                 break;
             case INV:
-                mutacionInversion(pob,probMutacion);
+                mutacionInversion(pob,probMutacion,false);
                 break;
             case INT:
                 mutacionIntercambio(pob,probMutacion);
@@ -722,7 +720,7 @@ public class Problema {
                 mutacionPropia(pob,probMutacion);
                 break;
             default:
-                mutacionInversion(pob,probMutacion);
+                mutacionInversion(pob,probMutacion,false);
                 break;
         }
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -768,7 +766,7 @@ public class Problema {
      * @param pob
      * @param probMutacion 
      */
-    public void mutacionInversion(Cromosoma[] pob, double probMutacion) {
+    public void mutacionInversion(Cromosoma[] pob, double probMutacion, boolean operador) {
         Random r = new Random();
         CromosomaAsigC[] pobAux = new CromosomaAsigC[pob.length];
         for (int i = 0; i < pob.length; i++) {
@@ -798,7 +796,13 @@ public class Problema {
                     System.out.println("ERROR -- DUPLICADO GENERADO");
                 }*/
                 CromosomaAsigC nuevo = new CromosomaAsigC(mutado,f,d);
-                pob[j] = nuevo;
+                if(!operador){
+                    if(nuevo.getAptitud() < pob[j].getAptitud()){
+                        pob[j] = nuevo;
+                    }
+                } else {
+                    pob[j] = nuevo;
+                }
             }
         }
     }
@@ -859,19 +863,30 @@ public class Problema {
         for (int i = 0; i < pob.length; i++) {
             pobAux[i] = (CromosomaAsigC) pob[i];
         }
-
-        int n = r.nextInt(pobAux[0].getTamanio());
-        while(n < 2 || n >= pobAux[0].getTamanio()){
+        int tam = pobAux[0].getTamanio();
+        int n = r.nextInt(tam);
+        
+//        int limit = 3;
+//        if(tam <= 10){
+//            limit = tam - tam/2;
+//        } else if (tam > 10 && tam <= 20){
+//            limit = tam - (tam/3)*2;
+//        } else if (tam > 20 && tam <= 30){
+//            limit = tam - (tam/4)*3;
+//        } 
+        
+        while(n < 2 || n > 6){
             n = r.nextInt(pobAux[0].getTamanio());
         }
         
         for (int j = 0; j < pobAux.length; j++) {
             if (r.nextDouble() < probMutacion) {
 
-                ArrayList<Integer> original = pobAux[j].getGenes();
+                ArrayList<Integer> original = new ArrayList(pobAux[j].getGenes());
                 ArrayList<Integer> pos = new ArrayList<>();
                 ArrayList<Integer> val = new ArrayList<>();
-
+                CromosomaAsigC mejorCrom = new CromosomaAsigC(pobAux[j].getGenes(),f,d);
+                
                 while (pos.size() < n) {
                     int aux = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
                     if (!pos.contains(aux)) {
@@ -879,39 +894,43 @@ public class Problema {
                         val.add(original.get(aux));
                     }
                 }
+                ArrayList<ArrayList<Integer>> permutaciones = permutar(val);
+                
+                for(int i = 0; i < permutaciones.size(); i++){
+                    ArrayList<Integer> perm = permutaciones.get(i);
+                    ArrayList<Integer> mutado = new ArrayList(pobAux[j].getGenes());
+                    for(int k = 0; k < perm.size(); k++){
+                        mutado.set(pos.get(k), perm.get(k));
+                    }
+                    CromosomaAsigC nuevo = new CromosomaAsigC(mutado,f,d);
+                    if(nuevo.getAptitud() < mejorCrom.getAptitud()){
+                        mejorCrom = new CromosomaAsigC(mutado,f,d);
+                    }
+                }
 
-                backtracking(pos, val, original);
-
-                CromosomaAsigC nuevo = new CromosomaAsigC(mejorMutacion);
-                pob[j] = nuevo;
+                pob[j] = mejorCrom;
             }
 
         }
     }
+    
+    public ArrayList<ArrayList<Integer>> permutar(ArrayList<Integer> valores) {
+        ArrayList<ArrayList<Integer>> permutaciones = new ArrayList<>();
+        ArrayList<Integer> perm = new ArrayList<>();
+        backtracking(valores, permutaciones, perm);
+        return permutaciones;
+    }
 
-    private void backtracking(ArrayList<Integer> pos, ArrayList<Integer> valores,
-            ArrayList<Integer> mutado) {
-        
-        ArrayList<Integer> nuevo = new ArrayList<Integer>(mutado);
-        ArrayList<Integer> pos2 = new ArrayList<Integer>(pos);
-        ArrayList<Integer> val2 = new ArrayList<Integer>(valores);
-        for (int i = 0; i < val2.size(); i++) {
-            for (int j = 0; j < pos2.size(); j++) {
-                nuevo.set(pos2.get(j), val2.get(i));
-                val2.remove(i);
-                pos2.remove(j);
-                backtracking(pos2, val2, nuevo);
-                pos2 = new ArrayList<Integer>(pos);
-                val2 = new ArrayList<Integer>(valores);
-            }
-        }
-
-        if (esValido(nuevo)) {
-            CromosomaAsigC aux = new CromosomaAsigC(nuevo);
-            double apt = aux.getAptitud();
-            if (apt > mejorAptitud) {
-                mejorMutacion = new ArrayList<Integer>(nuevo);
-                mejorAptitud = apt;
+    public void backtracking(ArrayList<Integer> valores, ArrayList<ArrayList<Integer>> permutaciones, ArrayList<Integer> perm) {
+        if (perm.size() == valores.size()) {
+            ArrayList<Integer> temp = new ArrayList<>(perm);
+            permutaciones.add(temp);
+        }        
+        for (int i=0; i<valores.size(); i++) {
+            if (!perm.contains(valores.get(i))) {
+                perm.add(valores.get(i));
+                backtracking(valores, permutaciones, perm);
+                perm.remove(perm.size() - 1);
             }
         }
     }
