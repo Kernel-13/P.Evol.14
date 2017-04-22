@@ -36,6 +36,7 @@ public class Controlador {
     private boolean elitismo;
     private int f[][];
     private int d[][];
+    private boolean inv;
     
     public Controlador(){
         funcion = TipoFuncion.F1;
@@ -315,6 +316,9 @@ public class Controlador {
         elitismo = el;
     }
     
+    public void cambiarInversion(boolean selected) {
+        inv = selected;
+    }
     
     /**
      * ejecuta el algoritmo genetico y devuelve los datos para generar 
@@ -325,7 +329,7 @@ public class Controlador {
         //aqui hay que leer archivo e inicializar f y d
         nvars = leerArchivo(archivo);
         AlgoritmoGenetico algo = new AlgoritmoGenetico(funcion, poblacion, iteraciones,
-                probCruces, probMutacion,precision,seleccion,nvars,elitismo,f,d,cruce,mutacion);
+                probCruces, probMutacion,precision,seleccion,nvars,elitismo,f,d,cruce,mutacion,inv);
         return algo.ejecuta(semilla);
     }
     
@@ -395,5 +399,7 @@ public class Controlador {
             }
         }
     }
+
+
     
 }

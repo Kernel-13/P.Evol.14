@@ -37,6 +37,10 @@ public class Problema {
         this.mut = m;
     }
 
+    
+    
+    
+    
     /**
      * calcula el fitness desplazado, las puntuaciones y las puntuaciones
      * acomuladas
@@ -256,6 +260,20 @@ public class Problema {
                 son2[j] = tabla[0][j];
             }
         }
+        
+        int dup1,dup2, numR = r.nextInt(new1.getTamanio());
+        dup1 = duplicado(son1);
+        dup2 = duplicado(son2);
+        while(dup1 != -1){
+            son1[dup1] = r.nextInt(new1.getTamanio());
+            dup1 = duplicado(son1);
+        }
+        while(dup2 != -1){
+            son2[dup2] = r.nextInt(new1.getTamanio());
+            dup2 = duplicado(son2);
+        }
+        
+        
         new1.setGenes(son1, f, d);
         new2.setGenes(son2, f, d);
     }
@@ -731,7 +749,7 @@ public class Problema {
      * @param pob
      * @param probMutacion 
      */
-    public void mutacionIntercambio(Cromosoma[] pob, double probMutacion) {
+    private void mutacionIntercambio(Cromosoma[] pob, double probMutacion) {
         Random r = new Random();
         CromosomaAsigC[] pobAux = new CromosomaAsigC[pob.length];
         for (int i = 0; i < pob.length; i++)
@@ -752,9 +770,6 @@ public class Problema {
                 Integer elem2 = pobAux[j].getGenes().get(puntoDos);
                 mutado1.set(puntoUno , new Integer(elem2));
                 mutado1.set(puntoDos, new Integer(elem1));
-                /*if(!esValido(mutado1)){
-                    System.out.println("ERROR -- DUPLICADO GENERADO");
-                }*/
                 pob[j] =  new CromosomaAsigC(mutado1,f,d);
             }
         }
@@ -766,7 +781,7 @@ public class Problema {
      * @param pob
      * @param probMutacion 
      */
-    public void mutacionInversion(Cromosoma[] pob, double probMutacion, boolean operador) {
+    protected void mutacionInversion(Cromosoma[] pob, double probMutacion, boolean operador) {
         Random r = new Random();
         CromosomaAsigC[] pobAux = new CromosomaAsigC[pob.length];
         for (int i = 0; i < pob.length; i++) {
@@ -807,7 +822,7 @@ public class Problema {
         }
     }
 
-    public void mutacionInsercion(Cromosoma[] pob, double probMutacion) {
+    private void mutacionInsercion(Cromosoma[] pob, double probMutacion) {
         Random r = new Random();
 
         CromosomaAsigC[] pobAux = new CromosomaAsigC[pob.length];
@@ -857,7 +872,7 @@ public class Problema {
         }
     }
 
-    public void mutacionHeuristica(Cromosoma[] pob, double probMutacion) {
+    private void mutacionHeuristica(Cromosoma[] pob, double probMutacion) {
         Random r = new Random();
         CromosomaAsigC[] pobAux = new CromosomaAsigC[pob.length];
         for (int i = 0; i < pob.length; i++) {
@@ -914,14 +929,14 @@ public class Problema {
         }
     }
     
-    public ArrayList<ArrayList<Integer>> permutar(ArrayList<Integer> valores) {
+    private ArrayList<ArrayList<Integer>> permutar(ArrayList<Integer> valores) {
         ArrayList<ArrayList<Integer>> permutaciones = new ArrayList<>();
         ArrayList<Integer> perm = new ArrayList<>();
         backtracking(valores, permutaciones, perm);
         return permutaciones;
     }
 
-    public void backtracking(ArrayList<Integer> valores, ArrayList<ArrayList<Integer>> permutaciones, ArrayList<Integer> perm) {
+    private void backtracking(ArrayList<Integer> valores, ArrayList<ArrayList<Integer>> permutaciones, ArrayList<Integer> perm) {
         if (perm.size() == valores.size()) {
             ArrayList<Integer> temp = new ArrayList<>(perm);
             permutaciones.add(temp);
@@ -935,7 +950,7 @@ public class Problema {
         }
     }
     
-    public void mutacionPropia(Cromosoma[] pob, double probMutacion) {
+    private void mutacionPropia(Cromosoma[] pob, double probMutacion) {
 	Random r = new Random();
 	CromosomaAsigC[] pobAux = new CromosomaAsigC[pob.length];
 	for (int i = 0; i < pob.length; i++) {

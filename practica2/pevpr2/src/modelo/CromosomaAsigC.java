@@ -32,7 +32,7 @@ public class CromosomaAsigC extends Cromosoma {
         aptitud = Functions.valorAsignacion(Functions.toArrayInt(genes.toArray()), f, d, tam);
     }
     
-    public void inicializa(Random r,int[][] f,int[][] d) {
+    public ArrayList<Integer> inicializa(Random r,int[][] f,int[][] d) {
         while(genes.size()<tam){
             Integer rand = r.nextInt(tam);
             if(!genes.contains(rand)){
@@ -40,6 +40,7 @@ public class CromosomaAsigC extends Cromosoma {
             }
         }
         aptitud = Functions.valorAsignacion(Functions.toArrayInt(genes.toArray()), f, d, tam);
+        return this.genes;
     }
 
     @Override

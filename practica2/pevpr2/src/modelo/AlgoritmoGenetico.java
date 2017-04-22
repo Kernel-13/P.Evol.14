@@ -33,12 +33,13 @@ public class AlgoritmoGenetico {
     private int tamElite;
     private int[][] f2;
     private int[][] d;
-    
+    private boolean inv;
     Factoria f;
     
     public AlgoritmoGenetico(TipoFuncion funcion, int tampob, int iteraciones,
             double probCruces, double probMutacion, double precision,
-            TipoSeleccion tSeleccion,int nvars,boolean elitismo,int[][]f2,int[][]d,TipoCruce c,TipoMutacion m){
+            TipoSeleccion tSeleccion,int nvars,boolean elitismo,int[][]f2,
+            int[][]d,TipoCruce c,TipoMutacion m,boolean inv){
         
         tamPoblacion = tampob;
         this.iteraciones = iteraciones;
@@ -53,6 +54,7 @@ public class AlgoritmoGenetico {
         tamElite = calcularTamElite();
         this.f2 = f2;
         this.d = d;
+        this.inv = inv;
         problema = new Problema(c,m,f2,d);
     }
     
@@ -94,6 +96,7 @@ public class AlgoritmoGenetico {
             pob = seleccion.selecciona(pob);
             problema.reproduccion(pob, probCruces);
             problema.mutacion(pob, probMutacion);
+            problema.mutacionInversion(pob,probMutacion, inv);
             if(this.elitismo)
                 problema.elitismo(pob, tamElite);
             mejorPob = problema.evaluacion(pob);
@@ -114,12 +117,39 @@ public class AlgoritmoGenetico {
      * @param semilla 
      */
     private void pobInicial(int semilla){
+        boolean repetidos = false;
         Random r = new Random(semilla);
         pob = new CromosomaAsigC[tamPoblacion];
+        if(factorial(nvars)>pob.length)
+            repetidos = true;
+        
         for(int i = 0; i < tamPoblacion;i++){
-            //pob[i] = f.factoriaCromosoma(precision,nvars); find
             pob[i] = new CromosomaAsigC(nvars);
             pob[i].inicializa(r,f2,d);
+            if(containsLista(pob[i],i-1)){
+                pob[i].inicializa(r,f2,d);
+            }
         }
+        
+    }
+    
+    private boolean containsLista(CromosomaAsigC elem,int n){
+        boolean ret = true;
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < elem.getTamanio();j++){
+                if(pob[i].getGenes().get(j) != elem.getGenes().get(j))
+                    ret = false;
+            }
+            if(ret)
+                return true;
+        }
+        return false;
+    }
+    
+    public int factorial (int numero) {
+        if (numero==0)
+          return 1;
+        else
+          return numero * factorial(numero-1);
     }
 }
