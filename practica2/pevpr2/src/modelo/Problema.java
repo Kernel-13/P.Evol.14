@@ -36,11 +36,7 @@ public class Problema {
         this.cruce = c;
         this.mut = m;
     }
-
-    
-    
-    
-    
+   
     /**
      * calcula el fitness desplazado, las puntuaciones y las puntuaciones
      * acomuladas
@@ -134,9 +130,8 @@ public class Problema {
      * Cruza 2 cromosomas - obtenemos 2 hijos Los cromosomas padre se pasan por
      * referencia y se convierten en los hijos posteriormente.
      *
-     * @param pob
-     * @param son1
-     * @param son2
+     * @param new1
+     * @param new2
      */
     protected void cruce(CromosomaAsigC new1, CromosomaAsigC new2) {
         switch (cruce) {
@@ -780,6 +775,7 @@ public class Problema {
      * MUTACION POR INVERSION.
      * @param pob
      * @param probMutacion 
+     * @param operador 
      */
     protected void mutacionInversion(Cromosoma[] pob, double probMutacion, boolean operador) {
         Random r = new Random();
@@ -798,9 +794,12 @@ public class Problema {
                     puntoDos = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
                 }
 
-                ArrayList<Integer> original = new ArrayList<Integer>(pobAux[j].getGenes());
-                ArrayList<Integer> mutado = new ArrayList<Integer>(pobAux[j].getGenes());
-
+                ArrayList<Integer> original = new ArrayList<>(pobAux[j].getGenes());
+                ArrayList<Integer> mutado;
+                
+                
+                
+                mutado = new ArrayList<>(pobAux[j].getGenes());
                 int c = 0;
                 for (int i = puntoUno; i <= puntoDos; i++) {
                     mutado.set(puntoDos - c, original.get(i));
@@ -811,7 +810,7 @@ public class Problema {
                     System.out.println("ERROR -- DUPLICADO GENERADO");
                 }*/
                 CromosomaAsigC nuevo = new CromosomaAsigC(mutado,f,d);
-                if(!operador){
+                if(operador){
                     if(nuevo.getAptitud() < pob[j].getAptitud()){
                         pob[j] = nuevo;
                     }
@@ -832,7 +831,7 @@ public class Problema {
 
         for (int j = 0; j < pobAux.length; j++) {
             if (r.nextDouble() < probMutacion) {
-                ArrayList<Integer> mutado = new ArrayList<Integer>(pobAux[j].getGenes());
+                ArrayList<Integer> mutado = new ArrayList<>(pobAux[j].getGenes());
                 ArrayList<Integer> posiciones = new ArrayList<>();
                 ArrayList<Integer> valores = new ArrayList<>();     
                 
@@ -968,9 +967,11 @@ public class Problema {
 				puntoDos = r.nextInt(pobAux[j].getTamanio());
 			}
 
-			ArrayList<Integer> mutado = new ArrayList<Integer>(pobAux[j].getGenes());
-			ArrayList<Integer> segmento = new ArrayList<Integer>();
-
+			ArrayList<Integer> mutado = new ArrayList<>(pobAux[j].getGenes());
+			ArrayList<Integer> segmento;
+                        
+                        
+                        segmento = new ArrayList<>();
 				// Seleccionamos el segmento que queremos mover
 			for (int i = puntoUno; i <= puntoDos; i++) {
 				segmento.add(mutado.get(i));
