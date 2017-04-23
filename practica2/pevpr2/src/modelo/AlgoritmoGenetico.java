@@ -109,7 +109,7 @@ public class AlgoritmoGenetico {
 //            System.out.println(c.toString());
 //        }
         System.out.println(problema.getBest().toString());
-        return new DatosGrafica(best,iteraciones,bestPob,media);
+        return new DatosGrafica(best,iteraciones,bestPob,media,problema.getBest());
     }
     
     /**

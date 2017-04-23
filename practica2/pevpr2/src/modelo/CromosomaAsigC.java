@@ -103,7 +103,7 @@ public class CromosomaAsigC extends Cromosoma {
     
     @Override
     public String toString() {
-        return "Fenotipo(s): " + this.genes.toString() + " --- Aptitud:" + this.aptitud;
+        return this.genes.toString();
     }
     
 }

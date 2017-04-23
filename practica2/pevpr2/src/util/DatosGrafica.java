@@ -6,6 +6,7 @@
 package util;
 
 import java.util.ArrayList;
+import modelo.CromosomaAsigC;
 
 /**
  *
@@ -17,13 +18,13 @@ public class DatosGrafica {
     public ArrayList<Double> mejoresIteracion;
     public ArrayList<Double> mediaPorIteracion;
     public int tam;
-    public double mejorAptitud;
+    public CromosomaAsigC mejorAptitud;
     public DatosGrafica(ArrayList<Double> mejoresTodo, int tam
-            ,ArrayList<Double> mejoresIt, ArrayList<Double> mediaPobIt){
+            ,ArrayList<Double> mejoresIt, ArrayList<Double> mediaPobIt,CromosomaAsigC mejor){
         mejoresDeTodas = mejoresTodo;
         mejoresIteracion = mejoresIt;
         mediaPorIteracion = mediaPobIt; 
-        mejorAptitud = mejoresDeTodas.get(mejoresTodo.size()-1);
+        mejorAptitud = mejor;
         this.tam = tam;
     }
     
