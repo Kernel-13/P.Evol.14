@@ -23,8 +23,6 @@ public class Problema {
     protected double sumaPob;
     protected TipoCruce cruce;
     protected TipoMutacion mut;
-    protected double mejorAptitud = 0;          // Para la mutacion heuristica
-    protected ArrayList<Integer> mejorMutacion; // Para la mutacion heuristica
 
     protected CromosomaAsigC[] elite;
 

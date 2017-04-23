@@ -103,11 +103,11 @@ public class AlgoritmoGenetico {
             bestPob.add(mejorPob.getAptitud());
             best.add(problema.getBest().getAptitud());
             media.add(problema.media(tamPoblacion));
-            System.out.println(problema.getBest().toString());
+            //System.out.println(problema.getBest().toString());
         }
-        for(CromosomaAsigC c: pob){
-            System.out.println(c.toString());
-        }
+//        for(CromosomaAsigC c: pob){
+//            System.out.println(c.toString());
+//        }
         System.out.println(problema.getBest().toString());
         return new DatosGrafica(best,iteraciones,bestPob,media);
     }
