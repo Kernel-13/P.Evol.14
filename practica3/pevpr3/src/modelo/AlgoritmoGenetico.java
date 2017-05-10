@@ -11,6 +11,7 @@ import util.DatosGrafica;
 import util.TipoCruce;
 import util.TipoFuncion;
 import util.TipoMutacion;
+import util.TipoOperacion;
 import util.TipoSeleccion;
 
 /**
@@ -34,6 +35,7 @@ public class AlgoritmoGenetico {
     private int[][] f2;
     private int[][] d;
     private boolean inv;
+    private int maxDepth;
     Factoria f;
     
     public AlgoritmoGenetico(TipoFuncion funcion, int tampob, int iteraciones,
@@ -131,6 +133,17 @@ public class AlgoritmoGenetico {
             }
         }
         
+    }
+    
+    private void inicioCompleto(int depth){
+        if(depth < this.maxDepth){
+            // pilla funcion aleatoria
+        }
+    }
+
+    private TipoOperacion randomFunction() {
+        int pick = new Random().nextInt(TipoOperacion.values().length);
+        return TipoOperacion.values()[pick];
     }
     
     private boolean containsLista(CromosomaAsigC elem,int n){

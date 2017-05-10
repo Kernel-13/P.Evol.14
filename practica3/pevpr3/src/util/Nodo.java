@@ -46,6 +46,14 @@ public class Nodo {
         }
     }
     
+    public void setIzq(Nodo i){
+        this.izq = i;
+    }
+    
+    public void setDer(Nodo d){
+        this.der = d;
+    }
+    
     public Nodo getDer(){
         return der;
     }
