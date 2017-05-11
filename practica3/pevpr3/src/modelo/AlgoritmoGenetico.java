@@ -148,6 +148,36 @@ public class AlgoritmoGenetico {
         return TipoOperacion.values()[pick];
     }
 
+    private Nodo inicioCompleto(int depth){
+        Nodo node = null;
+        if(depth < this.maxDepth){
+            TipoOperacion f = randomFunction();
+            while(f == TipoOperacion.HOJA){
+                f = randomFunction();
+            }
+            switch(f) {
+                case IF:
+                    node = new Nodo(f,0,inicioCompleto(depth + 1), inicioCompleto(depth + 1), inicioCompleto(depth + 1));
+                    break;
+                case AND:
+                    node = new Nodo(f,0,inicioCompleto(depth + 1), inicioCompleto(depth + 1), null);
+                    break;
+                case OR:
+                    node = new Nodo(f,0,inicioCompleto(depth + 1), inicioCompleto(depth + 1), null);
+                    break;
+                case NOT:
+                    node = new Nodo(f,0,inicioCompleto(depth + 1), null, null);
+                    break;
+                default:
+                    break;
+            }
+            // pilla funcion aleatoria
+        } else {
+            TipoOperacion f = TipoOperacion.HOJA;
+            node = new Nodo(op, r.nextInt(numTerminales), null, null, null);
+        }
+        return node;
+    }
     
     private Nodo inicioCreciente(int depth) {
         Random r = new Random();
