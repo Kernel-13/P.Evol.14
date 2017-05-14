@@ -18,6 +18,7 @@ public class Cromosoma {
             arbol = n;
         }
         
+        
         protected Nodo getArbol(){
             return arbol;
         }
@@ -68,6 +69,7 @@ public class Cromosoma {
         public double getPuntuacion() {
             return puntuacion;
         }
+       
         
         /**
          * devuelve el tamanio del array de genes
@@ -80,4 +82,6 @@ public class Cromosoma {
         protected double getPuntAcomulada() {
             return puntAcomulada;
         }
+        
+
 }

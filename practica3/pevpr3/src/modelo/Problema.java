@@ -8,8 +8,10 @@ package modelo;
 import java.util.ArrayList;
 import java.util.Random;
 import util.Functions;
+import util.Nodo;
 import util.TipoCruce;
 import util.TipoMutacion;
+import util.TipoOperacion;
 
 /**
  *
@@ -23,7 +25,7 @@ public class Problema {
     protected double sumaPob;
     protected TipoCruce cruce;
     protected TipoMutacion mut;
-
+    protected int numTerminales;
     protected CromosomaAsigC[] elite;
 
     public Problema(TipoCruce c,TipoMutacion m, int[][] f, int[][] d) {
@@ -160,7 +162,7 @@ public class Problema {
                 cruceOX(new1,new2);
         }
     }
-
+    
     /**
      * Cruza 2 cromosomas - obtenemos 2 hijos El cruce aplicado en este caso es
      * por ruleta
@@ -714,283 +716,74 @@ public class Problema {
      * @param probMutacion
      */
     public void mutacion(Cromosoma[] pob, double probMutacion) {
-        switch(mut){
-            case INS:
-                mutacionInsercion(pob,probMutacion);
-                break;
-            case HEU:
-                mutacionHeuristica(pob,probMutacion);
-                break;
-            case INV:
-                mutacionInversion(pob,probMutacion,false);
-                break;
-            case INT:
-                mutacionIntercambio(pob,probMutacion);
-                break;
-            case PROPIO:
-                mutacionPropia(pob,probMutacion);
-                break;
-            default:
-                mutacionInversion(pob,probMutacion,false);
-                break;
+        Random r = new Random();
+        for(Cromosoma c: pob){
+            if(r.nextDouble() < probMutacion)
+                switch(mut){
+                    case FUNC:
+                        mutaFuncion(r,c);
+                        break;
+                    case TER:
+                        mutaTerminal(r,c);
+                        break;
+                    case PERM:
+                        mutaPermutacion(r,c);
+                        break;
+                    default:
+                        mutaFuncion(r,c);
+                        break;
+                }
         }
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
    
-    /**
-     * ya funciona
-     * @param pob
-     * @param probMutacion 
-     */
-    private void mutacionIntercambio(Cromosoma[] pob, double probMutacion) {
-        Random r = new Random();
-        CromosomaAsigC[] pobAux = new CromosomaAsigC[pob.length];
-        for (int i = 0; i < pob.length; i++)
-            pobAux[i] = (CromosomaAsigC) pob[i];
+    
+    private void mutaPermutacion(Random r, Cromosoma x){
+        ArrayList<Integer> traza1 = new ArrayList<>();
+        ArrayList<Integer> traza2 = new ArrayList<>();
+        Nodo aux1;
+        Nodo aux2;
+        boolean escogido = r.nextBoolean();
+        boolean escogido2 = r.nextBoolean();
+        //cojo un terminal o funcion de alguno de los dos
+        if(escogido)
+            aux1 = x.getArbol().terminalRandom(r, traza1).copy();
+        else
+            aux1 = x.getArbol().funcionRandom(r, traza1).copy();
         
-        int puntoUno,puntoDos;
-        for (int j = 0; j < pobAux.length; j++) {
-            if (r.nextDouble() < probMutacion) {
-                puntoUno = r.nextInt(pobAux[j].getTamanio()-1);
-                puntoDos = r.nextInt(pobAux[j].getTamanio()-1);
-                // Repetimos hasta conseguir 2 puntos separados
-                while (puntoUno >= puntoDos) {
-                    puntoUno = r.nextInt(pobAux[j].getTamanio() - 1);
-                    puntoDos = r.nextInt(pobAux[j].getTamanio() - 1);
-                }
-                ArrayList<Integer> mutado1 = pobAux[j].getGenes();
-                Integer elem1 = pobAux[j].getGenes().get(puntoUno);
-                Integer elem2 = pobAux[j].getGenes().get(puntoDos);
-                mutado1.set(puntoUno , new Integer(elem2));
-                mutado1.set(puntoDos, new Integer(elem1));
-                pob[j] =  new CromosomaAsigC(mutado1,f,d);
-            }
-        }
-        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    /**
-     * MUTACION POR INVERSION.
-     * @param pob
-     * @param probMutacion 
-     * @param operador 
-     */
-    protected void mutacionInversion(Cromosoma[] pob, double probMutacion, boolean operador) {
-        Random r = new Random();
-        CromosomaAsigC[] pobAux = new CromosomaAsigC[pob.length];
-        for (int i = 0; i < pob.length; i++) {
-            pobAux[i] = (CromosomaAsigC) pob[i];
-        }
-        int puntoUno,puntoDos;
-        for (int j = 0; j < pobAux.length; j++) {
-            if (r.nextDouble() < probMutacion) {
-                puntoUno = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
-                puntoDos = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
-                // Repetimos hasta conseguir 2 puntos separados
-                while (puntoUno >= puntoDos) {
-                    puntoUno = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
-                    puntoDos = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
-                }
-
-                ArrayList<Integer> original = new ArrayList<>(pobAux[j].getGenes());
-                ArrayList<Integer> mutado;
-                
-                
-                
-                mutado = new ArrayList<>(pobAux[j].getGenes());
-                int c = 0;
-                for (int i = puntoUno; i <= puntoDos; i++) {
-                    mutado.set(puntoDos - c, original.get(i));
-                    c++;
-                    //mutado.remove(puntoDos);
-                }
-                /*if(!esValido(mutado)){
-                    System.out.println("ERROR -- DUPLICADO GENERADO");
-                }*/
-                CromosomaAsigC nuevo = new CromosomaAsigC(mutado,f,d);
-                if(operador){
-                    if(nuevo.getAptitud() < pob[j].getAptitud()){
-                        pob[j] = nuevo;
-                    }
-                } else {
-                    pob[j] = nuevo;
-                }
-            }
-        }
-    }
-
-    private void mutacionInsercion(Cromosoma[] pob, double probMutacion) {
-        Random r = new Random();
-
-        CromosomaAsigC[] pobAux = new CromosomaAsigC[pob.length];
-        for (int i = 0; i < pob.length; i++) {
-            pobAux[i] = (CromosomaAsigC) pob[i];
-        }
-
-        for (int j = 0; j < pobAux.length; j++) {
-            if (r.nextDouble() < probMutacion) {
-                ArrayList<Integer> mutado = new ArrayList<>(pobAux[j].getGenes());
-                ArrayList<Integer> posiciones = new ArrayList<>();
-                ArrayList<Integer> valores = new ArrayList<>();     
-                
-                int cont = 0;
-                while(cont < 1){
-                     for (int i = 0; i < mutado.size() && cont < 3; i++) {
-                        if (r.nextDouble() < probMutacion) {
-                            if(!valores.contains(i)){
-                                cont++;
-                                valores.add(mutado.get(i));
-                            }
-                        }
-                    }
-                }
-               
-                
-                for (int i = 0; i < cont; i++) {
-                    int pos = r.nextInt(mutado.size());
-                    posiciones.add(pos);
-                }
-
-                for (int i = 0; i < posiciones.size(); i++) {
-                    int val = valores.get(i);
-                    int posOriginal = mutado.indexOf(val);
-                    int posNueva = posiciones.get(i);
-                    mutado.add(posNueva, val);
-                    if (posOriginal < posNueva) {
-                        mutado.remove(posOriginal);
-                    } else {
-                        mutado.remove(posOriginal + 1);
-                    }
-                }
-
-                CromosomaAsigC nuevo = new CromosomaAsigC(mutado,f,d);
-                pob[j] = nuevo;
-            }
-        }
-    }
-
-    private void mutacionHeuristica(Cromosoma[] pob, double probMutacion) {
-        Random r = new Random();
-        CromosomaAsigC[] pobAux = new CromosomaAsigC[pob.length];
-        for (int i = 0; i < pob.length; i++) {
-            pobAux[i] = (CromosomaAsigC) pob[i];
-        }
-        int tam = pobAux[0].getTamanio();
-        int n = r.nextInt(tam);
+        if(escogido2)
+            aux2 = x.getArbol().terminalRandom(r, traza2).copy();
+        else 
+            aux2 = x.getArbol().funcionRandom(r, traza2).copy();
         
-//        int limit = 3;
-//        if(tam <= 10){
-//            limit = tam - tam/2;
-//        } else if (tam > 10 && tam <= 20){
-//            limit = tam - (tam/3)*2;
-//        } else if (tam > 20 && tam <= 30){
-//            limit = tam - (tam/4)*3;
-//        } 
-        
-        while(n < 2 || n > 6){
-            n = r.nextInt(pobAux[0].getTamanio());
-        }
-        
-        for (int j = 0; j < pobAux.length; j++) {
-            if (r.nextDouble() < probMutacion) {
-
-                ArrayList<Integer> original = new ArrayList(pobAux[j].getGenes());
-                ArrayList<Integer> pos = new ArrayList<>();
-                ArrayList<Integer> val = new ArrayList<>();
-                CromosomaAsigC mejorCrom = new CromosomaAsigC(pobAux[j].getGenes(),f,d);
-                
-                while (pos.size() < n) {
-                    int aux = r.nextInt(pobAux[j].getTamanio() - 1) + 1;
-                    if (!pos.contains(aux)) {
-                        pos.add(aux);
-                        val.add(original.get(aux));
-                    }
-                }
-                ArrayList<ArrayList<Integer>> permutaciones = permutar(val);
-                
-                for(int i = 0; i < permutaciones.size(); i++){
-                    ArrayList<Integer> perm = permutaciones.get(i);
-                    ArrayList<Integer> mutado = new ArrayList(pobAux[j].getGenes());
-                    for(int k = 0; k < perm.size(); k++){
-                        mutado.set(pos.get(k), perm.get(k));
-                    }
-                    CromosomaAsigC nuevo = new CromosomaAsigC(mutado,f,d);
-                    if(nuevo.getAptitud() < mejorCrom.getAptitud()){
-                        mejorCrom = new CromosomaAsigC(mutado,f,d);
-                    }
-                }
-
-                pob[j] = mejorCrom;
-            }
-
-        }
+        x.getArbol().setNodo(aux1, traza2);
+        x.getArbol().setNodo(aux2, traza1);
     }
     
-    private ArrayList<ArrayList<Integer>> permutar(ArrayList<Integer> valores) {
-        ArrayList<ArrayList<Integer>> permutaciones = new ArrayList<>();
-        ArrayList<Integer> perm = new ArrayList<>();
-        backtracking(valores, permutaciones, perm);
-        return permutaciones;
-    }
-
-    private void backtracking(ArrayList<Integer> valores, ArrayList<ArrayList<Integer>> permutaciones, ArrayList<Integer> perm) {
-        if (perm.size() == valores.size()) {
-            ArrayList<Integer> temp = new ArrayList<>(perm);
-            permutaciones.add(temp);
-        }        
-        for (int i=0; i<valores.size(); i++) {
-            if (!perm.contains(valores.get(i))) {
-                perm.add(valores.get(i));
-                backtracking(valores, permutaciones, perm);
-                perm.remove(perm.size() - 1);
-            }
-        }
+    private void mutaTerminal(Random r,Cromosoma x){
+        ArrayList<Integer> traza = new ArrayList<>();
+        x.getArbol().terminalRandom(r, traza).setTerminal(r.nextInt(numTerminales));
     }
     
-    private void mutacionPropia(Cromosoma[] pob, double probMutacion) {
-	Random r = new Random();
-	CromosomaAsigC[] pobAux = new CromosomaAsigC[pob.length];
-	for (int i = 0; i < pob.length; i++) {
-		pobAux[i] = (CromosomaAsigC) pob[i];
-	}
-
-	for (int j = 0; j < pobAux.length; j++) {
-		if (r.nextDouble() < probMutacion) {
-			int puntoUno = r.nextInt(pobAux[j].getTamanio());
-			int puntoDos = r.nextInt(pobAux[j].getTamanio());
-
-				// Repetimos hasta conseguir 2 puntos separados
-			while (puntoUno >= puntoDos) {
-				puntoUno = r.nextInt(pobAux[j].getTamanio());
-				puntoDos = r.nextInt(pobAux[j].getTamanio());
-			}
-
-			ArrayList<Integer> mutado = new ArrayList<>(pobAux[j].getGenes());
-			ArrayList<Integer> segmento;
-                        
-                        
-                        segmento = new ArrayList<>();
-				// Seleccionamos el segmento que queremos mover
-			for (int i = puntoUno; i <= puntoDos; i++) {
-				segmento.add(mutado.get(i));
-			}
-
-			for (int i = 0; i < segmento.size(); i++) {
-				mutado.remove(segmento.get(i));
-			}
-
-			while (!segmento.isEmpty()) {
-				mutado.add(0, segmento.get(0));
-				segmento.remove(0);
-			}
-
-			CromosomaAsigC nuevo = new CromosomaAsigC(mutado,f,d);
-			pob[j] = nuevo;
-
-		}
-	}
-		// throw new UnsupportedOperationException("Not supported yet."); //To
-		// change body of generated methods, choose Tools | Templates.
+   
+    private void mutaFuncion(Random r,Cromosoma x){
+        ArrayList<Integer> traza = new ArrayList<>();
+        Nodo aux = x.getArbol().funcionRandom(r, traza);
+        if(null != aux.getFuncion())switch (aux.getFuncion()) {
+            case OR:
+                aux.setFuncion(TipoOperacion.AND);
+                break;
+            case AND:
+                aux.setFuncion(TipoOperacion.OR);
+                break;
+            case NOT:
+                Nodo copia = aux.getIzq(); 
+                aux = copia;
+                break;
+            default:
+                break;
+        }
+        x.getArbol().setNodo(aux, traza);
     }
     
     private boolean esValido(ArrayList<Integer> crom) {

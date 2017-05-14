@@ -103,7 +103,6 @@ public class AlgoritmoGenetico {
             pob = seleccion.selecciona(pob);
             problema.reproduccion(pob, probCruces);
             problema.mutacion(pob, probMutacion);
-            problema.mutacionInversion(pob, probMutacion, inv);
             if (this.elitismo) {
                 problema.elitismo(pob, tamElite);
             }
@@ -173,8 +172,9 @@ public class AlgoritmoGenetico {
             }
             // pilla funcion aleatoria
         } else {
+            Random r = new Random();
             TipoOperacion f = TipoOperacion.HOJA;
-            node = new Nodo(op, r.nextInt(numTerminales), null, null, null);
+            node = new Nodo(f, r.nextInt(numTerminales), null, null, null);
         }
         return node;
     }
@@ -199,6 +199,7 @@ public class AlgoritmoGenetico {
                 return new Nodo(op, r.nextInt(numTerminales), null, null, null);
         }
     }
+    
     
     /*private Nodo inicioRampedAndHalf(boolean modo,int tamGrupo,int depth){
         if(modo && depth%tamGrupo == 0)

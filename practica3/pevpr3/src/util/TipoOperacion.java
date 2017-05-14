@@ -12,6 +12,7 @@ package util;
 public enum TipoOperacion {
     AND,OR,NOT,IF,HOJA;
     
+    public static int length = 4;
     public String toString(){
         switch(this){
             case AND:
