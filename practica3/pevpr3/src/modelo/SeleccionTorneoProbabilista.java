@@ -17,8 +17,8 @@ public class SeleccionTorneoProbabilista extends Seleccion {
     public static double P = 0.5;
     
     @Override
-    CromosomaAsigC[] selecciona(CromosomaAsigC[] pob) {
-       CromosomaAsigC[] ret = new CromosomaAsigC[pob.length];
+    Cromosoma[] selecciona(Cromosoma[] pob) {
+       Cromosoma[] ret = new Cromosoma[pob.length];
        Random r = new Random();
        int[] aleatorios = new int[TAMALEATORIOS];
        int escogido;
@@ -32,7 +32,7 @@ public class SeleccionTorneoProbabilista extends Seleccion {
     }
     
     
-    private int mejorPeor(CromosomaAsigC[] pob , int[] ale , Random r){
+    private int mejorPeor(Cromosoma[] pob , int[] ale , Random r){
         int mejor = ale[0], peor = ale[0];
         double mejorPuntuacion=pob[ale[0]].getPuntuacion(), peorPuntuacion=pob[ale[0]].getPuntuacion(); 
         for(int i=1; i < TAMALEATORIOS;i++){

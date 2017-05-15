@@ -11,6 +11,7 @@ import util.DatosGrafica;
 import util.Nodo;
 import util.TipoCruce;
 import util.TipoFuncion;
+import util.TipoInicializar;
 import util.TipoMutacion;
 import util.TipoOperacion;
 import util.TipoSeleccion;
@@ -22,7 +23,8 @@ import util.TipoSeleccion;
 public class AlgoritmoGenetico {
 
     public static double ELITE = 0.05;
-
+    public static int NGRUPOS = 3;
+    
     private int tamPoblacion;
     private int iteraciones;
     private double probCruces;
@@ -30,38 +32,33 @@ public class AlgoritmoGenetico {
     private double precision;
     private Seleccion seleccion;
     private Problema problema;
-    private CromosomaAsigC[] pob;
+    private Cromosoma[] pob;
     private int nvars;
     private boolean elitismo;
     private int tamElite;
-    private int[][] f2;
-    private int[][] d;
     private boolean inv;
     private int maxDepth;
-    private int numTerminales;
     Factoria f;
 
     public AlgoritmoGenetico(TipoFuncion funcion, int tampob, int iteraciones,
             double probCruces, double probMutacion, double precision,
-            TipoSeleccion tSeleccion, int nvars, boolean elitismo, int[][] f2,
-            int[][] d, TipoCruce c, TipoMutacion m, boolean inv) {
+            TipoSeleccion tSeleccion, int nvars, boolean elitismo, TipoCruce c, TipoMutacion m, boolean inv
+            ,int maxProf) {
 
         tamPoblacion = tampob;
         this.iteraciones = iteraciones;
         this.probCruces = probCruces / 100;
         this.probMutacion = probMutacion / 100;
         this.precision = precision;
-        this.nvars = nvars;
         this.elitismo = elitismo;
         f = new Factoria(funcion, tSeleccion);
         seleccion = f.factoriaSeleccion();
         //problema = f.factoriaProblema(nvars);
         tamElite = calcularTamElite();
-        this.f2 = f2;
-        this.d = d;
         this.inv = inv;
-        problema = new Problema(c, m, f2, d);
-        numTerminales = 6;
+        problema = new Problema(c, m,nvars);
+        this.nvars = nvars;
+        maxDepth = maxProf;
     }
 
     /**
@@ -89,7 +86,7 @@ public class AlgoritmoGenetico {
         ArrayList<Double> best = new ArrayList<>();
         ArrayList<Double> bestPob = new ArrayList<>();
         ArrayList<Double> media = new ArrayList<>();
-        CromosomaAsigC mejorPob;
+        Cromosoma mejorPob;
         pobInicial(semilla);
         if (this.elitismo) {
             problema.iniElite(pob, tamElite);
@@ -112,7 +109,7 @@ public class AlgoritmoGenetico {
             media.add(problema.media(tamPoblacion));
             //System.out.println(problema.getBest().toString());
         }
-//        for(CromosomaAsigC c: pob){
+//        for(Cromosoma c: pob){
 //            System.out.println(c.toString());
 //        }
         System.out.println(problema.getBest().toString());
@@ -127,17 +124,13 @@ public class AlgoritmoGenetico {
     private void pobInicial(int semilla) {
         boolean repetidos = false;
         Random r = new Random(semilla);
-        pob = new CromosomaAsigC[tamPoblacion];
+        pob = new Cromosoma[tamPoblacion];
         if (factorial(nvars) > pob.length) {
             repetidos = true;
         }
 
         for (int i = 0; i < tamPoblacion; i++) {
-            pob[i] = new CromosomaAsigC(nvars);
-            pob[i].inicializa(r, f2, d);
-            if (containsLista(pob[i], i - 1)) {
-                pob[i].inicializa(r, f2, d);
-            }
+            pob[i] = new Cromosoma(inicializa(TipoInicializar.CRECIENTE));
         }
 
     }
@@ -147,6 +140,19 @@ public class AlgoritmoGenetico {
         return TipoOperacion.values()[pick];
     }
 
+    private Nodo inicializa(TipoInicializar ini){
+        switch(ini){
+            case COMPLETO:
+                return inicioCompleto(0);
+            case RANDH:
+                return inicioRampedAndHalf(false,NGRUPOS,0);
+            case CRECIENTE:
+                return inicioCreciente(0);
+            default:
+                return inicioCompleto(0);
+        }
+    }
+    
     private Nodo inicioCompleto(int depth){
         Nodo node = null;
         if(depth < this.maxDepth){
@@ -174,7 +180,7 @@ public class AlgoritmoGenetico {
         } else {
             Random r = new Random();
             TipoOperacion f = TipoOperacion.HOJA;
-            node = new Nodo(f, r.nextInt(numTerminales), null, null, null);
+            node = new Nodo(f, r.nextInt(nvars), null, null, null);
         }
         return node;
     }
@@ -196,21 +202,48 @@ public class AlgoritmoGenetico {
             case IF:
                 return new Nodo(op, 0, inicioCreciente(depth + 1), inicioCreciente(depth + 1), inicioCreciente(depth + 1));
             default:
-                return new Nodo(op, r.nextInt(numTerminales), null, null, null);
+                return new Nodo(op, r.nextInt(nvars), null, null, null);
         }
     }
     
     
-    /*private Nodo inicioRampedAndHalf(boolean modo,int tamGrupo,int depth){
-        if(modo && depth%tamGrupo == 0)
-            modo = !modo;
-        if(modo)
-            return inicioCreciente(depth);
-        else
-            return inicioCompleto(depth);
-    }*/
+    private Nodo inicioRampedAndHalf(boolean modo,int tamGrupo,int depth){
+        Nodo node = null;
+        boolean nuevoModo = modo;
+        if(depth%tamGrupo == 0)
+            nuevoModo = !modo;
+        if(depth < this.maxDepth && nuevoModo){
+            TipoOperacion f = randomFunction();
+            while(f == TipoOperacion.HOJA){
+                f = randomFunction();
+            }
+            switch(f) {
+                case IF:
+                    node = new Nodo(f,0,inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1), inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1), inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1));
+                    break;
+                case AND:
+                    node = new Nodo(f,0,inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1), inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1), null);
+                    break;
+                case OR:
+                    node = new Nodo(f,0,inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1), inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1), null);
+                    break;
+                case NOT:
+                    node = new Nodo(f,0,inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1), null, null);
+                    break;
+                default:
+                    break;
+            }
+            // pilla funcion aleatoria
+        } else {
+            Random r = new Random();
+            TipoOperacion f = TipoOperacion.HOJA;
+            node = new Nodo(f, r.nextInt(nvars), null, null, null);
+        }
+        return node;
+    }
 
-    private boolean containsLista(CromosomaAsigC elem, int n) {
+    /*
+    private boolean containsLista(Cromosoma elem, int n) {
         boolean ret = true;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < elem.getTamanio(); j++) {
@@ -223,7 +256,7 @@ public class AlgoritmoGenetico {
             }
         }
         return false;
-    }
+    }*/
 
     public int factorial(int numero) {
         if (numero == 0) {

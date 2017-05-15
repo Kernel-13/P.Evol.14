@@ -34,8 +34,7 @@ public class Controlador {
     private int semilla;
     private int nvars;
     private boolean elitismo;
-    private int f[][];
-    private int d[][];
+    private int maxProf;
     private boolean inv;
     
     public Controlador(){
@@ -48,8 +47,9 @@ public class Controlador {
         semilla = 2;
         seleccion = TipoSeleccion.RULETA;
         cruce = TipoCruce.OX;
-        mutacion = TipoMutacion.INS;
+        mutacion = TipoMutacion.TER;
         nvars = 4;
+        maxProf = 6;
     }
     
     /**
@@ -197,22 +197,16 @@ public class Controlador {
         // Inserción, Intercambio, Inversión, Heurística
         switch(m){
             case 0:
-                mutacion = TipoMutacion.INS;
+                mutacion = TipoMutacion.TER;
                 break;
             case 1:
-                mutacion = TipoMutacion.INT;
+                mutacion = TipoMutacion.FUNC;
                 break;
             case 2:
-                mutacion = TipoMutacion.INV;
+                mutacion = TipoMutacion.PERM;
                 break;
-            case 3:
-                mutacion = TipoMutacion.HEU;
-                break;
-            case 4:
-                mutacion = TipoMutacion.PROPIO;
-                break;    
             default:
-                mutacion = TipoMutacion.INS;
+                mutacion = TipoMutacion.TER;
         }
     }
     
@@ -327,9 +321,8 @@ public class Controlador {
      */
     public DatosGrafica ejecuta(String archivo){
         //aqui hay que leer archivo e inicializar f y d
-        nvars = leerArchivo(archivo);
         AlgoritmoGenetico algo = new AlgoritmoGenetico(funcion, poblacion, iteraciones,
-                probCruces, probMutacion,precision,seleccion,nvars,elitismo,f,d,cruce,mutacion,inv);
+                probCruces, probMutacion,precision,seleccion,nvars,elitismo,cruce,mutacion,inv,maxProf);
         return algo.ejecuta(semilla);
     }
     
@@ -355,7 +348,7 @@ public class Controlador {
      * @param d
      * @return 
      */
-    private int leerArchivo(String archivo){
+   /* private int leerArchivo(String archivo){
         int n = 0;
         String cadena;
         try {
@@ -399,7 +392,7 @@ public class Controlador {
             }
         }
     }
-
+    */
 
     
 }

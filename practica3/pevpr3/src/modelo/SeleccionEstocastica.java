@@ -15,10 +15,10 @@ public class SeleccionEstocastica extends Seleccion {
     public SeleccionEstocastica(){}
     
     @Override
-    CromosomaAsigC[] selecciona(CromosomaAsigC[] pob) {
+    Cromosoma[] selecciona(Cromosoma[] pob) {
        int j;
        boolean salir;
-       CromosomaAsigC[] ret = new CromosomaAsigC[pob.length];
+       Cromosoma[] ret = new Cromosoma[pob.length];
        for(int i=0; i < pob.length;i++){
            double valorAle = 1/pob.length;
            j = 0;

@@ -12,24 +12,15 @@ public class Cromosoma {
         protected Nodo arbol;
         protected int tam;
         
-        //PRACTICA 3
         public Cromosoma(){}
         public Cromosoma(Nodo n){
             arbol = n;
         }
         
         
-        protected Nodo getArbol(){
+        public Nodo getArbol(){
             return arbol;
         }
-        
-        //PRACTICA 3
-        
-        public void inicializa(Random r){}//inicializa el cromosoma
-        protected Object[] toArray(){return null;}
-        protected void setGenes(Object[] array){}
-        
-        
         
         /**
          * calcula la puntuacion utilizando la suma de puntuaciones 
@@ -39,12 +30,6 @@ public class Cromosoma {
         protected Cromosoma copy(){return this;} //devuelve una copia del individuo
         
         
-        /**
-         * calcula la longitud del cromosoma utilizando la precision
-         * @param p
-         * @return 
-         */
-        public int longCromosoma(double p){return 0;} 
         
         protected void setPuntAcomulada(double puntuacion) {
             puntAcomulada = puntuacion;

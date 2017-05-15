@@ -122,7 +122,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ruleta", "Torneo determinista", "Estocastico", "Torneo probabilista" }));
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Inserción", "Intercambio", "Inversión", "Heurística", "Propio" }));
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Terminal", "Funcion", "Permutacion" }));
 
         jCheckBox1.setText("Elitismo");
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {

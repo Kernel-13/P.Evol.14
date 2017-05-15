@@ -67,7 +67,7 @@ public class Nodo {
     }
 
     public void setNodo(Nodo nuevo, ArrayList<Integer> traza) {
-        switch (traza.get(0)) {
+        if(!traza.isEmpty())switch (traza.get(0)) {
             case 0:
                 traza.remove(0);
                 this.izq.setNodo(nuevo, traza);

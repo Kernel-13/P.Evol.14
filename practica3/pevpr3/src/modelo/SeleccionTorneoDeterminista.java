@@ -15,8 +15,8 @@ import java.util.Random;
 public class SeleccionTorneoDeterminista extends Seleccion {
     public static int TAMALEATORIOS = 2;
     @Override
-    CromosomaAsigC[] selecciona(CromosomaAsigC[] pob) {
-       CromosomaAsigC[] ret = new CromosomaAsigC[pob.length];
+    Cromosoma[] selecciona(Cromosoma[] pob) {
+       Cromosoma[] ret = new Cromosoma[pob.length];
        Random r = new Random();
        int[] aleatorios = new int[TAMALEATORIOS];
        int escogido;
@@ -30,7 +30,7 @@ public class SeleccionTorneoDeterminista extends Seleccion {
     }
     
     
-    private int mejor(CromosomaAsigC[] pob,int[] ale){
+    private int mejor(Cromosoma[] pob,int[] ale){
         int mejor = ale[0];
         double mejorPuntuacion=pob[ale[0]].getPuntuacion(); 
         for(int i=1; i < TAMALEATORIOS;i++){

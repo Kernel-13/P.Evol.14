@@ -3,13 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package modelo;
-
-import java.util.ArrayList;
+package util;
 
 /**
  *
+ * @author josemanuel
  */
-public abstract class Seleccion {
-    abstract Cromosoma[] selecciona(Cromosoma[] pob);
+public enum TipoInicializar {
+    COMPLETO,RANDH,CRECIENTE
 }
