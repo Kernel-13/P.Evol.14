@@ -6,6 +6,7 @@
 package pevpr2;
 
 import controlador.Controlador;
+import java.util.ArrayList;
 import java.util.Random;
 import modelo.Cromosoma;
 import modelo.Problema;
@@ -33,11 +34,19 @@ public class Pevpr2 {
         Cromosoma[] pob = new Cromosoma[5];
         String tabla[] = {"a1","a2","d0","d1","d2","d3"};
         Problema p = new Problema(TipoCruce.CICLOS,TipoMutacion.TER, 5);
+        
+        ArrayList<ArrayList<Boolean>> casos = new ArrayList<>();
+        generadorCasos(casos, tabla.length);
+        
         for(int i = 0; i < 5;i++){
             pob[i] = new Cromosoma(inicioRampedAndHalf(false,5,0));
+            // pob[i] = new Cromosoma(inicioCompleto(0));
             System.out.println(pob[i].getArbol().toString(tabla));
+           //  System.out.println(pob[i].getArbol().valor(tabla));
+            System.out.println(calcularAptitud(pob[i], casos, true));
         }
-        p.mutacion(pob,1);
+        
+        p.mutacion(pob,1); // No realiza el cambio - El string sigue siendo el mismo
         for(Cromosoma x: pob){
             System.out.println(x.getArbol().toString(tabla));
         }
@@ -51,6 +60,34 @@ public class Pevpr2 {
        
     }
     
+        // Funcion para calcular la aptitud de 1 cromosoma ()
+        private static int calcularAptitud(Cromosoma subject, ArrayList<ArrayList<Boolean>> casos, boolean esperado){
+            int apt = 0;
+            for (int j = 0; j < casos.size(); j++) {
+                boolean valor = subject.getArbol().valor(casos.get(j));
+                if(valor == esperado){
+                    apt++;
+                }
+            }
+            return apt;
+        }
+        
+        // Funcion que genera las combinaciones de 0's y 1's de la tabla
+        private static void generadorCasos(ArrayList<ArrayList<Boolean>> casos, int n){
+            for (int i = 0; i < Math.pow(2, n); i++) {
+                ArrayList<Boolean> aux = new ArrayList<Boolean>();
+                String bin = Integer.toBinaryString(i);
+                while (bin.length() < n){
+                    bin = "0" + bin;
+                }
+                char[] chars = bin.toCharArray();
+                for (int j = 0; j < chars.length; j++) {
+                    boolean valor = chars[j] == '0' ? false : true;
+                    aux.add(valor);
+                }
+                casos.add(aux);
+            }
+        }
     
         private static Nodo inicioRampedAndHalf(boolean modo,int tamGrupo,int depth){
         Nodo node = null;
@@ -87,6 +124,7 @@ public class Pevpr2 {
         return node;
     }
     
+        @SuppressWarnings("unused")
         private static Nodo inicioCompleto(int depth){
         Nodo node = null;
         if(depth < 6){

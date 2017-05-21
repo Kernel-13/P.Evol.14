@@ -21,15 +21,18 @@ public class Nodo {
     private Nodo cond;
 
     public Nodo(TipoOperacion f, int valor, Nodo izq, Nodo der, Nodo cond) {
+        if (f== TipoOperacion.HOJA){
+             this.terminal = valor;
+        }
         this.f = f;
         this.izq = izq;
         this.der = der;
         this.cond = cond;
     }
 
-    public boolean valor(boolean[] tabla) {
+    public boolean valor(ArrayList<Boolean> tabla) {
         if (this.f == TipoOperacion.HOJA) {
-            return tabla[this.terminal];
+            return tabla.get(this.terminal);
         } else {
             switch (f) {
                 case AND:
@@ -41,7 +44,7 @@ public class Nodo {
                 case IF:
                     return this.cond.valor(tabla) ? izq.valor(tabla) : der.valor(tabla);
                 default:
-                    return tabla[this.terminal];
+                    return tabla.get(this.terminal);
             }
         }
     }
@@ -152,8 +155,6 @@ public class Nodo {
             return null;
         }
     }
-
-    
     
     public void setFuncion(TipoOperacion func) {
         this.f = func;
