@@ -5,9 +5,11 @@
  */
 package modelo;
 
+import static java.lang.Math.pow;
 import java.util.ArrayList;
 import java.util.Random;
 import util.DatosGrafica;
+import util.Functions;
 import util.Nodo;
 import util.TipoCruce;
 import util.TipoFuncion;
@@ -38,13 +40,17 @@ public class AlgoritmoGenetico {
     private int tamElite;
     private boolean inv;
     private int maxDepth;
+    private boolean ifs;
+    private ArrayList<ArrayList<Boolean>> casos;
     Factoria f;
 
     public AlgoritmoGenetico(TipoFuncion funcion, int tampob, int iteraciones,
             double probCruces, double probMutacion, double precision,
             TipoSeleccion tSeleccion, int nvars, boolean elitismo, TipoCruce c, TipoMutacion m, boolean inv
-            ,int maxProf) {
-
+            ,int maxProf,boolean ifs) {
+        this.ifs = ifs;
+        casos = new ArrayList<>();
+        Functions.generadorCasos(casos, (int) (nvars + pow(2,nvars)));
         tamPoblacion = tampob;
         this.iteraciones = iteraciones;
         this.probCruces = probCruces / 100;
@@ -53,10 +59,9 @@ public class AlgoritmoGenetico {
         this.elitismo = elitismo;
         f = new Factoria(funcion, tSeleccion);
         seleccion = f.factoriaSeleccion();
-        //problema = f.factoriaProblema(nvars);
         tamElite = calcularTamElite();
         this.inv = inv;
-        problema = new Problema(c, m,nvars);
+        problema = new Problema(c, m,(int) (nvars + pow(2,nvars)));
         this.nvars = nvars;
         maxDepth = maxProf;
     }
@@ -107,11 +112,7 @@ public class AlgoritmoGenetico {
             bestPob.add(mejorPob.getAptitud());
             best.add(problema.getBest().getAptitud());
             media.add(problema.media(tamPoblacion));
-            //System.out.println(problema.getBest().toString());
         }
-//        for(Cromosoma c: pob){
-//            System.out.println(c.toString());
-//        }
         System.out.println(problema.getBest().toString());
         return new DatosGrafica(best, iteraciones, bestPob, media, problema.getBest());
     }
@@ -122,15 +123,10 @@ public class AlgoritmoGenetico {
      * @param semilla
      */
     private void pobInicial(int semilla) {
-        boolean repetidos = false;
         Random r = new Random(semilla);
         pob = new Cromosoma[tamPoblacion];
-        if (factorial(nvars) > pob.length) {
-            repetidos = true;
-        }
-
         for (int i = 0; i < tamPoblacion; i++) {
-            pob[i] = new Cromosoma(inicializa(TipoInicializar.CRECIENTE));
+            pob[i] = new Cromosoma(inicializa(TipoInicializar.CRECIENTE),casos,nvars);
         }
 
     }
@@ -157,7 +153,7 @@ public class AlgoritmoGenetico {
         Nodo node = null;
         if(depth < this.maxDepth){
             TipoOperacion f = randomFunction();
-            while(f == TipoOperacion.HOJA){
+            while(f == TipoOperacion.HOJA || (f==TipoOperacion.IF && !ifs)){
                 f = randomFunction();
             }
             switch(f) {
@@ -180,7 +176,7 @@ public class AlgoritmoGenetico {
         } else {
             Random r = new Random();
             TipoOperacion f = TipoOperacion.HOJA;
-            node = new Nodo(f, r.nextInt(nvars), null, null, null);
+            node = new Nodo(f, r.nextInt((int) (nvars + pow(2,nvars))), null, null, null);
         }
         return node;
     }
@@ -189,6 +185,9 @@ public class AlgoritmoGenetico {
         Random r = new Random();
         TipoOperacion op;
         op = randomFunction();
+        while((op==TipoOperacion.IF && !ifs)){
+            op = randomFunction();
+        }
         if(depth >= this.maxDepth){
             op = TipoOperacion.HOJA;
         }
@@ -202,10 +201,9 @@ public class AlgoritmoGenetico {
             case IF:
                 return new Nodo(op, 0, inicioCreciente(depth + 1), inicioCreciente(depth + 1), inicioCreciente(depth + 1));
             default:
-                return new Nodo(op, r.nextInt(nvars), null, null, null);
+                return new Nodo(op, r.nextInt((int) (nvars + pow(2,nvars))), null, null, null);
         }
     }
-    
     
     private Nodo inicioRampedAndHalf(boolean modo,int tamGrupo,int depth){
         Nodo node = null;
@@ -214,7 +212,7 @@ public class AlgoritmoGenetico {
             nuevoModo = !modo;
         if(depth < this.maxDepth && nuevoModo){
             TipoOperacion f = randomFunction();
-            while(f == TipoOperacion.HOJA){
+            while(f == TipoOperacion.HOJA || (f==TipoOperacion.IF && !ifs)){
                 f = randomFunction();
             }
             switch(f) {
@@ -237,27 +235,11 @@ public class AlgoritmoGenetico {
         } else {
             Random r = new Random();
             TipoOperacion f = TipoOperacion.HOJA;
-            node = new Nodo(f, r.nextInt(nvars), null, null, null);
+            node = new Nodo(f, r.nextInt((int) (nvars + pow(2,nvars))), null, null, null);
         }
         return node;
     }
-
-    /*
-    private boolean containsLista(Cromosoma elem, int n) {
-        boolean ret = true;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < elem.getTamanio(); j++) {
-                if (pob[i].getGenes().get(j) != elem.getGenes().get(j)) {
-                    ret = false;
-                }
-            }
-            if (ret) {
-                return true;
-            }
-        }
-        return false;
-    }*/
-
+    
     public int factorial(int numero) {
         if (numero == 0) {
             return 1;

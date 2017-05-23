@@ -36,6 +36,7 @@ public class Controlador {
     private boolean elitismo;
     private int maxProf;
     private boolean inv;
+    private boolean ifs;
     
     public Controlador(){
         funcion = TipoFuncion.F1;
@@ -50,6 +51,7 @@ public class Controlador {
         mutacion = TipoMutacion.TER;
         nvars = 4;
         maxProf = 6;
+        ifs = true;
     }
     
     /**
@@ -314,15 +316,19 @@ public class Controlador {
         inv = selected;
     }
     
+    public void cambiarIfs(boolean ifs){
+        this.ifs = ifs;
+    }
+    
     /**
      * ejecuta el algoritmo genetico y devuelve los datos para generar 
      * la grafica
      * @return 
      */
-    public DatosGrafica ejecuta(String archivo){
+    public DatosGrafica ejecuta(){
         //aqui hay que leer archivo e inicializar f y d
         AlgoritmoGenetico algo = new AlgoritmoGenetico(funcion, poblacion, iteraciones,
-                probCruces, probMutacion,precision,seleccion,nvars,elitismo,cruce,mutacion,inv,maxProf);
+                probCruces, probMutacion,precision,seleccion,nvars,elitismo,cruce,mutacion,inv,maxProf,ifs);
         return algo.ejecuta(semilla);
     }
     

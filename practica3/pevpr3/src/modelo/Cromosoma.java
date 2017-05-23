@@ -1,20 +1,23 @@
 package modelo;
 
+import java.util.ArrayList;
 import java.util.Random;
+import util.Functions;
 import util.Nodo;
 
 
 public class Cromosoma {	
     	protected double aptitud;
-        protected double aptitudReal;
 	protected double puntuacion;
         protected double puntAcomulada;
         protected Nodo arbol;
         protected int tam;
         
         public Cromosoma(){}
-        public Cromosoma(Nodo n){
+        public Cromosoma(Nodo n,ArrayList<ArrayList<Boolean>> casos,int tam){
+            this.tam = tam;
             arbol = n;
+            aptitud = Functions.calculoAptitud(this, casos, tam);
         }
         
         
@@ -35,16 +38,9 @@ public class Cromosoma {
             puntAcomulada = puntuacion;
         }
 
-        protected void setAptitudDesplazada(double aptR) {
-            this.aptitudReal = aptR;
-        }
         
         public void setPuntuacion(double suma) {
-            this.puntuacion = aptitudReal / suma;
-        }
-
-        protected double getAptitudDesplazada() {
-            return this.aptitudReal;
+            this.puntuacion = aptitud / suma;
         }
         
         public double getAptitud() {
@@ -66,6 +62,10 @@ public class Cromosoma {
         
         protected double getPuntAcomulada() {
             return puntAcomulada;
+        }
+        
+        public String toString(String []tabla){
+            return arbol.toString(tabla);
         }
         
 

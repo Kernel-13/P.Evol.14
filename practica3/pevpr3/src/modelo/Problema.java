@@ -28,14 +28,14 @@ public class Problema {
     protected int numTerminales;
     protected Cromosoma[] elite;
 
-    public Problema(TipoCruce c,TipoMutacion m,int nTerminales) {
+    public Problema(TipoCruce c, TipoMutacion m, int nTerminales) {
         sumaPob = 0;
         best = null;
         this.numTerminales = nTerminales;
         this.cruce = c;
         this.mut = m;
     }
-   
+
     /**
      * calcula el fitness desplazado, las puntuaciones y las puntuaciones
      * acomuladas
@@ -44,8 +44,8 @@ public class Problema {
      * @return
      */
     public Cromosoma evaluacion(Cromosoma[] pob) {
-        Cromosoma bestPobActual = pob[0];
-        double maxApt = 0, puntAcomulada = 0;  // Se debe calcular fuera, y entrar como parametro de la funcion
+        Cromosoma bestPobActual = pob[0];       // Cromosoma que se toma como referencia
+        double maxApt = 0, puntAcomulada = 0;   // Se debe calcular fuera, y entrar como parametro de la funcion
         double sum = 0;
         double sumDefault = 0;
         maxApt = pob[0].getAptitud();
@@ -55,10 +55,9 @@ public class Problema {
             }
         }
         for (int i = 0; i < pob.length; i++) {
-            pob[i].setAptitudDesplazada(aptitudDesplazada(pob[i], maxApt));
             sumDefault += pob[i].getAptitud();
-            sum += pob[i].getAptitudDesplazada();
-            if (pob[i].getAptitudDesplazada() > bestPobActual.getAptitudDesplazada()) {
+            sum += pob[i].getAptitud();
+            if (pob[i].getAptitud() > bestPobActual.getAptitud()) {
                 bestPobActual = pob[i];
             }
         }
@@ -71,7 +70,7 @@ public class Problema {
         if (best == null) {
             best = bestPobActual.copy();
         }
-        if (bestPobActual.getAptitud() < best.getAptitud()) {
+        if (bestPobActual.getAptitud() > best.getAptitud()) {
             best = bestPobActual.copy();
         }
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -141,20 +140,31 @@ public class Problema {
         boolean escogido = r.nextBoolean();
         boolean escogido2 = r.nextBoolean();
         //cojo un terminal o funcion de alguno de los dos
-        if(escogido)
+        if (escogido) {
             aux1 = new1.getArbol().terminalRandom(r, traza1).copy();
-        else
-            aux1 = new1.getArbol().funcionRandom(r, traza1).copy();
-        
-        if(escogido2)
+        } else {
+            if (new1.getArbol().getFuncion() == TipoOperacion.HOJA) {
+                aux1 = new1.getArbol().terminalRandom(r, traza1).copy();
+            } else {
+                aux1 = new1.getArbol().funcionRandom(r, traza1).copy();
+            }
+            
+        }
+
+        if (escogido2) {
             aux2 = new2.getArbol().terminalRandom(r, traza2).copy();
-        else 
-            aux2 = new2.getArbol().funcionRandom(r, traza2).copy();
-        
+        } else {
+            if (new2.getArbol().getFuncion() == TipoOperacion.HOJA) {
+                aux2 = new2.getArbol().terminalRandom(r, traza2).copy();
+            } else {
+                aux2 = new2.getArbol().funcionRandom(r, traza2).copy();
+            }
+            
+        }
+
         new1.getArbol().setNodo(aux2, traza1);
-        new2.getArbol().setNodo(aux1, traza2);        
+        new2.getArbol().setNodo(aux1, traza2);
     }
-    
 
     /**
      * Recorre la pob. y cada individuo, y segun la probabilidad cambia un gen o
@@ -165,75 +175,73 @@ public class Problema {
      */
     public void mutacion(Cromosoma[] pob, double probMutacion) {
         Random r = new Random();
-        for(Cromosoma c: pob){
-            if(r.nextDouble() < probMutacion)
-                switch(mut){
+        for (Cromosoma c : pob) {
+            if (r.nextDouble() < probMutacion) {
+                switch (mut) {
                     case FUNC:
-                        mutaFuncion(r,c);
+                        mutaFuncion(r, c);
                         break;
                     case TER:
-                        mutaTerminal(r,c);
+                        mutaTerminal(r, c);
                         break;
                     case PERM:
-                        mutaPermutacion(r,c);
+                        mutaPermutacion(r, c);
                         break;
                     default:
-                        mutaFuncion(r,c);
+                        mutaFuncion(r, c);
                         break;
                 }
+            }
         }
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-   
-    
-    private void mutaPermutacion(Random r, Cromosoma x){
-        ArrayList<Integer> traza1 = new ArrayList<>();
-        ArrayList<Integer> traza2 = new ArrayList<>();
-        Nodo aux1;
-        Nodo aux2;
-        boolean escogido = r.nextBoolean();
-        boolean escogido2 = r.nextBoolean();
-        //cojo un terminal o funcion de alguno de los dos
-        if(escogido)
-            aux1 = x.getArbol().terminalRandom(r, traza1).copy();
-        else
-            aux1 = x.getArbol().funcionRandom(r, traza1).copy();
-        
-        if(escogido2)
-            aux2 = x.getArbol().terminalRandom(r, traza2).copy();
-        else 
-            aux2 = x.getArbol().funcionRandom(r, traza2).copy();
-        
-        x.getArbol().setNodo(aux1, traza2);
-        x.getArbol().setNodo(aux2, traza1);
+
+    private void mutaPermutacion(Random r, Cromosoma x) {
+        if (x.getArbol().getFuncion() != TipoOperacion.HOJA) {
+            ArrayList<Integer> traza = new ArrayList<>();
+            Nodo aux = x.getArbol().funcionRandom(r, traza);
+            while (aux.getFuncion() != TipoOperacion.AND && aux.getFuncion() != TipoOperacion.OR) {
+                traza = new ArrayList<>();
+                aux = x.getArbol().funcionRandom(r, traza);
+            }
+            Nodo izq = aux.getIzq().copy();
+            Nodo der = aux.getDer().copy();
+            aux.setDer(izq);
+            aux.setIzq(der);
+            x.getArbol().setNodo(aux, traza);
+        }
+
     }
-    
-    private void mutaTerminal(Random r,Cromosoma x){
+
+    private void mutaTerminal(Random r, Cromosoma x) {
         ArrayList<Integer> traza = new ArrayList<>();
         x.getArbol().terminalRandom(r, traza).setTerminal(r.nextInt(numTerminales));
     }
-    
-   
-    private void mutaFuncion(Random r,Cromosoma x){
-        ArrayList<Integer> traza = new ArrayList<>();
-        Nodo aux = x.getArbol().funcionRandom(r, traza);
-        if(null != aux.getFuncion())switch (aux.getFuncion()) {
-            case OR:
-                aux.setFuncion(TipoOperacion.AND);
-                break;
-            case AND:
-                aux.setFuncion(TipoOperacion.OR);
-                break;
-            case NOT:
-                Nodo copia = aux.getIzq(); 
-                aux = copia;
-                break;
-            default:
-                break;
+
+    private void mutaFuncion(Random r, Cromosoma x) {
+        if (x.getArbol().getFuncion() != TipoOperacion.HOJA) {
+            ArrayList<Integer> traza = new ArrayList<>();
+            Nodo aux = x.getArbol().funcionRandom(r, traza);
+            if (null != aux.getFuncion()) {
+                switch (aux.getFuncion()) {
+                    case OR:
+                        aux.setFuncion(TipoOperacion.AND);
+                        break;
+                    case AND:
+                        aux.setFuncion(TipoOperacion.OR);
+                        break;
+                    case NOT:
+                        Nodo copia = aux.getIzq();
+                        aux = copia;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            x.getArbol().setNodo(aux, traza);
         }
-        x.getArbol().setNodo(aux, traza);
     }
-    
+
     private boolean esValido(ArrayList<Integer> crom) {
         boolean exit = true;
         for (int i = 0; i < crom.size() && exit; i++) {
@@ -260,7 +268,7 @@ public class Problema {
      * @param elite
      */
     public void elitismo(Cromosoma[] pob, int elite) {
-        elitismoMinimizacion(pob, elite);
+        elitismoMaximizacion(pob, elite);
     }
 
     /**
@@ -400,20 +408,25 @@ public class Problema {
         }
         return pos;
     }
-    
-    private boolean contiene(int[] x,int elem){
-        for(int y : x)
-            if(y == elem)
+
+    private boolean contiene(int[] x, int elem) {
+        for (int y : x) {
+            if (y == elem) {
                 return true;
+            }
+        }
         return false;
     }
-    
-    private int duplicado(int[] array){
+
+    private int duplicado(int[] array) {
         int ret = -1;
-        for(int i = 0; i < array.length;i++)
-            for(int j = 0; j < array.length;j++)
-                if(array[j] == array[i] && (i != j) && array[j]!=-1)
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array.length; j++) {
+                if (array[j] == array[i] && (i != j) && array[j] != -1) {
                     ret = j;
+                }
+            }
+        }
         return ret;
     }
 
