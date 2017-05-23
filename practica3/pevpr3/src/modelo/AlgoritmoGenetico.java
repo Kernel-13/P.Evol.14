@@ -61,7 +61,7 @@ public class AlgoritmoGenetico {
         seleccion = f.factoriaSeleccion();
         tamElite = calcularTamElite();
         this.inv = inv;
-        problema = new Problema(c, m,(int) (nvars + pow(2,nvars)));
+        problema = new Problema(casos,c, m,(int) (nvars + pow(2,nvars)),nvars);
         this.nvars = nvars;
         maxDepth = maxProf;
     }
@@ -88,6 +88,7 @@ public class AlgoritmoGenetico {
      * @return
      */
     public DatosGrafica ejecuta(int semilla) {
+        String aux[] = {"a0","a1","do","d1","d2","d3"};
         ArrayList<Double> best = new ArrayList<>();
         ArrayList<Double> bestPob = new ArrayList<>();
         ArrayList<Double> media = new ArrayList<>();
@@ -97,21 +98,29 @@ public class AlgoritmoGenetico {
             problema.iniElite(pob, tamElite);
             problema.elitismo(pob, tamElite);
         }
-        mejorPob = problema.evaluacion(pob);
+        mejorPob = problema.evaluacion(pob,nvars);
         bestPob.add(mejorPob.getAptitud());
         best.add(problema.getBest().getAptitud());
         media.add(problema.media(tamPoblacion));
         for (int i = 1; i < iteraciones; i++) {
+            for(Cromosoma c: pob){
+                System.out.println(c.getArbol().toString(aux));
+            }
+            System.out.println("--------------");
             pob = seleccion.selecciona(pob);
             problema.reproduccion(pob, probCruces);
             problema.mutacion(pob, probMutacion);
             if (this.elitismo) {
                 problema.elitismo(pob, tamElite);
             }
-            mejorPob = problema.evaluacion(pob);
+            mejorPob = problema.evaluacion(pob,nvars);
             bestPob.add(mejorPob.getAptitud());
             best.add(problema.getBest().getAptitud());
             media.add(problema.media(tamPoblacion));
+            for(Cromosoma c: pob){
+                System.out.println(c.getArbol().toString(aux));
+            }
+            System.gc();
         }
         System.out.println(problema.getBest().toString());
         return new DatosGrafica(best, iteraciones, bestPob, media, problema.getBest());

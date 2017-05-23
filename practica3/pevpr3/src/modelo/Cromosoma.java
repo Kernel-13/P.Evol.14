@@ -20,6 +20,12 @@ public class Cromosoma {
             aptitud = Functions.calculoAptitud(this, casos, tam);
         }
         
+        public void calculoAptitud (ArrayList<ArrayList<Boolean>> casos,int tam){
+            //if(this.arbol.profundidad() < 6)
+                aptitud = Functions.calculoAptitud(this, casos, tam);
+            //else
+            //aptitud = 0;
+        }
         
         public Nodo getArbol(){
             return arbol;
@@ -30,7 +36,11 @@ public class Cromosoma {
          * de la poblacion y la guarda en el atributo puntuacion
          * @param suma 
          */
-        protected Cromosoma copy(){return this;} //devuelve una copia del individuo
+        protected Cromosoma copy(int nIn,ArrayList<ArrayList<Boolean>> casos){
+                Nodo n = this.arbol.copy();
+                Cromosoma ret = new Cromosoma(n,casos,tam);
+                return ret;
+        } //devuelve una copia del individuo
         
         
         

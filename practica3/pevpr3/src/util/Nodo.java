@@ -21,8 +21,8 @@ public class Nodo {
     private Nodo cond;
 
     public Nodo(TipoOperacion f, int valor, Nodo izq, Nodo der, Nodo cond) {
-        if (f== TipoOperacion.HOJA){
-             this.terminal = valor;
+        if (f == TipoOperacion.HOJA) {
+            this.terminal = valor;
         }
         this.f = f;
         this.izq = izq;
@@ -69,30 +69,67 @@ public class Nodo {
         }
     }
 
-    public void setNodo(Nodo nuevo, ArrayList<Integer> traza) {
-        if(!traza.isEmpty())switch (traza.get(0)) {
-            case 0:
-                traza.remove(0);
-                this.izq.setNodo(nuevo, traza);
-                break;
-            case 1:
-                traza.remove(0);
-                this.der.setNodo(nuevo, traza);
-                break;
-            case 2:
-                traza.remove(0);
-                this.cond.setNodo(nuevo, traza);
-                break;
-            default:
-                this.f = nuevo.f;
-                this.izq = nuevo.izq;
-                this.der = nuevo.der;
-                this.cond = nuevo.cond;
-                this.terminal = nuevo.terminal;
+    public void setNodo(Nodo nuevo, ArrayList<Integer> traza, int pos) {
+        if ((!traza.isEmpty()) && pos < traza.size()) {
+            switch (traza.get(pos)) {
+                case 0:
+                    if (this.izq != null) {
+                        pos++;
+                        this.izq.setNodo(nuevo, traza, pos);
+                        break;
+                    }
+                case 1:
+                    if (this.der != null) {
+                        pos++;
+                        this.der.setNodo(nuevo, traza, pos);
+                        break;
+                    }
+                case 2:
+                    if (this.cond != null) {
+                        pos++;
+                        this.cond.setNodo(nuevo, traza, pos);
+                        break;
+                    }
+                default:
+                    this.f = nuevo.f;
+                    this.izq = nuevo.izq;
+                    this.der = nuevo.der;
+                    this.cond = nuevo.cond;
+                    this.terminal = nuevo.terminal;
+            }
+        } else {
+            this.f = nuevo.f;
+            this.izq = nuevo.izq;
+            this.der = nuevo.der;
+            this.cond = nuevo.cond;
+            this.terminal = nuevo.terminal;
+        }
+    }
+
+    public int profundidad() {
+        if (this.f == TipoOperacion.HOJA) {
+            return 1;
+        } else if (this.f == TipoOperacion.AND || this.f == TipoOperacion.OR) {
+            return 1 + max(this.izq.profundidad(), this.der.profundidad(), 0);
+        } else if (this.f == TipoOperacion.NOT) {
+            return 1 + max(this.izq.profundidad(), 0, 0);
+        } else {
+            return 1 + max(this.izq.profundidad(), this.der.profundidad(), this.cond.profundidad());
+        }
+    }
+
+    private int max(int x, int y, int z) {
+        if (x >= y && y >= z) {
+            return x;
+        } else if (y >= z && z >= x) {
+            return y;
+        } else {
+            return z;
         }
     }
 
     public Nodo terminalRandom(Random r, ArrayList<Integer> traza) {
+        r = new Random();
         if (this.f == TipoOperacion.HOJA) {
             return this;
         } else {
@@ -104,11 +141,10 @@ public class Nodo {
                     return this;
                 }
             } else {
-                double rand = r.nextDouble();
-                if (rand < 1 / 3) {
+                if (r.nextBoolean()) {
                     traza.add(0);
                     return this.izq.terminalRandom(r, traza);
-                } else if (rand < 2 / 3) {
+                } else if (r.nextBoolean()) {
                     traza.add(1);
                     return this.der.terminalRandom(r, traza);
                 } else if (this.cond != null) {
@@ -136,11 +172,10 @@ public class Nodo {
                             return this;
                         }
                     default:
-                        double rand = r.nextDouble();
-                        if (rand < 1 / 3 && this.izq.f != TipoOperacion.HOJA) {
+                        if (r.nextBoolean() && this.izq.f != TipoOperacion.HOJA) {
                             traza.add(0);
                             return this.izq.funcionRandom(r, traza);
-                        } else if (rand < 2 / 3 && this.der.f != TipoOperacion.HOJA) {
+                        } else if (r.nextBoolean() && this.der.f != TipoOperacion.HOJA) {
                             traza.add(1);
                             return this.der.funcionRandom(r, traza);
                         } else if (this.cond != null && this.cond.f != TipoOperacion.HOJA) {
@@ -152,22 +187,68 @@ public class Nodo {
                 }
             }
         } else {
-            return null;
+            return this;
         }
     }
-    
+
+    public void mutaFuncion(Random r) {
+        if (r.nextBoolean()) {
+            this.auxMutaf();
+        } else {
+            switch (f) {
+                case NOT:
+                    if (this.izq.f != TipoOperacion.HOJA) {
+                        this.izq.mutaFuncion(r);
+                    } else {
+                        this.auxMutaf();
+                    }
+                    break;
+                case HOJA:
+                    break;
+                default:
+                    float val = r.nextFloat();
+                    if (val < 1 / 3 && this.izq.f != TipoOperacion.HOJA) {
+                        this.izq.mutaFuncion(r);
+                    } else if (val < 2 / 3 && this.der.f != TipoOperacion.HOJA) {
+                        this.der.mutaFuncion(r);
+                    } else if (this.cond != null && this.cond.f != TipoOperacion.HOJA) {
+                        this.izq.mutaFuncion(r);
+                    } else {
+                        this.izq.mutaFuncion(r);
+                    }
+            }
+        }
+    }
+
+    public void auxMutaf() {
+        switch (f) {
+            case OR:
+                f = TipoOperacion.AND;
+                break;
+            case AND:
+                f = TipoOperacion.OR;
+                break;
+            case NOT:
+                Nodo copia = this.getIzq();
+                this.setNodo(copia, new ArrayList<>(), 0);
+                break;
+            default:
+                break;
+        }
+    }
+
     public void setFuncion(TipoOperacion func) {
         this.f = func;
     }
-    
+
     public TipoOperacion getFuncion() {
         return this.f;
     }
-    
-    public void setTerminal(int x){
+
+    public void setTerminal(int x) {
         this.terminal = x;
     }
-    
+
     public void setIzq(Nodo i) {
         this.izq = i;
     }

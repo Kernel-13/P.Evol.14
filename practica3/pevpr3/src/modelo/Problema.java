@@ -26,14 +26,18 @@ public class Problema {
     protected TipoCruce cruce;
     protected TipoMutacion mut;
     protected int numTerminales;
+    protected int nvars;
     protected Cromosoma[] elite;
+    private ArrayList<ArrayList<Boolean>> casos;
 
-    public Problema(TipoCruce c, TipoMutacion m, int nTerminales) {
+    public Problema(ArrayList<ArrayList<Boolean>> casos, TipoCruce c, TipoMutacion m, int nTerminales,int nvars) {
         sumaPob = 0;
         best = null;
         this.numTerminales = nTerminales;
         this.cruce = c;
         this.mut = m;
+        this.casos = casos;
+        this.nvars = nvars;
     }
 
     /**
@@ -43,7 +47,7 @@ public class Problema {
      * @param pob
      * @return
      */
-    public Cromosoma evaluacion(Cromosoma[] pob) {
+    public Cromosoma evaluacion(Cromosoma[] pob,int nIn) {
         Cromosoma bestPobActual = pob[0];       // Cromosoma que se toma como referencia
         double maxApt = 0, puntAcomulada = 0;   // Se debe calcular fuera, y entrar como parametro de la funcion
         double sum = 0;
@@ -67,26 +71,12 @@ public class Problema {
             pob[k].setPuntAcomulada(pob[k].getPuntuacion() + puntAcomulada);
             puntAcomulada += pob[k].getPuntuacion();
         }
-        if (best == null) {
-            best = bestPobActual.copy();
-        }
-        if (bestPobActual.getAptitud() > best.getAptitud()) {
-            best = bestPobActual.copy();
+        if (best == null||bestPobActual.getAptitud() > best.getAptitud()) {
+            best = bestPobActual.copy(nvars,casos);
         }
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        return bestPobActual;
+        return bestPobActual.copy(nIn, casos);
     }	// Debe devolver la mejor aptitud, y una array de las aptitudes
-
-    /**
-     * calcula el valor del fitness desplazado
-     *
-     * @param individuo
-     * @param maxApt
-     * @return
-     */
-    public double aptitudDesplazada(Cromosoma individuo, double maxApt) {
-        return maxApt - individuo.getAptitud();
-    }
 
     /**
      * calcula la media de la poblacion
@@ -148,7 +138,7 @@ public class Problema {
             } else {
                 aux1 = new1.getArbol().funcionRandom(r, traza1).copy();
             }
-            
+
         }
 
         if (escogido2) {
@@ -159,11 +149,13 @@ public class Problema {
             } else {
                 aux2 = new2.getArbol().funcionRandom(r, traza2).copy();
             }
-            
+
         }
 
-        new1.getArbol().setNodo(aux2, traza1);
-        new2.getArbol().setNodo(aux1, traza2);
+        new1.getArbol().setNodo(aux2, traza1, 0);
+        new2.getArbol().setNodo(aux1, traza2, 0);
+        new1.calculoAptitud(casos, 2);
+        new2.calculoAptitud(casos, 2);
     }
 
     /**
@@ -175,20 +167,20 @@ public class Problema {
      */
     public void mutacion(Cromosoma[] pob, double probMutacion) {
         Random r = new Random();
-        for (Cromosoma c : pob) {
+        for (int i = 0; i < pob.length; i++) {
             if (r.nextDouble() < probMutacion) {
                 switch (mut) {
                     case FUNC:
-                        mutaFuncion(r, c);
+                        mutaFuncion(r, pob[i]);
                         break;
                     case TER:
-                        mutaTerminal(r, c);
+                        mutaTerminal(r, pob[i]);
                         break;
                     case PERM:
-                        mutaPermutacion(r, c);
+                        mutaPermutacion(r, pob[i]);
                         break;
                     default:
-                        mutaFuncion(r, c);
+                        mutaFuncion(r, pob[i]);
                         break;
                 }
             }
@@ -200,45 +192,26 @@ public class Problema {
         if (x.getArbol().getFuncion() != TipoOperacion.HOJA) {
             ArrayList<Integer> traza = new ArrayList<>();
             Nodo aux = x.getArbol().funcionRandom(r, traza);
-            while (aux.getFuncion() != TipoOperacion.AND && aux.getFuncion() != TipoOperacion.OR) {
-                traza = new ArrayList<>();
-                aux = x.getArbol().funcionRandom(r, traza);
+            if (aux.getFuncion() == TipoOperacion.AND || aux.getFuncion() == TipoOperacion.OR) {
+                Nodo izq = aux.getIzq();
+                Nodo der = aux.getDer();
+                x.getArbol().setDer(izq);
+                x.getArbol().setIzq(der);
             }
-            Nodo izq = aux.getIzq().copy();
-            Nodo der = aux.getDer().copy();
-            aux.setDer(izq);
-            aux.setIzq(der);
-            x.getArbol().setNodo(aux, traza);
         }
-
+        x.calculoAptitud(casos, nvars);
     }
 
     private void mutaTerminal(Random r, Cromosoma x) {
         ArrayList<Integer> traza = new ArrayList<>();
         x.getArbol().terminalRandom(r, traza).setTerminal(r.nextInt(numTerminales));
+        x.calculoAptitud(casos, nvars);
     }
 
     private void mutaFuncion(Random r, Cromosoma x) {
         if (x.getArbol().getFuncion() != TipoOperacion.HOJA) {
-            ArrayList<Integer> traza = new ArrayList<>();
-            Nodo aux = x.getArbol().funcionRandom(r, traza);
-            if (null != aux.getFuncion()) {
-                switch (aux.getFuncion()) {
-                    case OR:
-                        aux.setFuncion(TipoOperacion.AND);
-                        break;
-                    case AND:
-                        aux.setFuncion(TipoOperacion.OR);
-                        break;
-                    case NOT:
-                        Nodo copia = aux.getIzq();
-                        aux = copia;
-                        break;
-                    default:
-                        break;
-                }
-            }
-            x.getArbol().setNodo(aux, traza);
+            x.getArbol().mutaFuncion(r);
+            x.calculoAptitud(casos, nvars);
         }
     }
 
@@ -258,7 +231,7 @@ public class Problema {
      * @return
      */
     public Cromosoma getBest() {
-        return best.copy();
+        return best.copy(nvars,casos);
     }
 
     /**
@@ -280,7 +253,7 @@ public class Problema {
     public void iniElite(Cromosoma[] pob, int numElite) {
         elite = new Cromosoma[numElite];
         for (int i = 0; i < numElite; i++) {
-            elite[i] = pob[i].copy();
+            elite[i] = pob[i].copy(nvars,casos);
         }
     }
 
@@ -297,7 +270,7 @@ public class Problema {
         int j = 0;
         for (int i : posPeores) {
             if (elite[j].getAptitud() < pob[i].getAptitud()) {
-                pob[i] = elite[j].copy();
+                pob[i] = elite[j].copy(nvars,casos);
             }
             j++;
         }
@@ -305,7 +278,7 @@ public class Problema {
         j = 0;
         for (int i : posElites) {
             if (elite[j].getAptitud() > pob[i].getAptitud()) {
-                elite[j] = pob[i].copy();
+                elite[j] = pob[i].copy(nvars,casos);
             }
             j++;
         }
@@ -324,7 +297,7 @@ public class Problema {
         int j = 0;
         for (int i : posPeores) {
             if (elite[j].getAptitud() > pob[i].getAptitud()) {
-                pob[i] = elite[j].copy();
+                pob[i] = elite[j].copy(nvars,casos);
             }
             j++;
         }
@@ -332,7 +305,7 @@ public class Problema {
         j = 0;
         for (int i : posElites) {
             if (elite[j].getAptitud() < pob[i].getAptitud()) {
-                elite[j] = pob[i].copy();
+                elite[j] = pob[i].copy(nvars,casos);
             }
             j++;
         }
