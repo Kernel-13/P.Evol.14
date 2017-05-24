@@ -5,6 +5,7 @@
  */
 package modelo;
 
+import static java.lang.Math.pow;
 import java.util.ArrayList;
 import java.util.Random;
 import util.Functions;
@@ -138,7 +139,6 @@ public class Problema {
             } else {
                 aux1 = new1.getArbol().funcionRandom(r, traza1).copy();
             }
-
         }
 
         if (escogido2) {
@@ -152,10 +152,17 @@ public class Problema {
 
         }
 
-        new1.getArbol().setNodo(aux2, traza1, 0);
-        new2.getArbol().setNodo(aux1, traza2, 0);
-        new1.calculoAptitud(casos, 2);
-        new2.calculoAptitud(casos, 2);
+        int prof1 = new1.getArbol().profundidad();
+        int prof2 = new2.getArbol().profundidad();
+        
+        
+        if(prof1 != aux1.profundidad() && prof2 != aux2.profundidad()){
+            new1.getArbol().setNodo(aux2, traza1, 0);
+            new2.getArbol().setNodo(aux1, traza2, 0);
+            new1.calculoAptitud(casos, 2);
+            new2.calculoAptitud(casos, 2);
+        }
+        
     }
 
     /**
@@ -204,7 +211,7 @@ public class Problema {
 
     private void mutaTerminal(Random r, Cromosoma x) {
         ArrayList<Integer> traza = new ArrayList<>();
-        x.getArbol().terminalRandom(r, traza).setTerminal(r.nextInt(numTerminales));
+        x.getArbol().terminalRandom(r, traza).mutaTerminal(r, nvars+(int)pow(2,nvars)-1);
         x.calculoAptitud(casos, nvars);
     }
 

@@ -103,11 +103,10 @@ public class AlgoritmoGenetico {
         best.add(problema.getBest().getAptitud());
         media.add(problema.media(tamPoblacion));
         for (int i = 1; i < iteraciones; i++) {
-            for(Cromosoma c: pob){
-                System.out.println(c.getArbol().toString(aux));
-            }
-            System.out.println("--------------");
             pob = seleccion.selecciona(pob);
+            for(Cromosoma c: pob)
+                System.out.println(c.getArbol().toString(aux));
+            System.out.println("--------------");
             problema.reproduccion(pob, probCruces);
             problema.mutacion(pob, probMutacion);
             if (this.elitismo) {
@@ -135,9 +134,8 @@ public class AlgoritmoGenetico {
         Random r = new Random(semilla);
         pob = new Cromosoma[tamPoblacion];
         for (int i = 0; i < tamPoblacion; i++) {
-            pob[i] = new Cromosoma(inicializa(TipoInicializar.CRECIENTE),casos,nvars);
+            pob[i] = new Cromosoma(inicializa(TipoInicializar.COMPLETO),casos,nvars);
         }
-
     }
 
     private TipoOperacion randomFunction() {
@@ -194,7 +192,7 @@ public class AlgoritmoGenetico {
         Random r = new Random();
         TipoOperacion op;
         op = randomFunction();
-        while((op==TipoOperacion.IF && !ifs)){
+        while((op==TipoOperacion.IF && !ifs) || (op==TipoOperacion.HOJA && depth<3)){
             op = randomFunction();
         }
         if(depth >= this.maxDepth){

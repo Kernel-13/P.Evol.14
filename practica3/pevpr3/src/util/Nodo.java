@@ -19,7 +19,8 @@ public class Nodo {
     private Nodo der;
     private Nodo izq;
     private Nodo cond;
-
+    private static double porcEescoger = 0.3;
+    
     public Nodo(TipoOperacion f, int valor, Nodo izq, Nodo der, Nodo cond) {
         if (f == TipoOperacion.HOJA) {
             this.terminal = valor;
@@ -30,6 +31,10 @@ public class Nodo {
         this.cond = cond;
     }
 
+    public int getTerminal(){
+        return this.terminal;
+    }
+    
     public boolean valor(ArrayList<Boolean> tabla) {
         if (this.f == TipoOperacion.HOJA) {
             return tabla.get(this.terminal);
@@ -160,7 +165,7 @@ public class Nodo {
 
     public Nodo funcionRandom(Random r, ArrayList<Integer> traza) {
         if (this.f != TipoOperacion.HOJA) {
-            if (r.nextBoolean()) {
+            if (r.nextDouble() < porcEescoger) {
                 return this;
             } else {
                 switch (f) {
@@ -197,11 +202,7 @@ public class Nodo {
         } else {
             switch (f) {
                 case NOT:
-                    if (this.izq.f != TipoOperacion.HOJA) {
-                        this.izq.mutaFuncion(r);
-                    } else {
-                        this.auxMutaf();
-                    }
+                    this.auxMutaf();
                     break;
                 case HOJA:
                     break;
@@ -229,8 +230,6 @@ public class Nodo {
                 f = TipoOperacion.OR;
                 break;
             case NOT:
-                Nodo copia = this.getIzq();
-                this.setNodo(copia, new ArrayList<>(), 0);
                 break;
             default:
                 break;
@@ -247,6 +246,14 @@ public class Nodo {
 
     public void setTerminal(int x) {
         this.terminal = x;
+    }
+    
+    public void mutaTerminal(Random r,int tam){
+        int rand = r.nextInt(tam);
+        while(rand == terminal){
+            rand = r.nextInt(tam);
+        }
+        terminal = rand;
     }
 
     public void setIzq(Nodo i) {

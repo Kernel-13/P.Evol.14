@@ -25,10 +25,7 @@ public class SeleccionRuleta extends Seleccion {
            double valorAle = r.nextDouble();
            j = 0;
            salir = false;
-           while(!salir && j < pob.length){
-               if(pob[j].getPuntAcomulada() > valorAle){
-                   salir = true;
-               }
+           while(pob[j].getPuntAcomulada()< valorAle && j < pob.length){
                j++;
            }
            if(j < pob.length)
