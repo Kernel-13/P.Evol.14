@@ -21,10 +21,9 @@ public class Cromosoma {
         }
         
         public void calculoAptitud (ArrayList<ArrayList<Boolean>> casos,int tam){
-            //if(this.arbol.profundidad() < 6)
-                aptitud = Functions.calculoAptitud(this, casos, tam);
-            //else
-            //aptitud = 0;
+            int prof = this.arbol.profundidad(); 
+            aptitud = Functions.calculoAptitud(this, casos, tam);
+ 
         }
         
         public Nodo getArbol(){

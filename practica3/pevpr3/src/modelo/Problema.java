@@ -72,7 +72,9 @@ public class Problema {
             pob[k].setPuntAcomulada(pob[k].getPuntuacion() + puntAcomulada);
             puntAcomulada += pob[k].getPuntuacion();
         }
-        if (best == null||bestPobActual.getAptitud() > best.getAptitud()) {
+        if (best == null)
+            best = bestPobActual.copy(nvars, casos);
+        if(bestPobActual.getAptitud() > best.getAptitud()) {
             best = bestPobActual.copy(nvars,casos);
         }
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -149,21 +151,7 @@ public class Problema {
             } else {
                 aux2 = new2.getArbol().funcionRandom(r, traza2).copy();
             }
-
-        }
-
-        int prof1 = new1.getArbol().profundidad();
-        int prof2 = new2.getArbol().profundidad();
-        
-        if(prof1 != aux1.profundidad()){
-            new1.getArbol().setNodo(aux2, traza1, 0);
-            new1.calculoAptitud(casos, 2);
-        }
-        if(prof2 != aux2.profundidad()){
-            new2.getArbol().setNodo(aux1, traza2, 0);
-            new2.calculoAptitud(casos, 2);
-        }
-        
+        }    
     }
     
     
@@ -307,7 +295,7 @@ public class Problema {
      * @return
      */
     public Cromosoma getBest() {
-        return best.copy(nvars,casos);
+        return best;
     }
 
     /**

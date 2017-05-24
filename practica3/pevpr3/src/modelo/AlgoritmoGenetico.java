@@ -107,7 +107,7 @@ public class AlgoritmoGenetico {
             for(Cromosoma c: pob)
                 System.out.println(c.getArbol().toString(aux));
             System.out.println("--------------");
-            problema.reproduccion(pob, probCruces);
+            //problema.reproduccion(pob, probCruces);
             problema.mutacion(pob, probMutacion);
             if (this.elitismo) {
                 problema.elitismo(pob, tamElite);

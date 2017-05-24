@@ -19,8 +19,9 @@ public class Nodo {
     private Nodo der;
     private Nodo izq;
     private Nodo cond;
+    private Nodo padre;
     private static double porcEescoger = 0.4;
-    
+
     public Nodo(TipoOperacion f, int valor, Nodo izq, Nodo der, Nodo cond) {
         if (f == TipoOperacion.HOJA) {
             this.terminal = valor;
@@ -29,12 +30,21 @@ public class Nodo {
         this.izq = izq;
         this.der = der;
         this.cond = cond;
+        if (this.izq != null) {
+            this.izq.padre = this;
+        }
+        if (this.der != null) {
+            this.der.padre = this;
+        }
+        if (this.cond != null) {
+            this.cond.padre = this;
+        }
     }
 
-    public int getTerminal(){
+    public int getTerminal() {
         return this.terminal;
     }
-    
+
     public boolean valor(ArrayList<Boolean> tabla) {
         if (this.f == TipoOperacion.HOJA) {
             return tabla.get(this.terminal);
@@ -100,6 +110,15 @@ public class Nodo {
                     this.izq = nuevo.izq;
                     this.der = nuevo.der;
                     this.cond = nuevo.cond;
+                    if (this.izq != null) {
+                        this.izq.padre = this;
+                    }
+                    if (this.der != null) {
+                        this.der.padre = this;
+                    }
+                    if (this.cond != null) {
+                        this.cond.padre = this;
+                    }
                     this.terminal = nuevo.terminal;
             }
         } else {
@@ -107,6 +126,15 @@ public class Nodo {
             this.izq = nuevo.izq;
             this.der = nuevo.der;
             this.cond = nuevo.cond;
+            if (this.izq != null) {
+                this.izq.padre = this;
+            }
+            if (this.der != null) {
+                this.der.padre = this;
+            }
+            if (this.cond != null) {
+                this.cond.padre = this;
+            }
             this.terminal = nuevo.terminal;
         }
     }
@@ -165,7 +193,7 @@ public class Nodo {
 
     public Nodo funcionRandom(Random r, ArrayList<Integer> traza) {
         if (this.f != TipoOperacion.HOJA) {
-            if (r.nextDouble() < porcEescoger) {
+            if (r.nextDouble() < porcEescoger && !traza.isEmpty()) {
                 return this;
             } else {
                 switch (f) {
@@ -187,15 +215,23 @@ public class Nodo {
                             traza.add(2);
                             return this.cond.funcionRandom(r, traza);
                         } else {
-                            return this;
+                            if (this.padre != null) {
+                                return this.padre;
+                            } else {
+                                return this;
+                            }
                         }
                 }
             }
         } else {
-            return this;
+            if (this.padre != null) {
+                return this.padre;
+            } else {
+                return this;
+            }
         }
     }
-    
+
     public void mutaFuncion(Random r) {
         if (r.nextBoolean()) {
             this.auxMutaf();
@@ -247,11 +283,11 @@ public class Nodo {
     public void setTerminal(int x) {
         this.terminal = x;
     }
-    
-    public void mutaTerminal(Random r,int tam){
+
+    public void mutaTerminal(Random r, int tam) {
         int aux = terminal;
         int rand = r.nextInt(tam);
-        while(rand == terminal){
+        while (rand == terminal) {
             rand = r.nextInt(tam);
         }
         terminal = rand;
