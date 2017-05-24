@@ -19,7 +19,7 @@ public class Nodo {
     private Nodo der;
     private Nodo izq;
     private Nodo cond;
-    private static double porcEescoger = 0.3;
+    private static double porcEescoger = 0.4;
     
     public Nodo(TipoOperacion f, int valor, Nodo izq, Nodo der, Nodo cond) {
         if (f == TipoOperacion.HOJA) {
@@ -143,7 +143,7 @@ public class Nodo {
                     traza.add(0);
                     return this.izq.terminalRandom(r, traza);
                 } else {
-                    return this;
+                    return this.izq;
                 }
             } else {
                 if (r.nextBoolean()) {
@@ -195,7 +195,7 @@ public class Nodo {
             return this;
         }
     }
-
+    
     public void mutaFuncion(Random r) {
         if (r.nextBoolean()) {
             this.auxMutaf();
@@ -249,6 +249,7 @@ public class Nodo {
     }
     
     public void mutaTerminal(Random r,int tam){
+        int aux = terminal;
         int rand = r.nextInt(tam);
         while(rand == terminal){
             rand = r.nextInt(tam);

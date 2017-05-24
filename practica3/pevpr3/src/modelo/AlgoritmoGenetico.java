@@ -119,7 +119,7 @@ public class AlgoritmoGenetico {
             for(Cromosoma c: pob){
                 System.out.println(c.getArbol().toString(aux));
             }
-            System.gc();
+            System.out.println("--------------");
         }
         System.out.println(problema.getBest().toString());
         return new DatosGrafica(best, iteraciones, bestPob, media, problema.getBest());

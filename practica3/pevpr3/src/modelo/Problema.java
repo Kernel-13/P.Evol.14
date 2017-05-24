@@ -155,6 +155,40 @@ public class Problema {
         int prof1 = new1.getArbol().profundidad();
         int prof2 = new2.getArbol().profundidad();
         
+        if(prof1 != aux1.profundidad()){
+            new1.getArbol().setNodo(aux2, traza1, 0);
+            new1.calculoAptitud(casos, 2);
+        }
+        if(prof2 != aux2.profundidad()){
+            new2.getArbol().setNodo(aux1, traza2, 0);
+            new2.calculoAptitud(casos, 2);
+        }
+        
+    }
+    
+    
+     /**
+     * Cruza 2 cromosomas - obtenemos 2 hijos Los cromosomas padre se pasan por
+     * referencia y se convierten en los hijos posteriormente.
+     *
+     * @param new1
+     * @param new2
+     */
+    protected void cruceTerminal(Cromosoma new1, Cromosoma new2) {
+        ArrayList<Integer> traza1 = new ArrayList<>();
+        ArrayList<Integer> traza2 = new ArrayList<>();
+        Nodo aux1;
+        Nodo aux2;
+        Random r = new Random();
+        boolean escogido = r.nextBoolean();
+        boolean escogido2 = r.nextBoolean();
+        //cojo un terminal o funcion de alguno de los dos
+        
+        aux1 = new1.getArbol().terminalRandom(r, traza1).copy();
+        aux2 = new2.getArbol().terminalRandom(r, traza2).copy();
+        int prof1 = new1.getArbol().profundidad();
+        int prof2 = new2.getArbol().profundidad();
+        
         
         if(prof1 != aux1.profundidad() && prof2 != aux2.profundidad()){
             new1.getArbol().setNodo(aux2, traza1, 0);
@@ -162,7 +196,37 @@ public class Problema {
             new1.calculoAptitud(casos, 2);
             new2.calculoAptitud(casos, 2);
         }
+    }
+    
+         /**
+     * Cruza 2 cromosomas - obtenemos 2 hijos Los cromosomas padre se pasan por
+     * referencia y se convierten en los hijos posteriormente.
+     *
+     * @param new1
+     * @param new2
+     */
+    protected void cruceFuncion(Cromosoma new1, Cromosoma new2) {
+        ArrayList<Integer> traza1 = new ArrayList<>();
+        ArrayList<Integer> traza2 = new ArrayList<>();
+        Nodo aux1;
+        Nodo aux2;
+        Random r = new Random();
+        boolean escogido = r.nextBoolean();
+        boolean escogido2 = r.nextBoolean();
+        //cojo un terminal o funcion de alguno de los dos
         
+        aux1 = new1.getArbol().funcionRandom(r, traza1).copy();
+        aux2 = new2.getArbol().funcionRandom(r, traza2).copy();
+        int prof1 = new1.getArbol().profundidad();
+        int prof2 = new2.getArbol().profundidad();
+        
+        
+        if(prof1 != aux1.profundidad() && prof2 != aux2.profundidad()){
+            new1.getArbol().setNodo(aux2, traza1, 0);
+            new2.getArbol().setNodo(aux1, traza2, 0);
+            new1.calculoAptitud(casos, 2);
+            new2.calculoAptitud(casos, 2);
+        }
     }
 
     /**
@@ -199,6 +263,11 @@ public class Problema {
         if (x.getArbol().getFuncion() != TipoOperacion.HOJA) {
             ArrayList<Integer> traza = new ArrayList<>();
             Nodo aux = x.getArbol().funcionRandom(r, traza);
+            int numPruebas = x.getArbol().profundidad();
+            while(numPruebas > 0 && aux.getFuncion() != TipoOperacion.AND && aux.getFuncion() != TipoOperacion.OR){
+                aux = x.getArbol().funcionRandom(r, traza);
+                numPruebas--;
+            }
             if (aux.getFuncion() == TipoOperacion.AND || aux.getFuncion() == TipoOperacion.OR) {
                 Nodo izq = aux.getIzq();
                 Nodo der = aux.getDer();

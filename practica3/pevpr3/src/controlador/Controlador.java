@@ -50,7 +50,7 @@ public class Controlador {
         cruce = TipoCruce.OX;
         mutacion = TipoMutacion.TER;
         nvars = 4;
-        maxProf = 5;
+        maxProf = 3;
         ifs = true;
     }
     
