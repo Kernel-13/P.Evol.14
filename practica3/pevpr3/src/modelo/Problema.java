@@ -31,7 +31,7 @@ public class Problema {
     protected Cromosoma[] elite;
     private ArrayList<ArrayList<Boolean>> casos;
 
-    public Problema(ArrayList<ArrayList<Boolean>> casos, TipoCruce c, TipoMutacion m, int nTerminales,int nvars) {
+    public Problema(ArrayList<ArrayList<Boolean>> casos, TipoCruce c, TipoMutacion m, int nTerminales, int nvars) {
         sumaPob = 0;
         best = null;
         this.numTerminales = nTerminales;
@@ -48,7 +48,7 @@ public class Problema {
      * @param pob
      * @return
      */
-    public Cromosoma evaluacion(Cromosoma[] pob,int nIn) {
+    public Cromosoma evaluacion(Cromosoma[] pob, int nIn) {
         Cromosoma bestPobActual = pob[0];       // Cromosoma que se toma como referencia
         double maxApt = 0, puntAcomulada = 0;   // Se debe calcular fuera, y entrar como parametro de la funcion
         double sum = 0;
@@ -72,10 +72,11 @@ public class Problema {
             pob[k].setPuntAcomulada(pob[k].getPuntuacion() + puntAcomulada);
             puntAcomulada += pob[k].getPuntuacion();
         }
-        if (best == null)
+        if (best == null) {
             best = bestPobActual.copy(nvars, casos);
-        if(bestPobActual.getAptitud() > best.getAptitud()) {
-            best = bestPobActual.copy(nvars,casos);
+        }
+        if (bestPobActual.getAptitud() > best.getAptitud()) {
+            best = bestPobActual.copy(nvars, casos);
         }
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         return bestPobActual.copy(nIn, casos);
@@ -151,11 +152,16 @@ public class Problema {
             } else {
                 aux2 = new2.getArbol().funcionRandom(r, traza2).copy();
             }
-        }    
+        }
+
+        new1.getArbol().setNodo(aux2, traza1, 0);
+        new2.getArbol().setNodo(aux1, traza2, 0);
+        new1.calculoAptitud(casos, 2);
+        new2.calculoAptitud(casos, 2);
+
     }
-    
-    
-     /**
+
+    /**
      * Cruza 2 cromosomas - obtenemos 2 hijos Los cromosomas padre se pasan por
      * referencia y se convierten en los hijos posteriormente.
      *
@@ -171,22 +177,21 @@ public class Problema {
         boolean escogido = r.nextBoolean();
         boolean escogido2 = r.nextBoolean();
         //cojo un terminal o funcion de alguno de los dos
-        
+
         aux1 = new1.getArbol().terminalRandom(r, traza1).copy();
         aux2 = new2.getArbol().terminalRandom(r, traza2).copy();
         int prof1 = new1.getArbol().profundidad();
         int prof2 = new2.getArbol().profundidad();
-        
-        
-        if(prof1 != aux1.profundidad() && prof2 != aux2.profundidad()){
+
+        if (prof1 != aux1.profundidad() && prof2 != aux2.profundidad()) {
             new1.getArbol().setNodo(aux2, traza1, 0);
             new2.getArbol().setNodo(aux1, traza2, 0);
             new1.calculoAptitud(casos, 2);
             new2.calculoAptitud(casos, 2);
         }
     }
-    
-         /**
+
+    /**
      * Cruza 2 cromosomas - obtenemos 2 hijos Los cromosomas padre se pasan por
      * referencia y se convierten en los hijos posteriormente.
      *
@@ -202,14 +207,13 @@ public class Problema {
         boolean escogido = r.nextBoolean();
         boolean escogido2 = r.nextBoolean();
         //cojo un terminal o funcion de alguno de los dos
-        
+
         aux1 = new1.getArbol().funcionRandom(r, traza1).copy();
         aux2 = new2.getArbol().funcionRandom(r, traza2).copy();
         int prof1 = new1.getArbol().profundidad();
         int prof2 = new2.getArbol().profundidad();
-        
-        
-        if(prof1 != aux1.profundidad() && prof2 != aux2.profundidad()){
+
+        if (prof1 != aux1.profundidad() && prof2 != aux2.profundidad()) {
             new1.getArbol().setNodo(aux2, traza1, 0);
             new2.getArbol().setNodo(aux1, traza2, 0);
             new1.calculoAptitud(casos, 2);
@@ -252,7 +256,7 @@ public class Problema {
             ArrayList<Integer> traza = new ArrayList<>();
             Nodo aux = x.getArbol().funcionRandom(r, traza);
             int numPruebas = x.getArbol().profundidad();
-            while(numPruebas > 0 && aux.getFuncion() != TipoOperacion.AND && aux.getFuncion() != TipoOperacion.OR){
+            while (numPruebas > 0 && aux.getFuncion() != TipoOperacion.AND && aux.getFuncion() != TipoOperacion.OR) {
                 aux = x.getArbol().funcionRandom(r, traza);
                 numPruebas--;
             }
@@ -268,12 +272,12 @@ public class Problema {
 
     private void mutaTerminal(Random r, Cromosoma x) {
         ArrayList<Integer> traza = new ArrayList<>();
-        x.getArbol().terminalRandom(r, traza).mutaTerminal(r, nvars+(int)pow(2,nvars)-1);
+        x.getArbol().terminalRandom(r, traza).mutaTerminal(r, nvars + (int) pow(2, nvars) - 1);
         x.calculoAptitud(casos, nvars);
     }
 
     private void mutaFuncion(Random r, Cromosoma x) {
-        if (x.getArbol().getFuncion() != TipoOperacion.HOJA) {
+        if (x.getArbol().getFuncion() != TipoOperacion.HOJA && x.getArbol().hasMutableFunction()) {
             x.getArbol().mutaFuncion(r);
             x.calculoAptitud(casos, nvars);
         }
@@ -317,7 +321,7 @@ public class Problema {
     public void iniElite(Cromosoma[] pob, int numElite) {
         elite = new Cromosoma[numElite];
         for (int i = 0; i < numElite; i++) {
-            elite[i] = pob[i].copy(nvars,casos);
+            elite[i] = pob[i].copy(nvars, casos);
         }
     }
 
@@ -334,7 +338,7 @@ public class Problema {
         int j = 0;
         for (int i : posPeores) {
             if (elite[j].getAptitud() < pob[i].getAptitud()) {
-                pob[i] = elite[j].copy(nvars,casos);
+                pob[i] = elite[j].copy(nvars, casos);
             }
             j++;
         }
@@ -342,7 +346,7 @@ public class Problema {
         j = 0;
         for (int i : posElites) {
             if (elite[j].getAptitud() > pob[i].getAptitud()) {
-                elite[j] = pob[i].copy(nvars,casos);
+                elite[j] = pob[i].copy(nvars, casos);
             }
             j++;
         }
@@ -361,7 +365,7 @@ public class Problema {
         int j = 0;
         for (int i : posPeores) {
             if (elite[j].getAptitud() > pob[i].getAptitud()) {
-                pob[i] = elite[j].copy(nvars,casos);
+                pob[i] = elite[j].copy(nvars, casos);
             }
             j++;
         }
@@ -369,7 +373,7 @@ public class Problema {
         j = 0;
         for (int i : posElites) {
             if (elite[j].getAptitud() < pob[i].getAptitud()) {
-                elite[j] = pob[i].copy(nvars,casos);
+                elite[j] = pob[i].copy(nvars, casos);
             }
             j++;
         }
@@ -467,4 +471,33 @@ public class Problema {
         return ret;
     }
 
+    /**
+     * Funcion que penalizara aquellos cromosomas cuyo arbol tenga una
+     * profundidad superior a la media de profundidades de toda la poblacion,
+     * asignandole un nuevo fitness muy inferior
+     *
+     * @param pob Es la poblacion a examinar
+     * @param n
+     */
+    public void bloating(Cromosoma[] pob, int n) {
+        double aver_long = medialongitud(pob);
+        Random r = new Random();
+        for (int i = 0; i < pob.length; i++) {
+            double depth = pob[i].getArbol().profundidad();
+            double rand = r.nextDouble();
+            double div = 1/(double)n;
+            if (depth > aver_long && rand < div) {
+                pob[i].aptitud = 0;
+                System.out.println("********** BLOATING **********");
+            }
+        }
+    }
+
+    private double medialongitud(Cromosoma[] pob) {
+        double suma = 0;
+        for (int i = 0; i < pob.length; i++) {
+            suma += pob[i].getArbol().profundidad();
+        }
+        return suma / pob.length;
+    }
 }

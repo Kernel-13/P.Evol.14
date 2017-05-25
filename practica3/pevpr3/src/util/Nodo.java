@@ -161,6 +161,27 @@ public class Nodo {
         }
     }
 
+    /**
+     * Devuelve TRUE si el arbol contiene almenos un nodo de tipo AND o OR
+     * @return
+     */
+    public boolean hasMutableFunction() {
+        if (f == TipoOperacion.HOJA) {
+            return false;
+        } else if(f == TipoOperacion.AND || f == TipoOperacion.OR){
+            return true;
+        } else {
+            switch (f) {
+                case IF:
+                    return izq.hasMutableFunction() || der.hasMutableFunction() || cond.hasMutableFunction();
+                case NOT:
+                    return izq.hasMutableFunction();
+                default:
+                    return izq.hasMutableFunction() || der.hasMutableFunction();
+            }
+        }
+    }
+
     public Nodo terminalRandom(Random r, ArrayList<Integer> traza) {
         r = new Random();
         if (this.f == TipoOperacion.HOJA) {
@@ -192,17 +213,17 @@ public class Nodo {
     }
 
     public Nodo funcionRandom(Random r, ArrayList<Integer> traza) {
-        if (this.f != TipoOperacion.HOJA) {
+        if (this.f != TipoOperacion.HOJA) { // Si actual no es hoja
             if (r.nextDouble() < porcEescoger && !traza.isEmpty()) {
-                return this;
+                return this;    // Si la traza no esta vacia
             } else {
                 switch (f) {
                     case NOT:
-                        if (this.izq.f != TipoOperacion.HOJA) {
-                            traza.add(0);
+                        if (this.izq.f != TipoOperacion.HOJA) { // Si el hijo es una funcion
+                            traza.add(0);                       // Se añade a la traza y continua
                             return this.izq.funcionRandom(r, traza);
                         } else {
-                            return this;
+                            return this;                        // Si el hijo es un terminal, devuelve el NOT
                         }
                     default:
                         if (r.nextBoolean() && this.izq.f != TipoOperacion.HOJA) {
@@ -215,7 +236,7 @@ public class Nodo {
                             traza.add(2);
                             return this.cond.funcionRandom(r, traza);
                         } else {
-                            if (this.padre != null) {
+                            if (this.padre != null) {   // Si el padre no es la raiz inicial del arbol
                                 return this.padre;
                             } else {
                                 return this;
@@ -238,21 +259,20 @@ public class Nodo {
         } else {
             switch (f) {
                 case NOT:
-                    this.auxMutaf();
                     break;
                 case HOJA:
                     break;
                 default:
-                    float val = r.nextFloat();
-                    if (val < 1 / 3 && this.izq.f != TipoOperacion.HOJA) {
+                    if (r.nextBoolean() && this.izq.f != TipoOperacion.HOJA) {
                         this.izq.mutaFuncion(r);
-                    } else if (val < 2 / 3 && this.der.f != TipoOperacion.HOJA) {
+                    } else if (r.nextBoolean() && this.der.f != TipoOperacion.HOJA) {
                         this.der.mutaFuncion(r);
                     } else if (this.cond != null && this.cond.f != TipoOperacion.HOJA) {
                         this.izq.mutaFuncion(r);
                     } else {
                         this.izq.mutaFuncion(r);
                     }
+                    break;
             }
         }
     }
