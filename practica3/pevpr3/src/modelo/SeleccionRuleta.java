@@ -5,6 +5,7 @@
  */
 package modelo;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -16,7 +17,7 @@ public class SeleccionRuleta extends Seleccion {
     }
 
     @Override
-    Cromosoma[] selecciona(Cromosoma[] pob) {
+    Cromosoma[] selecciona(Cromosoma[] pob,int nvars,ArrayList<ArrayList<Boolean>> casos) {
        Random r = new Random();
        int j;
        boolean salir;
@@ -29,9 +30,9 @@ public class SeleccionRuleta extends Seleccion {
                j++;
            }
            if(j < pob.length)
-               ret[i] = pob[j];
+               ret[i] = pob[j].copy(nvars, casos);
            else
-               ret[i] = pob[pob.length-1];
+               ret[i] = pob[pob.length-1].copy(nvars, casos);
        }
        return ret;
     }

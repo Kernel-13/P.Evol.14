@@ -140,24 +140,31 @@ public class Nodo {
     }
 
     public int profundidad() {
+        int izq = 0,der = 0,cond = 0;
+        
         if (this.f == TipoOperacion.HOJA) {
             return 1;
         } else if (this.f == TipoOperacion.AND || this.f == TipoOperacion.OR) {
-            return 1 + max(this.izq.profundidad(), this.der.profundidad(), 0);
+            izq = this.izq.profundidad();
+            der = this.der.profundidad();
+            if(izq > der)
+                return 1 + izq;
+            else
+                return 1 + der;
         } else if (this.f == TipoOperacion.NOT) {
-            return 1 + max(this.izq.profundidad(), 0, 0);
+            return 1 + this.izq.profundidad();
         } else {
-            return 1 + max(this.izq.profundidad(), this.der.profundidad(), this.cond.profundidad());
-        }
-    }
-
-    private int max(int x, int y, int z) {
-        if (x >= y && y >= z) {
-            return x;
-        } else if (y >= z && z >= x) {
-            return y;
-        } else {
-            return z;
+            izq = this.izq.profundidad();
+            der = this.der.profundidad();
+            cond = this.cond.profundidad();
+            if(izq > der && izq > cond)
+                return 1 + izq;
+            else if(der > izq && der > cond)
+                return 1 + der;
+            else{
+                return 1 + cond; 
+            }
+            
         }
     }
 
@@ -182,8 +189,45 @@ public class Nodo {
         }
     }
 
+    public void permuta(Random r){
+        switch(f){
+            case NOT:
+                if(this.hasMutableFunction())
+                    this.izq.permuta(r);
+                break;
+            case IF:
+                if(r.nextBoolean() && this.izq.hasMutableFunction()){
+                    this.izq.permuta(r);
+                }else if(r.nextBoolean() && this.der.hasMutableFunction()){
+                    this.der.permuta(r);
+                }else if(this.cond.hasMutableFunction()){
+                    this.cond.permuta(r);
+                }else{
+                    if(this.izq.hasMutableFunction()){
+                        this.izq.permuta(r);
+                    }else{
+                        this.der.permuta(r);
+                    }
+                }
+                break;
+            case OR:
+            case AND:
+                if(r.nextBoolean() && this.izq.hasMutableFunction()){
+                    this.izq.permuta(r);
+                }else if(r.nextBoolean() && this.der.hasMutableFunction()){
+                    this.der.permuta(r);
+                }else{
+                    Nodo copia = this.izq.copy();
+                    this.izq = this.der.copy();
+                    this.der = copia;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    
     public Nodo terminalRandom(Random r, ArrayList<Integer> traza) {
-        r = new Random();
         if (this.f == TipoOperacion.HOJA) {
             return this;
         } else {
@@ -213,43 +257,20 @@ public class Nodo {
     }
 
     public Nodo funcionRandom(Random r, ArrayList<Integer> traza) {
-        if (this.f != TipoOperacion.HOJA) { // Si actual no es hoja
-            if (r.nextDouble() < porcEescoger && !traza.isEmpty()) {
-                return this;    // Si la traza no esta vacia
-            } else {
-                switch (f) {
-                    case NOT:
-                        if (this.izq.f != TipoOperacion.HOJA) { // Si el hijo es una funcion
-                            traza.add(0);                       // Se añade a la traza y continua
-                            return this.izq.funcionRandom(r, traza);
-                        } else {
-                            return this;                        // Si el hijo es un terminal, devuelve el NOT
-                        }
-                    default:
-                        if (r.nextBoolean() && this.izq.f != TipoOperacion.HOJA) {
-                            traza.add(0);
-                            return this.izq.funcionRandom(r, traza);
-                        } else if (r.nextBoolean() && this.der.f != TipoOperacion.HOJA) {
-                            traza.add(1);
-                            return this.der.funcionRandom(r, traza);
-                        } else if (this.cond != null && this.cond.f != TipoOperacion.HOJA) {
-                            traza.add(2);
-                            return this.cond.funcionRandom(r, traza);
-                        } else {
-                            if (this.padre != null) {   // Si el padre no es la raiz inicial del arbol
-                                return this.padre;
-                            } else {
-                                return this;
-                            }
-                        }
-                }
-            }
-        } else {
-            if (this.padre != null) {
+        if(this.cond != null && r.nextBoolean() && this.cond.f != TipoOperacion.HOJA){
+            traza.add(2);
+            return cond.funcionRandom(r,traza);
+        }else if(this.der != null && r.nextBoolean() && this.der.f != TipoOperacion.HOJA){
+            traza.add(1);
+            return der.funcionRandom(r,traza);
+        }else if(this.izq != null && r.nextBoolean() && this.izq.f != TipoOperacion.HOJA){
+            traza.add(0);
+            return izq.funcionRandom(r,traza);
+        }else{
+            if(this.padre != null && this.padre.padre != null)
                 return this.padre;
-            } else {
-                return this;
-            }
+            else
+                return null;
         }
     }
 

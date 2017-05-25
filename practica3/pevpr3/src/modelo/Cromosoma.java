@@ -21,9 +21,7 @@ public class Cromosoma {
         }
         
         public void calculoAptitud (ArrayList<ArrayList<Boolean>> casos,int tam){
-            int prof = this.arbol.profundidad(); 
             aptitud = Functions.calculoAptitud(this, casos, tam);
- 
         }
         
         public Nodo getArbol(){

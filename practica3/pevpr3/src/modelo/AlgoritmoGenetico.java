@@ -41,13 +41,14 @@ public class AlgoritmoGenetico {
     private boolean inv;
     private int maxDepth;
     private boolean ifs;
+    private TipoInicializar ini;
     private ArrayList<ArrayList<Boolean>> casos;
     Factoria f;
 
     public AlgoritmoGenetico(TipoFuncion funcion, int tampob, int iteraciones,
-            double probCruces, double probMutacion, double precision,
+            double probCruces, double probMutacion, int maxDepth,
             TipoSeleccion tSeleccion, int nvars, boolean elitismo, TipoCruce c, TipoMutacion m, boolean inv
-            ,int maxProf,boolean ifs) {
+            ,boolean ifs) {
         this.ifs = ifs;
         casos = new ArrayList<>();
         Functions.generadorCasos(casos, (int) (nvars + pow(2,nvars)));
@@ -55,7 +56,6 @@ public class AlgoritmoGenetico {
         this.iteraciones = iteraciones;
         this.probCruces = probCruces / 100;
         this.probMutacion = probMutacion / 100;
-        this.precision = precision;
         this.elitismo = elitismo;
         f = new Factoria(funcion, tSeleccion);
         seleccion = f.factoriaSeleccion();
@@ -63,7 +63,8 @@ public class AlgoritmoGenetico {
         this.inv = inv;
         problema = new Problema(casos,c, m,(int) (nvars + pow(2,nvars)),nvars);
         this.nvars = nvars;
-        maxDepth = maxProf;
+        this.maxDepth = maxDepth;
+        ini = TipoInicializar.CRECIENTE;
     }
 
     /**
@@ -103,16 +104,16 @@ public class AlgoritmoGenetico {
         best.add(problema.getBest().getAptitud());
         media.add(problema.media(tamPoblacion));
         for (int i = 1; i < iteraciones; i++) {
-            pob = seleccion.selecciona(pob);
+            pob = seleccion.selecciona(pob,nvars,casos);
             for(Cromosoma c: pob)
                 System.out.println(c.getArbol().toString(aux));
             System.out.println("--------------");
             problema.reproduccion(pob, probCruces);
             problema.mutacion(pob, probMutacion);
+            problema.bloating(pob, 2,this.ini,this.maxDepth,this.ifs,this.nvars);
             if (this.elitismo) {
                 problema.elitismo(pob, tamElite);
             }
-            problema.bloating(pob, 2);
             mejorPob = problema.evaluacion(pob,nvars);
             bestPob.add(mejorPob.getAptitud());
             best.add(problema.getBest().getAptitud());
@@ -135,118 +136,11 @@ public class AlgoritmoGenetico {
         Random r = new Random(semilla);
         pob = new Cromosoma[tamPoblacion];
         for (int i = 0; i < tamPoblacion; i++) {
-            pob[i] = new Cromosoma(inicializa(TipoInicializar.COMPLETO),casos,nvars);
+            pob[i] = new Cromosoma(this.problema.inicializa(ini,this.maxDepth,ifs),casos,nvars);
         }
     }
 
-    private TipoOperacion randomFunction() {
-        int pick = new Random().nextInt(TipoOperacion.values().length);
-        return TipoOperacion.values()[pick];
-    }
-
-    private Nodo inicializa(TipoInicializar ini){
-        switch(ini){
-            case COMPLETO:
-                return inicioCompleto(0);
-            case RANDH:
-                return inicioRampedAndHalf(false,NGRUPOS,0);
-            case CRECIENTE:
-                return inicioCreciente(0);
-            default:
-                return inicioCompleto(0);
-        }
-    }
     
-    private Nodo inicioCompleto(int depth){
-        Nodo node = null;
-        if(depth < this.maxDepth){
-            TipoOperacion f = randomFunction();
-            while(f == TipoOperacion.HOJA || (f==TipoOperacion.IF && !ifs)){
-                f = randomFunction();
-            }
-            switch(f) {
-                case IF:
-                    node = new Nodo(f,0,inicioCompleto(depth + 1), inicioCompleto(depth + 1), inicioCompleto(depth + 1));
-                    break;
-                case AND:
-                    node = new Nodo(f,0,inicioCompleto(depth + 1), inicioCompleto(depth + 1), null);
-                    break;
-                case OR:
-                    node = new Nodo(f,0,inicioCompleto(depth + 1), inicioCompleto(depth + 1), null);
-                    break;
-                case NOT:
-                    node = new Nodo(f,0,inicioCompleto(depth + 1), null, null);
-                    break;
-                default:
-                    break;
-            }
-            // pilla funcion aleatoria
-        } else {
-            Random r = new Random();
-            TipoOperacion f = TipoOperacion.HOJA;
-            node = new Nodo(f, r.nextInt((int) (nvars + pow(2,nvars))), null, null, null);
-        }
-        return node;
-    }
-    
-    private Nodo inicioCreciente(int depth) {
-        Random r = new Random();
-        TipoOperacion op;
-        op = randomFunction();
-        while((op==TipoOperacion.IF && !ifs) || (op==TipoOperacion.HOJA && depth<3)){
-            op = randomFunction();
-        }
-        if(depth >= this.maxDepth){
-            op = TipoOperacion.HOJA;
-        }
-        switch (op) {
-            case AND:
-                return new Nodo(op, 0, inicioCreciente(depth + 1), inicioCreciente(depth + 1), null);
-            case OR:
-                return new Nodo(op, 0, inicioCreciente(depth + 1), inicioCreciente(depth + 1), null);
-            case NOT:
-                return new Nodo(op, 0, inicioCreciente(depth + 1), null, null);
-            case IF:
-                return new Nodo(op, 0, inicioCreciente(depth + 1), inicioCreciente(depth + 1), inicioCreciente(depth + 1));
-            default:
-                return new Nodo(op, r.nextInt((int) (nvars + pow(2,nvars))), null, null, null);
-        }
-    }
-    
-    private Nodo inicioRampedAndHalf(boolean modo,int tamGrupo,int depth){
-        Nodo node = null;
-        boolean nuevoModo = modo;
-        if(depth%tamGrupo == 0)
-            nuevoModo = !modo;
-        if(depth < this.maxDepth && nuevoModo){
-            TipoOperacion f = randomFunction();
-            while(f == TipoOperacion.HOJA || (f==TipoOperacion.IF && !ifs)){
-                f = randomFunction();
-            }
-            switch(f) {
-                case IF:
-                    node = new Nodo(f,0,inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1), inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1), inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1));
-                    break;
-                case AND:
-                    node = new Nodo(f,0,inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1), inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1), null);
-                    break;
-                case OR:
-                    node = new Nodo(f,0,inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1), inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1), null);
-                    break;
-                case NOT:
-                    node = new Nodo(f,0,inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1), null, null);
-                    break;
-                default:
-                    break;
-            }
-            // pilla funcion aleatoria
-        } else {
-            Random r = new Random();
-            TipoOperacion f = TipoOperacion.HOJA;
-            node = new Nodo(f, r.nextInt((int) (nvars + pow(2,nvars))), null, null, null);
-        }
-        return node;
-    }
     
     public int factorial(int numero) {
         if (numero == 0) {

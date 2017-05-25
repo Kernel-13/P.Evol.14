@@ -15,7 +15,7 @@ import java.util.Random;
 public class SeleccionTorneoDeterminista extends Seleccion {
     public static int TAMALEATORIOS = 2;
     @Override
-    Cromosoma[] selecciona(Cromosoma[] pob) {
+    Cromosoma[] selecciona(Cromosoma[] pob,int nvars,ArrayList<ArrayList<Boolean>> casos) {
        Cromosoma[] ret = new Cromosoma[pob.length];
        Random r = new Random();
        int[] aleatorios = new int[TAMALEATORIOS];
@@ -24,7 +24,7 @@ public class SeleccionTorneoDeterminista extends Seleccion {
             for(int j=0; j < TAMALEATORIOS;j++)
                 aleatorios[j] = (int)(r.nextDouble()*pob.length);
             escogido = mejor(pob,aleatorios);
-            ret[i] = pob[escogido];
+            ret[i] = pob[escogido].copy(nvars, casos);
        }
        return ret;
     }

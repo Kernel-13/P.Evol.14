@@ -29,12 +29,11 @@ public class Controlador {
     private int iteraciones;
     private int probCruces;
     private int probMutacion;
-    private double precision;
+    private int maxDepth;
     private TipoSeleccion seleccion;
     private int semilla;
     private int nvars;
     private boolean elitismo;
-    private int maxProf;
     private boolean inv;
     private boolean ifs;
     
@@ -44,13 +43,12 @@ public class Controlador {
         iteraciones = 200;
         probCruces = 20;
         probMutacion = 10;
-        precision = 0.001;
+        maxDepth = 3;
         semilla = 2;
         seleccion = TipoSeleccion.RULETA;
-        cruce = TipoCruce.OX;
+        cruce = TipoCruce.NORMAL;
         mutacion = TipoMutacion.TER;
         nvars = 4;
-        maxProf = 3;
         ifs = true;
     }
     
@@ -173,20 +171,16 @@ public class Controlador {
     
     /**
      * (funcion que se llama desde la vista)
-     * cambia el parametro correspondiente a la precision
+     * cambia el parametro correspondiente a la maxDepth
      * @param pre 
      */
     public String cambiarPrecision(String pre){
-        double p = 0;
+        int p = 0;
         try{
-            p = Double.parseDouble(pre);
+            p = Integer.parseInt(pre);
+            maxDepth = p;
         }catch(Exception e){
-            return "precision";
-        }
-        if(p > 0 && p < 1)
-            precision = p;
-        else{
-            return "precision";
+            return "maxDepth";
         }
         return "";
     }
@@ -219,31 +213,19 @@ public class Controlador {
     public void cambiarCruce(int c){
         switch(c){
             case 0:
-                cruce = TipoCruce.OX;
+                cruce = TipoCruce.FUNCION;
                 break;
             case 1:
-                cruce = TipoCruce.PMX;
+                cruce = TipoCruce.TERMINAL;
                 break;
             case 2:
-                cruce = TipoCruce.ERX;
+                cruce = TipoCruce.NORMAL;
                 break;
             case 3:
-                cruce = TipoCruce.CODORD;
-                break;
-            case 4:
-                cruce = TipoCruce.CICLOS;
-                break;
-            case 5:
-                cruce = TipoCruce.VAROX1;
-                break;
-            case 6:
-                cruce = TipoCruce.VAROX2;
-                break;
-            case 7:
                 cruce = TipoCruce.PROPIO;
                 break;
             default:
-                cruce = TipoCruce.OX;
+                cruce = TipoCruce.NORMAL;
         }
     }
     /**
@@ -328,77 +310,7 @@ public class Controlador {
     public DatosGrafica ejecuta(){
         //aqui hay que leer archivo e inicializar f y d
         AlgoritmoGenetico algo = new AlgoritmoGenetico(funcion, poblacion, iteraciones,
-                probCruces, probMutacion,precision,seleccion,nvars,elitismo,cruce,mutacion,inv,maxProf,ifs);
+                probCruces, probMutacion,maxDepth,seleccion,nvars,elitismo,cruce,mutacion,inv,ifs);
         return algo.ejecuta(semilla);
     }
-    
-    /**
-     * lee un archivo de datos con el siguiente formato
-     * el 5 es el valor de n , la primera tabla es f y la segunda es d 
-5
-
-0 5 2 4 1
-5 0 3 0 2
-2 3 0 0 0
-4 0 0 0 5
-1 2 0 5 0
-
-0 1 1 2 3
-1 0 2 1 2
-1 2 0 1 2
-2 1 1 0 1
-3 2 2 1 0
-
-     * @param archivo
-     * @param f
-     * @param d
-     * @return 
-     */
-   /* private int leerArchivo(String archivo){
-        int n = 0;
-        String cadena;
-        try {
-            FileReader file = new FileReader(archivo);
-            BufferedReader b = new BufferedReader(file);
-            cadena = b.readLine();
-            n = Integer.parseInt(cadena);
-            f = new int[n][n];
-            d = new int[n][n];
-            b.readLine();
-            procesaMatriz(b,f);
-            b.readLine();
-            procesaMatriz(b,d);
-            b.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return n; 
-    }
-    
-    private void procesaMatriz(BufferedReader b,int[][]matriz) throws IOException{
-        String cadena;
-        for(int i = 0; i < matriz.length;i++){
-            cadena = b.readLine();
-            int k = 0;
-            int j = 0;
-            while(j < matriz.length){
-                String subcadena = "";
-                String c = cadena.charAt(k)+"";
-                while (!c.equals(" ")){
-                    subcadena += c;
-                    k++;
-                    if(k < cadena.length())
-                        c = cadena.charAt(k)+"";
-                    else
-                        c = " ";
-                }
-                matriz[i][j] = Integer.parseInt(subcadena);
-                j++;
-                k++;
-            }
-        }
-    }
-    */
-
-    
 }

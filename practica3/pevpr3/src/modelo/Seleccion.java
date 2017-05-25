@@ -11,5 +11,5 @@ import java.util.ArrayList;
  *
  */
 public abstract class Seleccion {
-    abstract Cromosoma[] selecciona(Cromosoma[] pob);
+    abstract Cromosoma[] selecciona(Cromosoma[] pob,int nvars,ArrayList<ArrayList<Boolean>> casos);
 }

@@ -8,9 +8,11 @@ package modelo;
 import static java.lang.Math.pow;
 import java.util.ArrayList;
 import java.util.Random;
+import static modelo.AlgoritmoGenetico.NGRUPOS;
 import util.Functions;
 import util.Nodo;
 import util.TipoCruce;
+import util.TipoInicializar;
 import util.TipoMutacion;
 import util.TipoOperacion;
 
@@ -118,6 +120,27 @@ public class Problema {
         return pob;
     }
 
+    protected void cruce(Cromosoma new1, Cromosoma new2){
+        switch(this.cruce){
+            case FUNCION:
+                cruceFuncion(new1,new2);
+                break;
+            case TERMINAL:
+                cruceTerminal(new1,new2);
+                break;
+            case NORMAL:
+                cruceNormal(new1,new2);
+                break;
+            case PROPIO:
+                cruceFuncion(new1,new2);
+                cruceTerminal(new1,new2);
+                break;
+            default:
+                cruceNormal(new1,new2);
+                break;
+        }
+    }
+    
     /**
      * Cruza 2 cromosomas - obtenemos 2 hijos Los cromosomas padre se pasan por
      * referencia y se convierten en los hijos posteriormente.
@@ -125,7 +148,7 @@ public class Problema {
      * @param new1
      * @param new2
      */
-    protected void cruce(Cromosoma new1, Cromosoma new2) {
+    protected void cruceNormal(Cromosoma new1, Cromosoma new2) {
         ArrayList<Integer> traza1 = new ArrayList<>();
         ArrayList<Integer> traza2 = new ArrayList<>();
         Nodo aux1;
@@ -138,27 +161,27 @@ public class Problema {
             aux1 = new1.getArbol().terminalRandom(r, traza1).copy();
         } else {
             if (new1.getArbol().getFuncion() == TipoOperacion.HOJA) {
-                aux1 = new1.getArbol().terminalRandom(r, traza1).copy();
+                aux1 = new1.getArbol().terminalRandom(r, traza1);
             } else {
-                aux1 = new1.getArbol().funcionRandom(r, traza1).copy();
+                aux1 = new1.getArbol().funcionRandom(r, traza1);
             }
         }
 
         if (escogido2) {
-            aux2 = new2.getArbol().terminalRandom(r, traza2).copy();
+            aux2 = new2.getArbol().terminalRandom(r, traza2);
         } else {
             if (new2.getArbol().getFuncion() == TipoOperacion.HOJA) {
-                aux2 = new2.getArbol().terminalRandom(r, traza2).copy();
+                aux2 = new2.getArbol().terminalRandom(r, traza2);
             } else {
-                aux2 = new2.getArbol().funcionRandom(r, traza2).copy();
+                aux2 = new2.getArbol().funcionRandom(r, traza2);
             }
         }
-
-        new1.getArbol().setNodo(aux2, traza1, 0);
-        new2.getArbol().setNodo(aux1, traza2, 0);
-        new1.calculoAptitud(casos, 2);
-        new2.calculoAptitud(casos, 2);
-
+        if(aux2 != null && aux1 != null){
+            new1.getArbol().setNodo(aux2.copy(), traza1, 0);
+            new2.getArbol().setNodo(aux1.copy(), traza2, 0);
+            new1.calculoAptitud(casos, 2);
+            new2.calculoAptitud(casos, 2);
+        }
     }
 
     /**
@@ -208,14 +231,12 @@ public class Problema {
         boolean escogido2 = r.nextBoolean();
         //cojo un terminal o funcion de alguno de los dos
 
-        aux1 = new1.getArbol().funcionRandom(r, traza1).copy();
-        aux2 = new2.getArbol().funcionRandom(r, traza2).copy();
-        int prof1 = new1.getArbol().profundidad();
-        int prof2 = new2.getArbol().profundidad();
+        aux1 = new1.getArbol().funcionRandom(r, traza1);
+        aux2 = new2.getArbol().funcionRandom(r, traza2);
 
-        if (prof1 != aux1.profundidad() && prof2 != aux2.profundidad()) {
-            new1.getArbol().setNodo(aux2, traza1, 0);
-            new2.getArbol().setNodo(aux1, traza2, 0);
+        if (aux1 != null && aux2 != null) {
+            new1.getArbol().setNodo(aux2.copy(), traza1, 0);
+            new2.getArbol().setNodo(aux1.copy(), traza2, 0);
             new1.calculoAptitud(casos, 2);
             new2.calculoAptitud(casos, 2);
         }
@@ -252,21 +273,7 @@ public class Problema {
     }
 
     private void mutaPermutacion(Random r, Cromosoma x) {
-        if (x.getArbol().getFuncion() != TipoOperacion.HOJA) {
-            ArrayList<Integer> traza = new ArrayList<>();
-            Nodo aux = x.getArbol().funcionRandom(r, traza);
-            int numPruebas = x.getArbol().profundidad();
-            while (numPruebas > 0 && aux.getFuncion() != TipoOperacion.AND && aux.getFuncion() != TipoOperacion.OR) {
-                aux = x.getArbol().funcionRandom(r, traza);
-                numPruebas--;
-            }
-            if (aux.getFuncion() == TipoOperacion.AND || aux.getFuncion() == TipoOperacion.OR) {
-                Nodo izq = aux.getIzq();
-                Nodo der = aux.getDer();
-                x.getArbol().setDer(izq);
-                x.getArbol().setIzq(der);
-            }
-        }
+        x.getArbol().permuta(r);
         x.calculoAptitud(casos, nvars);
     }
 
@@ -478,21 +485,139 @@ public class Problema {
      *
      * @param pob Es la poblacion a examinar
      * @param n
+     * @param t
+     * @param max
+     * @param ifs
+     * @param nvars
      */
-    public void bloating(Cromosoma[] pob, int n) {
+    public void bloating(Cromosoma[] pob, int n,TipoInicializar t,int max, boolean ifs,int nvars) {
         double aver_long = medialongitud(pob);
         Random r = new Random();
         for (int i = 0; i < pob.length; i++) {
             double depth = pob[i].getArbol().profundidad();
             double rand = r.nextDouble();
             double div = 1/(double)n;
-            if (depth > aver_long && rand < div) {
-                pob[i].aptitud = 0;
-                System.out.println("********** BLOATING **********");
+            if (depth > aver_long && rand < div ) {
+                pob[i].arbol = inicializa(t,max,ifs);
+                pob[i].calculoAptitud(casos, nvars);
+               // System.out.println("********** BLOATING **********");
             }
         }
     }
 
+    private TipoOperacion randomFunction() {
+        int pick = new Random().nextInt(TipoOperacion.values().length);
+        return TipoOperacion.values()[pick];
+    }
+
+    public Nodo inicializa(TipoInicializar ini,int max,boolean ifs){
+        switch(ini){
+            case COMPLETO:
+                return inicioCompleto(0,max,ifs);
+            case RANDH:
+                return inicioRampedAndHalf(false,NGRUPOS,0,max,ifs);
+            case CRECIENTE:
+                return inicioCreciente(0,max,ifs);
+            default:
+                return inicioCompleto(0,max,ifs);
+        }
+    }
+    
+    private Nodo inicioCompleto(int depth,int max,boolean ifs){
+        Nodo node = null;
+        if(depth < max){
+            TipoOperacion f = randomFunction();
+            while(f == TipoOperacion.HOJA || (f==TipoOperacion.IF && !ifs)){
+                f = randomFunction();
+            }
+            switch(f) {
+                case IF:
+                    node = new Nodo(f,0,inicioCompleto(depth + 1,max,ifs), inicioCompleto(depth + 1,max,ifs), 
+                                        inicioCompleto(depth + 1,max,ifs));
+                    break;
+                case AND:
+                    node = new Nodo(f,0,inicioCompleto(depth + 1,max,ifs), inicioCompleto(depth + 1,max,ifs), null);
+                    break;
+                case OR:
+                    node = new Nodo(f,0,inicioCompleto(depth + 1,max,ifs), inicioCompleto(depth + 1,max,ifs), null);
+                    break;
+                case NOT:
+                    node = new Nodo(f,0,inicioCompleto(depth + 1,max,ifs), null, null);
+                    break;
+                default:
+                    break;
+            }
+            // pilla funcion aleatoria
+        } else {
+            Random r = new Random();
+            TipoOperacion f = TipoOperacion.HOJA;
+            node = new Nodo(f, r.nextInt((int) (nvars + pow(2,nvars))), null, null, null);
+        }
+        return node;
+    }
+    
+    private Nodo inicioCreciente(int depth,int max,boolean ifs) {
+        Random r = new Random();
+        TipoOperacion op;
+        op = randomFunction();
+        while((op==TipoOperacion.IF && !ifs) || (op==TipoOperacion.HOJA && depth<3)){
+            op = randomFunction();
+        }
+        if(depth >= max){
+            op = TipoOperacion.HOJA;
+        }
+        switch (op) {
+            case AND:
+                return new Nodo(op, 0, inicioCreciente(depth + 1,max,ifs), inicioCreciente(depth + 1,max,ifs), null);
+            case OR:
+                return new Nodo(op, 0, inicioCreciente(depth + 1,max,ifs), inicioCreciente(depth + 1,max,ifs), null);
+            case NOT:
+                return new Nodo(op, 0, inicioCreciente(depth + 1,max,ifs), null, null);
+            case IF:
+                return new Nodo(op, 0, inicioCreciente(depth + 1,max,ifs), inicioCreciente(depth + 1,max,ifs), 
+                                       inicioCreciente(depth + 1,max,ifs));
+            default:
+                return new Nodo(op, r.nextInt((int) (nvars + pow(2,nvars))), null, null, null);
+        }
+    }
+    
+    private Nodo inicioRampedAndHalf(boolean modo,int tamGrupo,int depth,int max,boolean ifs){
+        Nodo node = null;
+        boolean nuevoModo = modo;
+        if(depth%tamGrupo == 0)
+            nuevoModo = !modo;
+        if(depth < max && nuevoModo){
+            TipoOperacion f = randomFunction();
+            while(f == TipoOperacion.HOJA || (f==TipoOperacion.IF && !ifs)){
+                f = randomFunction();
+            }
+            switch(f) {
+                case IF:
+                    node = new Nodo(f,0,inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1,max,ifs), inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1,max,ifs),
+                                        inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1,max,ifs));
+                    break;
+                case AND:
+                    node = new Nodo(f,0,inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1,max,ifs), inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1,max,ifs), null);
+                    break;
+                case OR:
+                    node = new Nodo(f,0,inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1,max,ifs), inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1,max,ifs), null);
+                    break;
+                case NOT:
+                    node = new Nodo(f,0,inicioRampedAndHalf(nuevoModo,tamGrupo,depth + 1,max,ifs), null, null);
+                    break;
+                default:
+                    break;
+            }
+            // pilla funcion aleatoria
+        } else {
+            Random r = new Random();
+            TipoOperacion f = TipoOperacion.HOJA;
+            node = new Nodo(f, r.nextInt((int) (nvars + pow(2,nvars))), null, null, null);
+        }
+        return node;
+    }
+    
+    
     private double medialongitud(Cromosoma[] pob) {
         double suma = 0;
         for (int i = 0; i < pob.length; i++) {

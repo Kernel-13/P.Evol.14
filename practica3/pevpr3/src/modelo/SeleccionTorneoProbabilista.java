@@ -17,7 +17,7 @@ public class SeleccionTorneoProbabilista extends Seleccion {
     public static double P = 0.5;
     
     @Override
-    Cromosoma[] selecciona(Cromosoma[] pob) {
+    Cromosoma[] selecciona(Cromosoma[] pob,int nvars,ArrayList<ArrayList<Boolean>> casos) {
        Cromosoma[] ret = new Cromosoma[pob.length];
        Random r = new Random();
        int[] aleatorios = new int[TAMALEATORIOS];
@@ -26,7 +26,7 @@ public class SeleccionTorneoProbabilista extends Seleccion {
             for(int j=0; j < TAMALEATORIOS;j++)
                 aleatorios[j] = (int)(r.nextDouble()*pob.length);
             escogido = mejorPeor(pob,aleatorios,r);
-            ret[i] = pob[escogido];
+            ret[i] = pob[escogido].copy(nvars, casos);
        }
        return ret;
     }

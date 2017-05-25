@@ -10,5 +10,5 @@ package util;
  * @author lolita
  */
 public enum TipoCruce {
-    OX,PMX,CICLOS,VAROX1,VAROX2,ERX,CODORD,PROPIO;
+    FUNCION,TERMINAL,NORMAL,PROPIO;
 }

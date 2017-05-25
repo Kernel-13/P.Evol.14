@@ -15,7 +15,7 @@ public class SeleccionEstocastica extends Seleccion {
     public SeleccionEstocastica(){}
     
     @Override
-    Cromosoma[] selecciona(Cromosoma[] pob) {
+    Cromosoma[] selecciona(Cromosoma[] pob,int nvars,ArrayList<ArrayList<Boolean>> casos) {
        int j;
        boolean salir;
        Cromosoma[] ret = new Cromosoma[pob.length];
@@ -31,9 +31,9 @@ public class SeleccionEstocastica extends Seleccion {
                j++;
            }
            if(j < pob.length)
-               ret[i] = pob[j];
+               ret[i] = pob[j].copy(nvars, casos);
            else
-               ret[i] = pob[pob.length-1];
+               ret[i] = pob[pob.length-1].copy(nvars, casos);
        }
        return ret;
     }
