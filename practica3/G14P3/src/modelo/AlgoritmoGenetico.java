@@ -116,9 +116,6 @@ public class AlgoritmoGenetico {
         media.add(problema.media(tamPoblacion));
         for (int i = 1; i < iteraciones; i++) {
             pob = seleccion.selecciona(pob,nvars,casos);
-            /*for(Cromosoma c: pob)
-                System.out.println(c.getArbol().toString(aux));
-            System.out.println("--------------");*/
             problema.reproduccion(pob, probCruces);
             problema.mutacion(pob, probMutacion);
             problema.bloating(pob, 2,this.ini,this.maxDepth,this.ifs,this.nvars);
@@ -129,12 +126,8 @@ public class AlgoritmoGenetico {
             bestPob.add(mejorPob.getAptitud());
             best.add(problema.getBest().getAptitud());
             media.add(problema.media(tamPoblacion));
-           /* for(Cromosoma c: pob){
-                System.out.println(c.getArbol().toString(aux));
-            }
-            System.out.println("--------------");*/
         }
-        System.out.println(problema.getBest().toString());
+        System.out.println(problema.getBest().getArbol().toString(aux));
         return new DatosGrafica(best, iteraciones, bestPob, media, problema.getBest(),aux);
     }
 
