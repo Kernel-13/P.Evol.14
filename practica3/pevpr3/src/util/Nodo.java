@@ -41,10 +41,11 @@ public class Nodo {
         }
     }
 
-    public int getTerminal() {
-        return this.terminal;
-    }
-
+    /**
+     * Calcula y devuelve el valor de este arbol con una entrada concreta
+     * @param tabla
+     * @return 
+     */
     public boolean valor(ArrayList<Boolean> tabla) {
         if (this.f == TipoOperacion.HOJA) {
             return tabla.get(this.terminal);
@@ -60,26 +61,6 @@ public class Nodo {
                     return this.cond.valor(tabla) ? izq.valor(tabla) : der.valor(tabla);
                 default:
                     return tabla.get(this.terminal);
-            }
-        }
-    }
-
-    public Nodo recorrer(ArrayList<Integer> traza) {
-        if (traza.isEmpty()) {
-            return this;
-        } else {
-            switch (traza.get(0)) {
-                case 0:
-                    traza.remove(0);
-                    return this.izq.recorrer(traza);
-                case 1:
-                    traza.remove(0);
-                    return this.der.recorrer(traza);
-                case 2:
-                    traza.remove(0);
-                    return this.cond.recorrer(traza);
-                default:
-                    return this;
             }
         }
     }
@@ -139,30 +120,34 @@ public class Nodo {
         }
     }
 
+    /**
+     * Calcula y devuelve la profundidad del arbol
+     * @return 
+     */
     public int profundidad() {
-        int izq = 0,der = 0,cond = 0;
+        int pizq = 0,pder = 0,pcond = 0;
         
         if (this.f == TipoOperacion.HOJA) {
             return 1;
         } else if (this.f == TipoOperacion.AND || this.f == TipoOperacion.OR) {
-            izq = this.izq.profundidad();
-            der = this.der.profundidad();
-            if(izq > der)
-                return 1 + izq;
+            pizq = this.izq.profundidad();
+            pder = this.der.profundidad();
+            if(pizq > pder)
+                return 1 + pizq;
             else
-                return 1 + der;
+                return 1 + pder;
         } else if (this.f == TipoOperacion.NOT) {
             return 1 + this.izq.profundidad();
         } else {
-            izq = this.izq.profundidad();
-            der = this.der.profundidad();
-            cond = this.cond.profundidad();
-            if(izq > der && izq > cond)
-                return 1 + izq;
-            else if(der > izq && der > cond)
-                return 1 + der;
+            pizq = this.izq.profundidad();
+            pder = this.der.profundidad();
+            pcond = this.cond.profundidad();
+            if(pizq > pder && pizq > pcond)
+                return 1 + pizq;
+            else if(pder > pizq && pder > pcond)
+                return 1 + pder;
             else{
-                return 1 + cond; 
+                return 1 + pcond; 
             }
             
         }
@@ -189,6 +174,10 @@ public class Nodo {
         }
     }
 
+    /**
+     * Permuta de manera aleatoria dos ramas del arbol
+     * @param r 
+     */
     public void permuta(Random r){
         switch(f){
             case NOT:
@@ -227,6 +216,13 @@ public class Nodo {
         }
     }
     
+    
+    /**
+     * devuelve un terminal aleatorio del arbol
+     * @param r
+     * @param traza
+     * @return 
+     */
     public Nodo terminalRandom(Random r, ArrayList<Integer> traza) {
         if (this.f == TipoOperacion.HOJA) {
             return this;
@@ -256,6 +252,12 @@ public class Nodo {
         }
     }
 
+    /**
+     * devuelve una funcion random del arbol
+     * @param r
+     * @param traza
+     * @return 
+     */
     public Nodo funcionRandom(Random r, ArrayList<Integer> traza) {
         if(this.cond != null && r.nextBoolean() && this.cond.f != TipoOperacion.HOJA){
             traza.add(2);
@@ -274,6 +276,10 @@ public class Nodo {
         }
     }
 
+    /**
+     * Muta una funcion aleatoria del arbol
+     * @param r 
+     */
     public void mutaFuncion(Random r) {
         if (r.nextBoolean()) {
             this.auxMutaf();
@@ -313,18 +319,6 @@ public class Nodo {
         }
     }
 
-    public void setFuncion(TipoOperacion func) {
-        this.f = func;
-    }
-
-    public TipoOperacion getFuncion() {
-        return this.f;
-    }
-
-    public void setTerminal(int x) {
-        this.terminal = x;
-    }
-
     public void mutaTerminal(Random r, int tam) {
         int aux = terminal;
         int rand = r.nextInt(tam);
@@ -341,13 +335,29 @@ public class Nodo {
     public void setDer(Nodo d) {
         this.der = d;
     }
+    
+    public void setTerminal(int x) {
+        this.terminal = x;
+    }
 
+    public void setFuncion(TipoOperacion func) {
+        this.f = func;
+    }
+
+    public TipoOperacion getFuncion() {
+        return this.f;
+    }
+    
     public Nodo getDer() {
         return der;
     }
 
     public Nodo getIzq() {
         return izq;
+    }
+    
+    public int getTerminal() {
+        return this.terminal;
     }
 
     public Nodo copy() {

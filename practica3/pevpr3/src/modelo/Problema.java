@@ -9,7 +9,6 @@ import static java.lang.Math.pow;
 import java.util.ArrayList;
 import java.util.Random;
 import static modelo.AlgoritmoGenetico.NGRUPOS;
-import util.Functions;
 import util.Nodo;
 import util.TipoCruce;
 import util.TipoInicializar;
@@ -120,6 +119,13 @@ public class Problema {
         return pob;
     }
 
+     /**
+     * Cruza 2 cromosomas - obtenemos 2 hijos Los cromosomas padre se pasan por
+     * referencia y se convierten en los hijos posteriormente.
+     *
+     * @param new1
+     * @param new2
+     */
     protected void cruce(Cromosoma new1, Cromosoma new2){
         switch(this.cruce){
             case FUNCION:
@@ -142,11 +148,10 @@ public class Problema {
     }
     
     /**
-     * Cruza 2 cromosomas - obtenemos 2 hijos Los cromosomas padre se pasan por
-     * referencia y se convierten en los hijos posteriormente.
-     *
+     * Cruza dos ramas aleatorias del arbol, pueden ser tanto 
+     * terminales como funciones.
      * @param new1
-     * @param new2
+     * @param new2 
      */
     protected void cruceNormal(Cromosoma new1, Cromosoma new2) {
         ArrayList<Integer> traza1 = new ArrayList<>();
@@ -179,15 +184,14 @@ public class Problema {
         if(aux2 != null && aux1 != null){
             new1.getArbol().setNodo(aux2.copy(), traza1, 0);
             new2.getArbol().setNodo(aux1.copy(), traza2, 0);
-            new1.calculoAptitud(casos, 2);
-            new2.calculoAptitud(casos, 2);
+            new1.calculoAptitud(casos, nvars);
+            new2.calculoAptitud(casos, nvars);
         }
     }
 
     /**
-     * Cruza 2 cromosomas - obtenemos 2 hijos Los cromosomas padre se pasan por
-     * referencia y se convierten en los hijos posteriormente.
-     *
+     * Cruza dos terminales aleatorios de cada arbol
+     * 
      * @param new1
      * @param new2
      */
@@ -209,14 +213,13 @@ public class Problema {
         if (prof1 != aux1.profundidad() && prof2 != aux2.profundidad()) {
             new1.getArbol().setNodo(aux2, traza1, 0);
             new2.getArbol().setNodo(aux1, traza2, 0);
-            new1.calculoAptitud(casos, 2);
-            new2.calculoAptitud(casos, 2);
+            new1.calculoAptitud(casos, nvars);
+            new2.calculoAptitud(casos, nvars);
         }
     }
 
     /**
-     * Cruza 2 cromosomas - obtenemos 2 hijos Los cromosomas padre se pasan por
-     * referencia y se convierten en los hijos posteriormente.
+     * Cruza dos funciones aleatorias del arbol 
      *
      * @param new1
      * @param new2
@@ -237,8 +240,8 @@ public class Problema {
         if (aux1 != null && aux2 != null) {
             new1.getArbol().setNodo(aux2.copy(), traza1, 0);
             new2.getArbol().setNodo(aux1.copy(), traza2, 0);
-            new1.calculoAptitud(casos, 2);
-            new2.calculoAptitud(casos, 2);
+            new1.calculoAptitud(casos, nvars);
+            new2.calculoAptitud(casos, nvars);
         }
     }
 
@@ -272,32 +275,51 @@ public class Problema {
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Permuta dos ramas del arbol.
+     * 
+     *    x
+     * /    \
+     * y     z
+     * 
+     *    x
+     * /     \
+     * z      y
+     * @param r
+     * @param x 
+     */
     private void mutaPermutacion(Random r, Cromosoma x) {
         x.getArbol().permuta(r);
         x.calculoAptitud(casos, nvars);
     }
 
+    
+    /**
+     * Cambia un terminal seleccionado de manera
+     * aleatoria por otro escogido de manera aleatoria
+     * 
+     * @param r
+     * @param x 
+     */
     private void mutaTerminal(Random r, Cromosoma x) {
         ArrayList<Integer> traza = new ArrayList<>();
         x.getArbol().terminalRandom(r, traza).mutaTerminal(r, nvars + (int) pow(2, nvars) - 1);
         x.calculoAptitud(casos, nvars);
     }
 
+    
+    /**
+     * cambia de manera aleatoria una funcion
+     * por otra funcion escogida de manera aleatoria
+     * (las dos funciones tienen que tener la misma aridad)
+     * @param r
+     * @param x 
+     */
     private void mutaFuncion(Random r, Cromosoma x) {
         if (x.getArbol().getFuncion() != TipoOperacion.HOJA && x.getArbol().hasMutableFunction()) {
             x.getArbol().mutaFuncion(r);
             x.calculoAptitud(casos, nvars);
         }
-    }
-
-    private boolean esValido(ArrayList<Integer> crom) {
-        boolean exit = true;
-        for (int i = 0; i < crom.size() && exit; i++) {
-            if (!crom.contains(i)) {
-                exit = false;
-            }
-        }
-        return exit;
     }
 
     /**
@@ -306,7 +328,7 @@ public class Problema {
      * @return
      */
     public Cromosoma getBest() {
-        return best;
+        return best.copy(nvars, casos);
     }
 
     /**
@@ -457,27 +479,6 @@ public class Problema {
         return pos;
     }
 
-    private boolean contiene(int[] x, int elem) {
-        for (int y : x) {
-            if (y == elem) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private int duplicado(int[] array) {
-        int ret = -1;
-        for (int i = 0; i < array.length; i++) {
-            for (int j = 0; j < array.length; j++) {
-                if (array[j] == array[i] && (i != j) && array[j] != -1) {
-                    ret = j;
-                }
-            }
-        }
-        return ret;
-    }
-
     /**
      * Funcion que penalizara aquellos cromosomas cuyo arbol tenga una
      * profundidad superior a la media de profundidades de toda la poblacion,
@@ -510,6 +511,13 @@ public class Problema {
         return TipoOperacion.values()[pick];
     }
 
+    /**
+     * inicializa la poblacion
+     * @param ini
+     * @param max
+     * @param ifs
+     * @return 
+     */
     public Nodo inicializa(TipoInicializar ini,int max,boolean ifs){
         switch(ini){
             case COMPLETO:
@@ -617,7 +625,11 @@ public class Problema {
         return node;
     }
     
-    
+    /**
+     * Devuelve la media de profundidad de los arboles de la poblacion
+     * @param pob
+     * @return 
+     */
     private double medialongitud(Cromosoma[] pob) {
         double suma = 0;
         for (int i = 0; i < pob.length; i++) {

@@ -1,0 +1,1 @@
+(IF (OR (OR (IF a0 d2 d0) (AND a1 d1)) (AND a1 a0)) (IF a1 (IF a0 d3 d1) (OR (OR (IF a0 d2 d0) (AND a1 d1)) (AND a1 a0))) (AND (IF a1 d3 a0) (AND a1 d0)))

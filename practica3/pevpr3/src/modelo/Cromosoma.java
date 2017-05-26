@@ -1,7 +1,6 @@
 package modelo;
 
 import java.util.ArrayList;
-import java.util.Random;
 import util.Functions;
 import util.Nodo;
 
@@ -11,22 +10,24 @@ public class Cromosoma {
 	protected double puntuacion;
         protected double puntAcomulada;
         protected Nodo arbol;
-        protected int tam;
+        protected int nEntradas;
         
         public Cromosoma(){}
-        public Cromosoma(Nodo n,ArrayList<ArrayList<Boolean>> casos,int tam){
-            this.tam = tam;
+        public Cromosoma(Nodo n,ArrayList<ArrayList<Boolean>> casos,int nEntradas){
+            this.nEntradas = nEntradas;
             arbol = n;
-            aptitud = Functions.calculoAptitud(this, casos, tam);
+            aptitud = Functions.calculoAptitud(this, casos, nEntradas);
         }
         
-        public void calculoAptitud (ArrayList<ArrayList<Boolean>> casos,int tam){
-            aptitud = Functions.calculoAptitud(this, casos, tam);
+        /**
+         * funcion que calcula la apritud del
+         * @param casos
+         * @param nEntradas 
+         */
+        public void calculoAptitud (ArrayList<ArrayList<Boolean>> casos,int nEntradas){
+            aptitud = Functions.calculoAptitud(this, casos, nEntradas);
         }
         
-        public Nodo getArbol(){
-            return arbol;
-        }
         
         /**
          * calcula la puntuacion utilizando la suma de puntuaciones 
@@ -35,12 +36,11 @@ public class Cromosoma {
          */
         protected Cromosoma copy(int nIn,ArrayList<ArrayList<Boolean>> casos){
                 Nodo n = this.arbol.copy();
-                Cromosoma ret = new Cromosoma(n,casos,tam);
+                Cromosoma ret = new Cromosoma(n,casos,nEntradas);
                 return ret;
         } //devuelve una copia del individuo
         
-        
-        
+      
         protected void setPuntAcomulada(double puntuacion) {
             puntAcomulada = puntuacion;
         }
@@ -48,6 +48,10 @@ public class Cromosoma {
         
         public void setPuntuacion(double suma) {
             this.puntuacion = aptitud / suma;
+        }
+        
+        public Nodo getArbol(){
+            return arbol;
         }
         
         public double getAptitud() {
@@ -60,11 +64,14 @@ public class Cromosoma {
        
         
         /**
-         * devuelve el tamanio del array de genes
+         * devuelve el numero de entradas en la parte de 
+         * evaluacion que entran en el multiplexor
+         * ejemplo: 
+         * para un multiplexor de 6 entradas nentradas = 2
          * @return 
          */
-        protected int getTamanio() {
-            return tam;
+        protected int getNEntradas() {
+            return nEntradas;
         }
         
         protected double getPuntAcomulada() {

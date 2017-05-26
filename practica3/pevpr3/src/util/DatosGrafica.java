@@ -19,13 +19,15 @@ public class DatosGrafica {
     public ArrayList<Double> mediaPorIteracion;
     public int tam;
     public Cromosoma mejorAptitud;
+    public String [] terminales; 
     public DatosGrafica(ArrayList<Double> mejoresTodo, int tam
-            ,ArrayList<Double> mejoresIt, ArrayList<Double> mediaPobIt,Cromosoma mejor){
+            ,ArrayList<Double> mejoresIt, ArrayList<Double> mediaPobIt,Cromosoma mejor,String aux[]){
         mejoresDeTodas = mejoresTodo;
         mejoresIteracion = mejoresIt;
         mediaPorIteracion = mediaPobIt; 
         mejorAptitud = mejor;
         this.tam = tam;
+        terminales = aux;
     }
     
     public String toString(){

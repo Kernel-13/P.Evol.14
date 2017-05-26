@@ -28,11 +28,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jInternalFrame1" max="32767" attributes="0"/>
-                  <Group type="102" alignment="1" attributes="0">
-                      <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="jTextField9" min="-2" pref="693" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="jTextField9" max="32767" attributes="0"/>
               </Group>
           </Group>
       </Group>
@@ -43,10 +39,7 @@
           <Group type="102" attributes="0">
               <Component id="jInternalFrame1" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jTextField9" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel14" min="-2" max="-2" attributes="0"/>
-              </Group>
+              <Component id="jTextField9" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -460,7 +453,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="793" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="954" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -473,11 +466,6 @@
     <Component class="javax.swing.JTextField" name="jTextField9">
       <Properties>
         <Property name="text" type="java.lang.String" value="jTextField9"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="jLabel14">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Mejor fenotipo"/>
       </Properties>
     </Component>
   </SubComponents>
